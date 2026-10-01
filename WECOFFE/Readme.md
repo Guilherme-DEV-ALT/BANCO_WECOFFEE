@@ -2,13 +2,13 @@
 
 # Integrantes 
 
-| Nome | RGM |
-|----|----|
-| Guilherme Souza Lima | 46899502 |
-| João Victor Moidano do Valle | 46576461 |
-| Gabriel Amorim Sartori | 46832939 |
-| Guilherme Cau Guateli | 46736069 |
-| Matheus Fernandes Andrade | 46754539 |
+| Integrantes |
+|---|
+| Guilherme Souza Lima |
+| João Victor Moidano do Valle |
+| Gabriel Amorim Sartori |
+| Guilherme Cau Guateli |
+| Matheus Fernandes Andrade |
 
 ## Entrega 1 — Modelo Conceitual (DER)
 
@@ -25,7 +25,6 @@
 ## Nome e natureza da organização
 
 A organização escolhida é a **MOONLIGHT COFFEE CAFETERIA LTDA.**, que utiliza o nome comercial **We Coffee**. A We Coffee atua no segmento de cafeterias, com comercialização de alimentos e bebidas e uma proposta de experiência diferenciada para os clientes.
-**CNPJ:** 34.706.031/0001-84  
 **Site:** https://wecoffee.com.br/  
 **Unidade analisada:** Avenida Paulista, 1111 — Bela Vista, São Paulo/SP.
 
@@ -59,7 +58,6 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - endereço da unidade;
 - site oficial;
 - rede social da organização;
-- contato do gentente da unidade: Daniel Porrino (+55 11 95208-6022)
 - entrevista com a gerente;
 - registros fotográficos da unidade.
 - vídeos de como funciona o atendimenmto.
