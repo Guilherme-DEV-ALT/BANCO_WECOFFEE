@@ -1,14 +1,70 @@
+# WeCoffee | Modelagem de banco de dados
+
+**Dos processos de uma cafeteria à organização dos dados de vendas, pagamentos e estoque.**
+
+Projeto acadêmico desenvolvido em equipe no curso de Análise e Desenvolvimento de Sistemas, com levantamento dos processos de uma unidade da We Coffee na Avenida Paulista, em São Paulo.
+
+## Visão rápida
+
+| Aspecto | Conteúdo |
+|---|---|
+| Problema estudado | Organização das informações operacionais e apoio ao fechamento mensal |
+| Escopo | Uma unidade; pedidos por totem, balcão e aplicativo |
+| Entregas disponíveis | Requisitos, regras de negócio, modelo conceitual, fluxograma e dicionário de dados |
+| Competências demonstradas | Levantamento de requisitos, análise de processos e modelagem de dados |
+| Etapa atual | Documentação e modelagem conceitual; sem implementação SQL neste repositório |
+
+## Explore o projeto
+
+- [Dicionário de dados em HTML](index.html) — baixe o repositório e abra o arquivo no navegador.
+- [Modelo conceitual em PDF](WeCoffee_BRModelo.pdf).
+- [Diagrama entidade-relacionamento](WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png).
+- [Fluxograma de processos](WECOFFE/modelagem/drawio.jpg).
+
+![Modelo conceitual do banco de dados WeCoffee](WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png)
+
+## Decisões que representam o negócio
+
+- **Preço histórico:** cada item registra o preço praticado na venda.
+- **Pagamento dividido:** um pedido pode possuir vários pagamentos.
+- **Canais de atendimento:** as referências a funcionário e totem dependem do canal.
+- **Reposição:** entradas de estoque e seus itens registram produtos recebidos por fornecedor.
+- **Análise mensal:** os dados de pedidos, itens e pagamentos dão base para futuras consultas gerenciais.
+
+## Como consultar localmente
+
+```bash
+git clone https://github.com/Guilherme-DEV-ALT/BANCO_WECOFFEE.git
+cd BANCO_WECOFFEE
+python -m http.server 8000
+```
+
+Com Python instalado, acesse **http://localhost:8000**. Também é possível abrir `index.html` diretamente no navegador.
+
+## Próximas etapas propostas
+
+- Validar divergências entre requisitos, dicionário e diagramas com o grupo.
+- Elaborar o modelo lógico e os scripts de criação do banco.
+- Criar dados fictícios para demonstrar consultas de vendas, estoque e fechamento mensal.
+
+> Estudo acadêmico baseado no levantamento do grupo. O repositório não representa um sistema oficial da We Coffee.
+
+---
+
+<details>
+<summary><strong>Documentação acadêmica completa — levantamento, requisitos e justificativas</strong></summary>
+
 # WeCoffee — Modelo Conceitual de Banco de Dados
 
 # Integrantes 
 
-| Nome | RGM |
-|----|----|
-| Guilherme Souza Lima | 46899502 |
-| João Victor Moidano do Valle | 46576461 |
-| Gabriel Amorim Sartori | 46832939 |
-| Guilherme Cau Guateli | 46736069 |
-| Matheus Fernandes Andrade | 46754539 |
+| Integrantes |
+|---|
+| Guilherme Souza Lima |
+| João Victor Moidano do Valle |
+| Gabriel Amorim Sartori |
+| Guilherme Cau Guateli |
+| Matheus Fernandes Andrade |
 
 ## Entrega 1 — Modelo Conceitual (DER)
 
@@ -25,11 +81,10 @@
 ## Nome e natureza da organização
 
 A organização escolhida é a **MOONLIGHT COFFEE CAFETERIA LTDA.**, que utiliza o nome comercial **We Coffee**. A We Coffee atua no segmento de cafeterias, com comercialização de alimentos e bebidas e uma proposta de experiência diferenciada para os clientes.
-**CNPJ:** 34.706.031/0001-84  
 **Site:** https://wecoffee.com.br/  
 **Unidade analisada:** Avenida Paulista, 1111 — Bela Vista, São Paulo/SP.
 
-##  Contexto e porte
+## Contexto e porte
 
 A unidade analisada possui aproximadamente **6 funcionários** e trabalha com diferentes formas de atendimento:
 
@@ -46,7 +101,7 @@ Também foi observado que o controle de disponibilidade dos produtos depende da 
 
 Dessa forma, o projeto busca estruturar os dados de pedidos, pagamentos, produtos, estoque e entradas de estoque para facilitar consultas e futuras análises gerenciais.
 
-## justificativa da escolha
+## Justificativa da escolha
 
 A We Coffee foi escolhida por apresentar um cenário real de operação comercial com diferentes canais de atendimento, vendas, pagamentos, controle de estoque e relacionamento com fornecedores. Sendo também uma empresa nova com apenas 5 anos com obejtivos de finalizar o ano com 20 unidades no total e parecendo ser uma execelente oportunidade para aprendermos e crescermos junto com a empresa. 
 
@@ -59,7 +114,6 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - endereço da unidade;
 - site oficial;
 - rede social da organização;
-- contato do gentente da unidade: Daniel Porrino (+55 11 95208-6022)
 - entrevista com a gerente;
 - registros fotográficos da unidade.
 - vídeos de como funciona o atendimenmto.
@@ -82,7 +136,7 @@ Foram identificados os seguintes processos:
 - **Consulta e análise de vendas:** consolidação das informações para apoiar o fechamento mensal e a análise do desempenho da unidade.
 
 ## Fluxograma
-
+![Fluxograma de processos da unidade](WECOFFE/modelagem/drawio.jpg)
 
 ### Legenda
 
@@ -122,12 +176,12 @@ Foram identificados os seguintes processos:
 
 | Requisito |
 |---|
-| **Usabilidade:** as informações devem ser apresentadas de forma clara e organizada. |
-| **Integridade:** os relacionamentos entre pedidos, produtos, pagamentos e estoque devem permanecer consistentes. |
-| **Segurança:** informações administrativas e financeiras devem possuir controle de acesso adequado. |
-| **Desempenho:** consultas de pedidos, estoque e vendas devem apresentar resposta adequada à operação. |
-| **Disponibilidade:** as informações necessárias à operação devem estar disponíveis quando forem necessárias. |
-| **Escalabilidade:** o modelo deve permitir o crescimento da quantidade de produtos, pedidos, funcionários e fornecedores. |
+| **Usabilidade:** As informações devem ser apresentadas de forma clara e organizada. |
+| **Integridade:** Os relacionamentos entre pedidos, produtos, pagamentos e estoque devem permanecer consistentes. |
+| **Segurança:** Informações administrativas e financeiras devem possuir controle de acesso adequado. |
+| **Desempenho:** Consultas de pedidos, estoque e vendas devem apresentar resposta adequada à operação. |
+| **Disponibilidade:** As informações necessárias à operação devem estar disponíveis quando forem necessárias. |
+| **Escalabilidade:** O modelo deve permitir o crescimento da quantidade de produtos, pedidos, funcionários e fornecedores. |
 
 ---
 
@@ -242,7 +296,7 @@ Foram identificados os seguintes processos:
 |---|---|---|
 | id_estoque | Identificador único do estoque | Obrigatório e único (PK) |
 | id_produto | Produto controlado pelo estoque | Obrigatório e único (FK) |
-| quantidade | Quantidade atual disponível | Obrigatório; maior ou igual a zero |
+| Quantidade | Quantidade atual disponível | Obrigatório; maior ou igual a zero |
 | data_atualizacao | Data da última atualização | Obrigatório |
 
 ## 5.9 Entidade: FORNECEDOR
@@ -295,12 +349,12 @@ Os atributos foram definidos a partir dos processos observados e estão detalhad
 
 Foram classificados principalmente como:
 
-- **PK:** identificadores únicos das entidades;
-- **FK:** atributos utilizados para relacionar entidades;
-- **Obrigatórios:** informações necessárias para o registro;
-- **Opcionais:** informações que podem não ser fornecidas;
-- **Condicionais:** atributos utilizados conforme o canal do pedido;
-- **Calculados:** informações derivadas de outros registros.
+- **PK:** Identificadores únicos das entidades;
+- **FK:** Atributos utilizados para relacionar entidades;
+- **Obrigatórios:** Informações necessárias para o registro;
+- **Opcionais:** Informações que podem não ser fornecidas;
+- **Condicionais:** Atributos utilizados conforme o canal do pedido;
+- **Calculados:** Informações derivadas de outros registros.
 
 ## 6.3 Relacionamentos pertinentes
 
@@ -334,7 +388,7 @@ Foram classificados principalmente como:
 
 ## 7.1 DER da We Coffee
 
-![DER — We Coffee] ![alt text](<../modelagem/derwecoffe.png>)
+![Diagrama entidade-relacionamento WeCoffee](WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png)
 
 ## 7.2 Principais relacionamentos
 
@@ -422,10 +476,13 @@ A Inteligência Artificial foi utilizada como ferramenta de apoio durante o dese
 | **Justificativa da escolha final** | As decisões finais foram tomadas pelo grupo com base nas informações obtidas na organização e na necessidade de manter coerência entre o modelo e os processos observados. |
 | **Reflexão crítica** | De modo geral, a IA ajudou a organizar as ideias e a apontar inconsistências que a gente não tinha notado, mas todas as decisões finais passaram pela validação do grupo com base no que foi observado e coletado na visita e na entrevista — a IA sugeriu, mas quem decidiu foi o grupo mesmo. |
 
----
+----
 
 # Conclusão
 
 O modelo conceitual desenvolvido representa os principais processos observados na unidade da We Coffee, incluindo atendimento, pedidos, pagamentos, preparação, entrega, estoque, entradas de produtos e fornecedores.
 
 A modelagem foi estruturada para manter consistência entre os processos levantados, os requisitos, as regras de negócio, o dicionário de dados e o DER.
+
+
+</details>
