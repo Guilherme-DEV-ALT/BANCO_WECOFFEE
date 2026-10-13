@@ -40,15 +40,6 @@ python -m http.server 8000
 ```
 
 Com Python instalado, acesse **http://localhost:8000**. Também é possível abrir `index.html` diretamente no navegador.
-
-## Próximas etapas propostas
-
-- Validar divergências entre requisitos, dicionário e diagramas com o grupo.
-- Elaborar o modelo lógico e os scripts de criação do banco.
-- Criar dados fictícios para demonstrar consultas de vendas, estoque e fechamento mensal.
-
-> Estudo acadêmico baseado no levantamento do grupo. O repositório não representa um sistema oficial da We Coffee.
-
 ---
 
 <details>
@@ -58,17 +49,17 @@ Com Python instalado, acesse **http://localhost:8000**. Também é possível abr
 
 # Integrantes 
 
-| Integrantes |
-|---|
-| Guilherme Souza Lima |
-| João Victor Moidano do Valle |
-| Gabriel Amorim Sartori |
-| Guilherme Cau Guateli |
-| Matheus Fernandes Andrade |
+| Integrantes | RGM |
+|---|---|
+| Guilherme Souza Lima | 46899502 |
+| João Victor Moidano do Valle | 46576461 |
+| Gabriel Amorim Sartori | 46832939 |
+| Guilherme Cau Guateli | 46736069 |
+| Matheus Fernandes Andrade | 46754539 |
 
 ## Entrega 1 — Modelo Conceitual (DER)
 
-**Organização analisada:** We Coffee — MOONLIGHT COFFEE CAFETERIA LTDA.  
+**Organização analisada:** We Coffee — MOONLIGHT COFFEE CAFETERIA LTDA. 
 **Unidade:** Av. Paulista, 1111 — Bela Vista, São Paulo/SP  
 **Segmento:** Cafeteria, alimentos e bebidas
 
@@ -81,6 +72,7 @@ Com Python instalado, acesse **http://localhost:8000**. Também é possível abr
 ## Nome e natureza da organização
 
 A organização escolhida é a **MOONLIGHT COFFEE CAFETERIA LTDA.**, que utiliza o nome comercial **We Coffee**. A We Coffee atua no segmento de cafeterias, com comercialização de alimentos e bebidas e uma proposta de experiência diferenciada para os clientes.
+**CNPJ** 34.706.031/0001-84 
 **Site:** https://wecoffee.com.br/  
 **Unidade analisada:** Avenida Paulista, 1111 — Bela Vista, São Paulo/SP.
 
@@ -95,7 +87,7 @@ Após o registro do pedido, é gerada uma comanda para auxiliar no processo de p
 
 ## Problemas e necessidades identificados
 
-Durante a entrevista com a gerente da unidade, foi identificado que as informações de vendas podem ser consultadas, porém tem uma certa dificuldade para **consolidar essas informações em um fechamento mensal que permita avaliar claramente o desempenho da loja**.
+Durante a entrevista com o gerente da unidade, foi identificado que as informações de vendas podem ser consultadas, porém tem uma certa dificuldade para **consolidar essas informações em um fechamento mensal que permita avaliar claramente o desempenho da loja**.
 
 Também foi observado que o controle de disponibilidade dos produtos depende da atualização do estoque. Quando um produto acaba, a equipe verifica a situação e atualiza sua disponibilidade para que os canais de venda reflitam a informação.
 
