@@ -50,7 +50,7 @@ Dessa forma, o projeto busca estruturar os dados de pedidos, pagamentos, produto
 
 A We Coffee foi escolhida por apresentar um cenário real de operação comercial com diferentes canais de atendimento, vendas, pagamentos, controle de estoque e relacionamento com fornecedores. Sendo também uma empresa nova com apenas 5 anos com obejtivos de finalizar o ano com 20 unidades no total e parecendo ser uma execelente oportunidade para aprendermos e crescermos junto com a empresa. 
 
-O grupo teve acesso à unidade e realizou entrevista com a gerente, além de observação dos processos e registros fotográficos.
+O grupo teve acesso à unidade e realizou entrevista com o gerente, além de observação dos processos e registros fotográficos.
 
 ## Evidências da organização
 
@@ -59,7 +59,7 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - endereço da unidade;
 - site oficial;
 - rede social da organização;
-- entrevista com a gerente;
+- entrevista com o gerente;
 - registros fotográficos da unidade.
 - vídeos de como funciona o atendimenmto.
 - como os atendimento é processado
@@ -81,7 +81,7 @@ Foram identificados os seguintes processos:
 - **Consulta e análise de vendas:** consolidação das informações para apoiar o fechamento mensal e a análise do desempenho da unidade.
 
 ## Fluxograma
-
+![Fluxograma de processos da unidade](WECOFFE/modelagem/drawio.jpg)
 
 ### Legenda
 
@@ -332,7 +332,8 @@ Foram classificados principalmente como:
 # 7. Diagrama Entidade-Relacionamento (DER)
 
 ## 7.1 DER da We Coffee
-[text](../WeCoffee_BRModelo.pdf)
+
+![Diagrama entidade-relacionamento WeCoffee](WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png)
 
 ## 7.2 Principais relacionamentos
 
