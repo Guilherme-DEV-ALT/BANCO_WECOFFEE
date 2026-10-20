@@ -40,7 +40,7 @@ python -m http.server 8000
 ```
 
 Com Python instalado, acesse **http://localhost:8000**. Também é possível abrir `index.html` diretamente no navegador.
----
+[}---
 
 <details>
 <summary><strong>Documentação acadêmica completa — levantamento, requisitos e justificativas</strong></summary>
