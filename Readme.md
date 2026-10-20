@@ -1,4 +1,4 @@
-# WeCoffee — Modelo Conceitual de Banco de Dados
+# We Coffee — Modelo Conceitual de Banco de Dados
 
 # Integrantes
 
@@ -48,7 +48,7 @@ Dessa forma, o projeto busca estruturar os dados de pedidos, pagamentos, produto
 
 A We Coffee foi escolhida por apresentar um cenário real de operação comercial com diferentes canais de atendimento, vendas, pagamentos, controle de estoque e relacionamento com fornecedores. Sendo também uma empresa nova com apenas 5 anos com obejtivos de finalizar o ano com 20 unidades no total e parecendo ser uma execelente oportunidade para aprendermos e crescermos junto com a empresa.
 
-O grupo teve acesso à unidade e realizou entrevista com a gerente, além de observação dos processos e registros fotográficos.
+O grupo teve acesso à unidade e realizou entrevista com o gerente, além de observação dos processos e registros fotográficos.
 
 ## Evidências da organização
 
@@ -57,8 +57,8 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - endereço da unidade;
 - site oficial;
 - rede social da organização;
-- contato do gentente da unidade: Daniel Porrino (+55 11 95208-6022)
-- entrevista com a gerente;
+- contato do gerente da unidade: Daniel Porrino (+55 11 95208-6022)
+- entrevista com o gerente;
 - registros fotográficos da unidade.
 - vídeos de como funciona o atendimenmto.
 - como os atendimento é processado
@@ -120,12 +120,12 @@ Foram identificados os seguintes processos:
 
 | Requisito |
 |---|
-| **Usabilidade:** As informações devem ser apresentadas de forma clara e organizada. |
-| **Integridade:** Os relacionamentos entre pedidos, produtos, pagamentos e estoque devem permanecer consistentes. |
-| **Segurança:** Informações administrativas e financeiras devem possuir controle de acesso adequado. |
-| **Desempenho:** Consultas de pedidos, estoque e vendas devem apresentar resposta adequada à operação. |
-| **Disponibilidade:** As informações necessárias à operação devem estar disponíveis quando forem necessárias. |
-| **Escalabilidade:** O modelo deve permitir o crescimento da quantidade de produtos, pedidos, funcionários e fornecedores. |
+| **Usabilidade:** as informações devem ser apresentadas de forma clara e organizada. |
+| **Integridade:** os relacionamentos entre pedidos, produtos, pagamentos e estoque devem permanecer consistentes. |
+| **Segurança:** informações administrativas e financeiras devem possuir controle de acesso adequado. |
+| **Desempenho:** consultas de pedidos, estoque e vendas devem apresentar resposta adequada à operação. |
+| **Disponibilidade:** as informações necessárias à operação devem estar disponíveis quando forem necessárias. |
+| **Escalabilidade:** o modelo deve permitir o crescimento da quantidade de produtos, pedidos, funcionários e fornecedores. |
 
 ---
 
@@ -293,12 +293,12 @@ Os atributos foram definidos a partir dos processos observados e estão detalhad
 
 Foram classificados principalmente como:
 
-- **PK:** Identificadores únicos das entidades;
-- **FK:** Atributos utilizados para relacionar entidades;
-- **Obrigatórios:** Informações necessárias para o registro;
-- **Opcionais:** Informações que podem não ser fornecidas;
-- **Condicionais:** Atributos utilizados conforme o canal do pedido;
-- **Calculados:** Informações derivadas de outros registros.
+- **PK:** identificadores únicos das entidades;
+- **FK:** atributos utilizados para relacionar entidades;
+- **Obrigatórios:** informações necessárias para o registro;
+- **Opcionais:** informações que podem não ser fornecidas;
+- **Condicionais:** atributos utilizados conforme o canal do pedido;
+- **Calculados:** informações derivadas de outros registros.
 
 ## 6.3 Relacionamentos pertinentes
 
@@ -419,6 +419,12 @@ A Inteligência Artificial foi utilizada como ferramenta de apoio durante o dese
 | **Trechos rejeitados ou corrigidos** | Nem tudo que a IA sugeriu ficou no modelo final. O exemplo mais claro foi a cardinalidade entre PEDIDO e PAGAMENTO: a primeira sugestão veio como 1:1, o que simplesmente não bateria com o que vimos na loja — a divisão de conta é algo real e recorrente. Corrigimos para 1:N. Outro ponto ajustado foi a tentativa inicial de manter a quantidade em estoque tanto em PRODUTO quanto em ESTOQUE; percebemos que isso duplicaria a informação e resolvemos manter só em ESTOQUE. |
 | **Justificativa da escolha final** | As decisões finais foram tomadas pelo grupo com base nas informações obtidas na organização e na necessidade de manter coerência entre o modelo e os processos observados. |
 | **Reflexão crítica** | De modo geral, a IA ajudou a organizar as ideias e a apontar inconsistências que a gente não tinha notado, mas todas as decisões finais passaram pela validação do grupo com base no que foi observado e coletado na visita e na entrevista — a IA sugeriu, mas quem decidiu foi o grupo mesmo. |
+
+---
+- **Participação (10%):** envolvimento nas discussões técnicas e nas decisões do grupo.
+- **Comprometimento (8%):** cumprimento de prazos e responsabilidades assumidas.
+- **Colaboração (4%):** respeito às contribuições dos colegas, cooperação na construção do projeto e colaboração equilibrada no histórico de commits do repositório GitHub.
+- **Autonomia (7%):** busca independente de soluções e proposta de melhorias.
 
 ----
 
