@@ -303,12 +303,12 @@
     </header>
     <hr>
     <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.0, 17/setembro/2026) — pedidos, produtos,
-        pagamentos, estoque e fornecedores.</h1>
+        pagamentos, controle de estoque e fornecedores.</h1>
     <main>
         <section class="grid">
-            <div class="card"><b>11</b><span>entidades no modelo</span></div>
-            <div class="card"><b>10</b><span>relacionamentos mapeados</span></div>
-            <div class="card"><b>45</b><span>atributos documentados</span></div>
+            <div class="card"><b>8</b><span>entidades no modelo</span></div>
+            <div class="card"><b>7</b><span>relacionamentos mapeados</span></div>
+            <div class="card"><b>37</b><span>atributos documentados</span></div>
             <div class="card"><b>MySQL 8</b><span>SGBD</span></div>
             <div class="card"><b>v1.0</b><span>17/set/2026</span></div>
         </section>
@@ -320,13 +320,14 @@
             <div class="flow-text">
                 <p>Este modelo representa a operação de uma unidade de cafeteria em que o cliente realiza um pedido
                     por um dos três canais disponíveis (totem, balcão ou aplicativo), o pedido é composto por um ou
-                    mais itens de produto, é quitado por um ou mais pagamentos (permitindo divisão de conta) e
+                    mais produtos, é quitado por um ou mais pagamentos (permitindo divisão de conta) e
                     consome o estoque, que por sua vez é reabastecido por entradas registradas a partir de
                     fornecedores.</p>
                 <p><b>PEDIDO</b> é a entidade central do modelo: liga CLIENTE, FUNCIONARIO/TOTEM (conforme o canal),
-                    ITEM_PEDIDO e PAGAMENTO. <b>ITEM_PEDIDO</b> é a entidade associativa que resolve o relacionamento
-                    N:M entre PEDIDO e PRODUTO. <b>ITEM_ENTRADA</b> cumpre o mesmo papel entre ENTRADA_ESTOQUE e
-                    PRODUTO.</p>
+                    PRODUTO e PAGAMENTO. Os relacionamentos de PEDIDO e ENTRADA_ESTOQUE com PRODUTO são
+                    representados diretamente com cardinalidade N:M no modelo conceitual. O primeiro registra
+                    quantidade e preço unitário praticado na venda; o segundo registra a quantidade recebida.
+                    O controle de estoque fica nos atributos de quantidade disponível e data de atualização de PRODUTO.</p>
             </div>
             <div class="table-wrap">
                 <table>
@@ -356,23 +357,13 @@
                         </tr>
                         <tr>
                             <td><span class="tag">PEDIDO</span></td>
-                            <td><span class="tag">ITEM_PEDIDO</span></td>
-                            <td>1:N — todo pedido tem um ou mais itens</td>
-                        </tr>
-                        <tr>
                             <td><span class="tag">PRODUTO</span></td>
-                            <td><span class="tag">ITEM_PEDIDO</span></td>
-                            <td>1:N — um produto aparece em vários itens de pedido</td>
+                            <td>N:M — um pedido contém um ou mais produtos; um produto pode aparecer em vários pedidos</td>
                         </tr>
                         <tr>
                             <td><span class="tag">PEDIDO</span></td>
                             <td><span class="tag">PAGAMENTO</span></td>
                             <td>1:N — um pedido pode ter mais de um pagamento (conta dividida)</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">PRODUTO</span></td>
-                            <td><span class="tag">ESTOQUE</span></td>
-                            <td>1:1 — todo produto possui exatamente um registro de estoque</td>
                         </tr>
                         <tr>
                             <td><span class="tag">FORNECEDOR</span></td>
@@ -381,13 +372,8 @@
                         </tr>
                         <tr>
                             <td><span class="tag">ENTRADA_ESTOQUE</span></td>
-                            <td><span class="tag">ITEM_ENTRADA</span></td>
-                            <td>1:N — uma entrada pode trazer vários produtos</td>
-                        </tr>
-                        <tr>
                             <td><span class="tag">PRODUTO</span></td>
-                            <td><span class="tag">ITEM_ENTRADA</span></td>
-                            <td>1:N — um produto aparece em várias entradas ao longo do tempo</td>
+                            <td>N:M — uma entrada pode trazer vários produtos; um produto pode aparecer em várias entradas</td>
                         </tr>
                     </tbody>
                 </table>
@@ -396,12 +382,11 @@
                 Cliente é a pessoa física ou jurídica que realiza a compra, com cadastro opcional. Funcionário é a
                 pessoa que atende no balcão e registra o pedido em nome do cliente. Totem é o equipamento de
                 autoatendimento usado para registrar pedido e pagamento. Pedido é o evento de compra, associado a um
-                canal e a um valor total. Item de pedido é cada produto e quantidade vendidos dentro de um pedido.
-                Produto é o item comercializável (alimento ou bebida) do cardápio. Pagamento é o registro de
-                quitação (total ou parcial) de um pedido. Estoque é a quantidade atualmente disponível de cada
-                produto. Fornecedor é a pessoa jurídica que abastece a unidade com produtos. Entrada de estoque é o
-                evento de recebimento de produtos de um fornecedor. Item de entrada é cada produto e quantidade
-                recebidos dentro de uma entrada de estoque.
+                canal e a um valor total.
+                Produto é o item comercializável (alimento ou bebida) do cardápio e registra sua quantidade
+                disponível e a data de atualização. Pagamento é o registro de quitação (total ou parcial) de um
+                pedido. Fornecedor é a pessoa jurídica que abastece a unidade com produtos. Entrada de estoque é o
+                evento de recebimento de produtos de um fornecedor.
             </div>
         </section>
 
@@ -411,13 +396,15 @@
             </div>
             <div class="flow-text">
                 <p>Cliente chega à unidade e escolhe o canal (totem, balcão ou aplicativo) → o pedido é registrado em
-                    PEDIDO, vinculado a CLIENTE quando identificado e a FUNCIONARIO ou TOTEM conforme o canal → cada
-                    produto escolhido gera um registro em ITEM_PEDIDO, referenciando PRODUTO e preservando o preço
-                    praticado naquele momento → o pedido é quitado por um ou mais registros em PAGAMENTO, que podem
+                    PEDIDO, vinculado a CLIENTE quando identificado e a FUNCIONARIO ou TOTEM conforme o canal → os
+                    produtos escolhidos são associados diretamente ao pedido, registrando quantidade e preço
+                    praticado no momento da venda → o valor total é calculado pela soma de quantidade × preço
+                    unitário dos produtos → o pedido é quitado por um ou mais registros em PAGAMENTO, que podem
                     somar formas diferentes quando a conta é dividida → a confirmação do pedido decrementa a
-                    QT_DISPONIVEL em ESTOQUE do produto vendido → quando o estoque de um produto se aproxima do
-                    limite, a unidade solicita reposição ao FORNECEDOR, que gera uma ENTRADA_ESTOQUE com um ou mais
-                    ITEM_ENTRADA, cada um incrementando de volta a QT_DISPONIVEL do produto correspondente → o
+                    QT_DISPONIVEL em PRODUTO e atualiza DT_ATUALIZACAO → quando o estoque de um produto se aproxima do
+                    limite, a unidade solicita reposição ao FORNECEDOR, que gera uma ENTRADA_ESTOQUE associada aos
+                    produtos recebidos, com suas respectivas quantidades registradas no relacionamento → cada
+                    quantidade recebida incrementa a QT_DISPONIVEL em PRODUTO e atualiza DT_ATUALIZACAO → o
                     conjunto de PEDIDO e PAGAMENTO do período sustenta a consulta gerencial de fechamento mensal
                     citada no levantamento de requisitos.</p>
             </div>
@@ -675,7 +662,8 @@
             <div class="entity-desc"><code>(ID_CLIENTE)</code> é opcional porque o pedido pode não ter cliente
                 identificado; <code>(ID_FUNCIONARIO)</code> e <code>(ID_TOTEM)</code> são condicionais — preenchidos
                 conforme o canal escolhido em <code>[TP_TOTEM | TP_BALCAO | TP_APLICATIVO]</code>, que exige escolher
-                exatamente um canal; <code>VL_TOTAL</code> é calculado a partir da soma dos itens do pedido.</div>
+                exatamente um canal; <code>VL_TOTAL</code> é calculado pela soma de quantidade × preço unitário
+                dos produtos associados ao pedido.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -736,7 +724,7 @@
                             <td><code>valor_total</code></td>
                             <td>decimal(10,2)</td>
                             <td>Sim (calculado)</td>
-                            <td>Soma dos subtotais dos itens do pedido; base para o fechamento mensal.</td>
+                            <td>Soma de quantidade × preço unitário dos produtos associados ao pedido; base para o fechamento mensal.</td>
                         </tr>
                         <tr>
                             <td>TP_STATUS_PREPARO</td>
@@ -753,79 +741,16 @@
                 fechamento por período).</div>
         </section>
 
-        <!-- ITEM_PEDIDO -->
-        <section class="panel entity-panel"
-            data-entity="ITEM_PEDIDO item pedido id_item quantidade preco unitario">
-            <div class="panel-head">
-                <h2>ITEM_PEDIDO</h2>
-            </div>
-            <div class="code-block">ITEM_PEDIDO = @ID_ITEM + ID_PEDIDO + ID_PRODUTO + QT_ITEM + VL_UNITARIO</div>
-            <div class="entity-desc"><code>ID_PEDIDO</code> e <code>ID_PRODUTO</code> são as chaves estrangeiras que
-                resolvem a relação N:M entre PEDIDO e PRODUTO; <code>VL_UNITARIO</code> é copiado de PRODUTO no
-                momento da venda para preservar o preço histórico, mesmo que o preço do produto mude depois.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_ITEM</span></td>
-                            <td><code>id_item</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do item de pedido.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_PEDIDO</span></td>
-                            <td><code>id_pedido</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Pedido ao qual o item pertence.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_PRODUTO</span></td>
-                            <td><code>id_produto</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Produto vendido nesse item.</td>
-                        </tr>
-                        <tr>
-                            <td>QT_ITEM</td>
-                            <td><code>quantidade</code></td>
-                            <td>integer</td>
-                            <td>Sim (&gt;0)</td>
-                            <td>Quantidade do produto naquele item.</td>
-                        </tr>
-                        <tr>
-                            <td>VL_UNITARIO</td>
-                            <td><code>preco_unitario</code></td>
-                            <td>decimal(10,2)</td>
-                            <td>Sim</td>
-                            <td>Preço praticado no momento da venda; preserva histórico independente de reajustes
-                                futuros.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_ITEM</code>; índices em <code>ID_PEDIDO</code> e
-                <code>ID_PRODUTO</code> (FKs).</div>
-        </section>
-
         <!-- PRODUTO -->
-        <section class="panel entity-panel" data-entity="PRODUTO produto id_produto nome preco">
+        <section class="panel entity-panel" data-entity="PRODUTO produto id_produto nome preco estoque quantidade_disponivel qt_disponivel data_atualizacao dt_atualizacao">
             <div class="panel-head">
                 <h2>PRODUTO</h2>
             </div>
-            <div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO</div>
-            <div class="entity-desc">Estrutura simples — os três campos são obrigatórios; o preço de venda vigente
-                fica aqui, enquanto o preço histórico de cada venda fica em ITEM_PEDIDO.</div>
+            <div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO + QT_DISPONIVEL + DT_ATUALIZACAO</div>
+            <div class="entity-desc">Os cinco campos são obrigatórios; o cadastro registra o nome, o preço de
+                venda atual e o controle de estoque do produto. A quantidade disponível não pode ser negativa;
+                vendas a reduzem e recebimentos a aumentam, atualizando a data da última movimentação. O preço
+                histórico de cada venda é preservado no relacionamento PEDIDO — PRODUTO.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -858,6 +783,20 @@
                             <td>decimal(10,2)</td>
                             <td>Sim (&gt;0)</td>
                             <td>Preço de venda atual do produto.</td>
+                        </tr>
+                        <tr>
+                            <td>QT_DISPONIVEL</td>
+                            <td><code>quantidade_disponivel</code></td>
+                            <td>integer</td>
+                            <td>Sim (&gt;=0)</td>
+                            <td>Quantidade atualmente disponível para venda; diminui nas vendas e aumenta nos recebimentos.</td>
+                        </tr>
+                        <tr>
+                            <td>DT_ATUALIZACAO</td>
+                            <td><code>data_atualizacao</code></td>
+                            <td>datetime</td>
+                            <td>Sim</td>
+                            <td>Data/hora da última movimentação de venda ou recebimento que alterou a quantidade disponível.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -943,62 +882,6 @@
                 <code>DT_HORA_PAGAMENTO</code> (fechamento mensal).</div>
         </section>
 
-        <!-- ESTOQUE -->
-        <section class="panel entity-panel"
-            data-entity="ESTOQUE estoque id_estoque quantidade disponivel atualizacao">
-            <div class="panel-head">
-                <h2>ESTOQUE</h2>
-            </div>
-            <div class="code-block">ESTOQUE = @ID_ESTOQUE + ID_PRODUTO + QT_DISPONIVEL + DT_ATUALIZACAO</div>
-            <div class="entity-desc"><code>ID_PRODUTO</code> obrigatório e único garante o 1:1 com PRODUTO, evitando
-                duas fontes de quantidade disponível para o mesmo item.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_ESTOQUE</span></td>
-                            <td><code>id_estoque</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do registro de estoque.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_PRODUTO</span></td>
-                            <td><code>id_produto</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK, único)</td>
-                            <td>Produto controlado; a unicidade garante o 1:1.</td>
-                        </tr>
-                        <tr>
-                            <td>QT_DISPONIVEL</td>
-                            <td><code>quantidade</code></td>
-                            <td>integer</td>
-                            <td>Sim (&gt;=0)</td>
-                            <td>Quantidade atualmente disponível para venda.</td>
-                        </tr>
-                        <tr>
-                            <td>DT_ATUALIZACAO</td>
-                            <td><code>data_atualizacao</code></td>
-                            <td>datetime</td>
-                            <td>Sim</td>
-                            <td>Data/hora da última movimentação (venda ou entrada) que alterou a quantidade.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_ESTOQUE</code>; índice único em
-                <code>ID_PRODUTO</code> (garante o 1:1 e acelera "consultar estoque do produto X").</div>
-        </section>
-
         <!-- FORNECEDOR -->
         <section class="panel entity-panel" data-entity="FORNECEDOR fornecedor id_fornecedor nome">
             <div class="panel-head">
@@ -1048,8 +931,8 @@
             </div>
             <div class="code-block">ENTRADA_ESTOQUE = @ID_ENTRADA + ID_FORNECEDOR + DT_ENTRADA</div>
             <div class="entity-desc"><code>ID_FORNECEDOR</code> obrigatório liga toda entrada a um fornecedor
-                conhecido; os produtos e quantidades recebidos ficam detalhados em ITEM_ENTRADA, entidade associativa
-                desta com PRODUTO.</div>
+                conhecido; os produtos recebidos são associados diretamente à entrada no modelo conceitual,
+                com a quantidade de cada produto registrada no relacionamento ENTRADA_ESTOQUE — PRODUTO.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -1090,61 +973,49 @@
                 <code>ID_FORNECEDOR</code> (FK); índice em <code>DT_ENTRADA</code> (relatórios por período).</div>
         </section>
 
-        <!-- ITEM_ENTRADA -->
-        <section class="panel entity-panel"
-            data-entity="ITEM_ENTRADA item entrada id_item_entrada quantidade recebida">
+        <section class="panel">
             <div class="panel-head">
-                <h2>ITEM_ENTRADA</h2>
+                <h2>Atributos dos relacionamentos</h2>
             </div>
-            <div class="code-block">ITEM_ENTRADA = @ID_ITEM_ENTRADA + ID_ENTRADA + ID_PRODUTO + QT_RECEBIDA</div>
-            <div class="entity-desc">Mesma lógica de ITEM_PEDIDO, porém do lado do recebimento — resolve a relação
-                N:M entre ENTRADA_ESTOQUE e PRODUTO.</div>
+            <div class="entity-desc">No modelo conceitual, os relacionamentos N:M registram os dados de cada
+                produto em uma venda ou em um recebimento. São três atributos de relacionamento, além dos 34
+                atributos das oito entidades.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
+                            <th>Relacionamento</th>
                             <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
+                            <th>Tipo</th>
                             <th>Obrigatório</th>
                             <th>Significado e relevância</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="tag pk">ID_ITEM_ENTRADA</span></td>
-                            <td><code>id_item_entrada</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do item da entrada.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_ENTRADA</span></td>
-                            <td><code>id_entrada</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Entrada de estoque à qual o item pertence.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_PRODUTO</span></td>
-                            <td><code>id_produto</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Produto recebido.</td>
-                        </tr>
-                        <tr>
-                            <td>QT_RECEBIDA</td>
+                            <td>PEDIDO — PRODUTO</td>
                             <td><code>quantidade</code></td>
                             <td>integer</td>
                             <td>Sim (&gt;0)</td>
-                            <td>Quantidade recebida daquele produto; soma-se a <code>QT_DISPONIVEL</code> em ESTOQUE
-                                ao ser processada.</td>
+                            <td>Quantidade do produto vendida no pedido; utilizada no cálculo do total e na baixa de estoque.</td>
+                        </tr>
+                        <tr>
+                            <td>PEDIDO — PRODUTO</td>
+                            <td><code>preco_unitario</code></td>
+                            <td>decimal(10,2)</td>
+                            <td>Sim</td>
+                            <td>Preço praticado no momento da venda; preserva o histórico independentemente de reajustes futuros.</td>
+                        </tr>
+                        <tr>
+                            <td>ENTRADA_ESTOQUE — PRODUTO</td>
+                            <td><code>quantidade</code></td>
+                            <td>integer</td>
+                            <td>Sim (&gt;0)</td>
+                            <td>Quantidade recebida do produto na entrada; incrementa quantidade_disponivel em PRODUTO e atualiza data_atualizacao.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_ITEM_ENTRADA</code>; índices em
-                <code>ID_ENTRADA</code> e <code>ID_PRODUTO</code> (FKs).</div>
         </section>
 
         <section class="panel">

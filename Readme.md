@@ -102,26 +102,26 @@ Foram identificados os seguintes processos:
 | O sistema deve permitir cadastrar clientes. | CLIENTE — identificado por CPF/CNPJ e associado a PEDIDO. |
 | O sistema deve permitir cadastrar funcionários. | FUNCIONARIO — identificado por ID/CPF e associado à UNIDADE e aos pedidos. |
 | O sistema deve permitir cadastrar totens. | TOTEM — identificado por ID e associado à UNIDADE e aos pedidos. |
-| O sistema deve permitir cadastrar produtos. | PRODUTO — identificado por ID e associado a ITEM_PEDIDO e ITEM_ENTRADA_ESTOQUE.|
-| O sistema deve permitir registrar pedidos. | PEDIDO — identificado por ID e associado a CLIENTE, ITEM_PEDIDO e PAGAMENTO. |
+| O sistema deve permitir cadastrar produtos. | PRODUTO — identificado por ID e associado a PEDIDO e ENTRADA_ESTOQUE; registra a quantidade disponível. |
+| O sistema deve permitir registrar pedidos. | PEDIDO — identificado por ID e associado a CLIENTE, PRODUTO e PAGAMENTO. |
 | O sistema deve identificar o canal de realização do pedido: TOTEM, BALCÃO ou APLICATIVO. | PEDIDO — possui o atributo CANAL_PEDIDO, identificando a origem da venda. |
-| O sistema deve permitir registrar os produtos e quantidades de cada pedido. | ITEM_PEDIDO — associa PEDIDO e PRODUTO, registrando quantidade.|
-| O sistema deve registrar o preço praticado no momento da venda. | ITEM_PEDIDO — registra o PREÇO_UNITARIO no momento da venda.|
+| O sistema deve permitir registrar os produtos e quantidades de cada pedido. | Relacionamento PEDIDO — PRODUTO — associa os produtos ao pedido e registra a quantidade vendida de cada produto. |
+| O sistema deve registrar o preço praticado no momento da venda. | Relacionamento PEDIDO — PRODUTO — registra o atributo preco_unitario, preservando o preço praticado em cada venda. |
 | O sistema deve permitir registrar um ou mais pagamentos para um pedido. | PAGAMENTO — identificado por ID e associado a PEDIDO. |
 | O sistema deve permitir registrar pagamentos divididos entre diferentes formas de pagamento. | PAGAMENTO — registra valor e FORMA_PAGAMENTO, permitindo divisão. |
-| O sistema deve permitir consultar a quantidade disponível de cada produto. | ESTOQUE — associado a PRODUTO e registra a quantidade disponível. |
-| O sistema deve permitir registrar entradas de estoque. | ENTRADA_ESTOQUE — associada a FORNECEDOR e ITEM_ENTRADA_ESTOQUE. |
+| O sistema deve permitir consultar a quantidade disponível de cada produto. | PRODUTO — registra quantidade_disponivel e data_atualizacao para o controle de estoque. |
+| O sistema deve permitir registrar entradas de estoque. | ENTRADA_ESTOQUE — associada a FORNECEDOR e PRODUTO. |
 | O sistema deve permitir cadastrar fornecedores. | FORNECEDOR — identificado por CNPJ e associado a ENTRADA_ESTOQUE. |
-| O sistema deve registrar os produtos e quantidades recebidos em cada entrada de estoque. | ITEM_ENTRADA_ESTOQUE — associa ENTRADA_ESTOQUE e PRODUTO, registrando quantidade. |
+| O sistema deve registrar os produtos e quantidades recebidos em cada entrada de estoque. | Relacionamento ENTRADA_ESTOQUE — PRODUTO — associa os produtos recebidos à entrada e registra a quantidade de cada produto. |
 | O sistema deve permitir consultar pedidos e pagamentos. | PEDIDO — associado a PAGAMENTO, permitindo consultar valores e formas de pagamento. |
-| O sistema deve permitir consolidar informações de vendas para apoiar o fechamento mensal. | PEDIDO + ITEM_PEDIDO + PAGAMENTO — associados para consolidar vendas e valores mensais. |
+| O sistema deve permitir consolidar informações de vendas para apoiar o fechamento mensal. | PEDIDO + PAGAMENTO — associados para consolidar vendas e valores mensais. |
 
 ## 3.2 Requisitos Não Funcionais
 
 | Requisito |
 |---|
 | **Usabilidade:** as informações devem ser apresentadas de forma clara e organizada. |
-| **Integridade:** os relacionamentos entre pedidos, produtos, pagamentos e estoque devem permanecer consistentes. |
+| **Integridade:** os relacionamentos entre pedidos, produtos, pagamentos e entradas de estoque devem permanecer consistentes, assim como as quantidades disponíveis dos produtos. |
 | **Segurança:** informações administrativas e financeiras devem possuir controle de acesso adequado. |
 | **Desempenho:** consultas de pedidos, estoque e vendas devem apresentar resposta adequada à operação. |
 | **Disponibilidade:** as informações necessárias à operação devem estar disponíveis quando forem necessárias. |
@@ -136,10 +136,10 @@ Foram identificados os seguintes processos:
 | Regras |
 |---|
 | Todo pedido deve possuir um identificador único. |
-| Todo pedido deve possuir pelo menos um item. |
-| A quantidade de um item de pedido deve ser maior que zero. |
-| Cada item de pedido deve estar associado a um produto cadastrado. |
-| O preço unitário registrado no item deve representar o valor praticado no momento da venda. |
+| Todo pedido deve estar associado a pelo menos um produto cadastrado. |
+| A quantidade vendida de cada produto em um pedido deve ser maior que zero. |
+| Todo produto associado a um pedido deve estar cadastrado. |
+| O preço unitário registrado no relacionamento PEDIDO — PRODUTO deve representar o valor praticado no momento da venda. |
 | Um pedido pode possuir mais de um pagamento para permitir divisão da conta. |
 | Cada pagamento deve registrar o valor correspondente àquela forma de pagamento. |
 | A quantidade disponível no estoque não pode ser negativa. |
@@ -157,8 +157,8 @@ Foram identificados os seguintes processos:
 | Restrição | Impacto no modelo |
 |---|---|
 | Atualmente existe um fornecedor principal, mas outros fornecedores podem ser utilizados quando houver necessidade e autorização. | O modelo permite cadastrar múltiplos fornecedores. |
-| O estoque é controlado individualmente por produto. | Cada produto possui um registro de estoque. |
-| A unidade registra quantidade e data das entradas de estoque. | Foram criadas ENTRADA_ESTOQUE e ITEM_ENTRADA. |
+| O estoque é controlado individualmente por produto. | Cada produto registra sua quantidade disponível e a data da última atualização. |
+| A unidade registra quantidade e data das entradas de estoque. | ENTRADA_ESTOQUE registra a data e o fornecedor; o relacionamento com PRODUTO registra a quantidade recebida de cada produto. |
 | Não foi identificado controle individual de validade no processo levantado. | O atributo de validade não foi incluído no modelo. |
 | O aplicativo utiliza sua própria plataforma e entrada de pedidos. | O pedido é identificado pelo canal APLICATIVO, sem associação obrigatória a totem ou funcionário. |
 | O sistema existente possui relação com o ambiente TOTVS. | O modelo proposto representa os dados levantados e não assume a substituição do sistema existente. |
@@ -202,28 +202,20 @@ Foram identificados os seguintes processos:
 | id_totem | Totem utilizado no pedido | Condicional (FK) |
 | data_hora | Data e horário do registro | Obrigatório |
 | canal_pedido | Canal utilizado para realizar o pedido | Obrigatório: TOTEM, BALCÃO ou APLICATIVO |
-| valor_total | Valor total do pedido | Obrigatório; calculado a partir dos itens |
+| valor_total | Valor total do pedido | Obrigatório; calculado pela soma de quantidade × preco_unitario dos produtos associados ao pedido |
 | status_preparo | Situação do pedido durante a preparação | Obrigatório |
 
-## 5.5 Entidade: ITEM_PEDIDO
-
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_item | Identificador único do item | Obrigatório e único (PK) |
-| id_pedido | Pedido ao qual o item pertence | Obrigatório (FK) |
-| id_produto | Produto associado ao item | Obrigatório (FK) |
-| id_quantidade | Quantidade do produto vendida | Obrigatório; maior que zero |
-| preco_unitario | Preço do produto no momento da venda | Obrigatório; preserva o histórico |
-
-## 5.6 Entidade: PRODUTO
+## 5.5 Entidade: PRODUTO
 
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
 | id_produto | Identificador único do produto | Obrigatório e único (PK) |
 | nome | Nome do produto | Obrigatório |
 | preco | Preço atual de venda | Obrigatório; maior que zero |
+| quantidade_disponivel | Quantidade atual do produto disponível para venda | Obrigatório; maior ou igual a zero; diminui nas vendas e aumenta nos recebimentos |
+| data_atualizacao | Data e horário da última atualização da quantidade disponível | Obrigatório; atualizado a cada movimentação de venda ou recebimento |
 
-## 5.7 Entidade: PAGAMENTO
+## 5.6 Entidade: PAGAMENTO
 
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
@@ -234,23 +226,14 @@ Foram identificados os seguintes processos:
 | status_pagamento | Situação do pagamento | Obrigatório: Aprovado ou Recusado |
 | data_hora_pagamento | Data e horário do pagamento | Obrigatório |
 
-## 5.8 Entidade: ESTOQUE
+## 5.7 Entidade: FORNECEDOR
 
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| id_estoque | Identificador único do estoque | Obrigatório e único (PK) |
-| id_produto | Produto controlado pelo estoque | Obrigatório e único (FK) |
-| Quantidade | Quantidade atual disponível | Obrigatório; maior ou igual a zero |
-| data_atualizacao | Data da última atualização | Obrigatório |
+| data_fornecedor | Identificador único do fornecedor | Obrigatório e único (PK) |
+| data | CNPJ | Obrigatório |
 
-## 5.9 Entidade: FORNECEDOR
-
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_fornecedor | Identificador único do fornecedor | Obrigatório e único (PK) |
-| nome | Nome do fornecedor | Obrigatório |
-
-## 5.10 Entidade: ENTRADA_ESTOQUE
+## 5.8 Entidade: ENTRADA_ESTOQUE
 
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
@@ -258,14 +241,15 @@ Foram identificados os seguintes processos:
 | id_fornecedor | Fornecedor relacionado à entrada | Obrigatório (FK) |
 | data_entrada | Data de recebimento dos produtos | Obrigatório |
 
-## 5.11 Entidade: ITEM_ENTRADA
+## 5.9 Atributos dos relacionamentos
 
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_item_entrada | Identificador único do item da entrada | Obrigatório e único (PK) |
-| id_entrada | Entrada de estoque relacionada | Obrigatório (FK) |
-| id_produto | Produto recebido | Obrigatório (FK) |
-| quantidade | Quantidade recebida do produto | Obrigatório; maior que zero |
+Os dados que dependem da participação de um produto em uma venda ou em um recebimento pertencem aos relacionamentos do modelo conceitual.
+
+| Relacionamento | Atributo | Descrição | Regra de negócio associada |
+|---|---|---|---|
+| PEDIDO — PRODUTO | quantidade | Quantidade do produto vendida no pedido | Obrigatório; maior que zero |
+| PEDIDO — PRODUTO | preco_unitario | Preço do produto no momento da venda | Obrigatório; preserva o histórico mesmo após alterações no preço do cadastro |
+| ENTRADA_ESTOQUE — PRODUTO | quantidade | Quantidade do produto recebida na entrada | Obrigatório; maior que zero |
 
 ---
 
@@ -279,17 +263,14 @@ Foram identificados os seguintes processos:
 | FUNCIONARIO | Representa os funcionários que registram pedidos realizados no balcão. |
 | TOTEM | Representa os equipamentos utilizados para autoatendimento. |
 | PEDIDO | Representa a realização de uma compra em um dos canais disponíveis. |
-| ITEM_PEDIDO | Representa cada produto e quantidade pertencentes a um pedido. |
-| PRODUTO | Representa os alimentos e bebidas comercializados. |
+| PRODUTO | Representa os alimentos e bebidas comercializados e registra a quantidade disponível de cada produto. |
 | PAGAMENTO | Registra os pagamentos associados aos pedidos, inclusive pagamentos divididos. |
-| ESTOQUE | Controla a quantidade disponível de cada produto. |
 | FORNECEDOR | Representa os fornecedores utilizados para reposição. |
 | ENTRADA_ESTOQUE | Representa cada recebimento de produtos no estoque. |
-| ITEM_ENTRADA | Representa os produtos e quantidades presentes em cada entrada de estoque. |
 
 ## 6.2 Atributos e classificações
 
-Os atributos foram definidos a partir dos processos observados e estão detalhados no Dicionário de Dados da Seção 5.
+Os atributos das entidades e dos relacionamentos foram definidos a partir dos processos observados e estão detalhados no Dicionário de Dados da Seção 5.
 
 Foram classificados principalmente como:
 
@@ -298,7 +279,7 @@ Foram classificados principalmente como:
 - **Obrigatórios:** informações necessárias para o registro;
 - **Opcionais:** informações que podem não ser fornecidas;
 - **Condicionais:** atributos utilizados conforme o canal do pedido;
-- **Calculados:** informações derivadas de outros registros.
+- **Calculados:** informações derivadas de outros registros, como o valor total do pedido.
 
 ## 6.3 Relacionamentos pertinentes
 
@@ -307,13 +288,10 @@ Foram classificados principalmente como:
 | CLIENTE — PEDIDO | Um cliente pode realizar vários pedidos. | 1:N |
 | FUNCIONARIO — PEDIDO | Um funcionário pode registrar vários pedidos de balcão. | 1:N |
 | TOTEM — PEDIDO | Um totem pode registrar vários pedidos. | 1:N |
-| PEDIDO — ITEM_PEDIDO | Um pedido possui um ou mais itens. | 1:N |
-| PRODUTO — ITEM_PEDIDO | Um produto pode aparecer em vários itens de pedidos. | 1:N |
+| PEDIDO — PRODUTO | Um pedido contém um ou mais produtos; um produto pode aparecer em vários pedidos. O relacionamento registra quantidade e preço unitário da venda. | N:M |
 | PEDIDO — PAGAMENTO | Um pedido pode possuir um ou mais pagamentos. | 1:N |
-| PRODUTO — ESTOQUE | Cada produto possui um registro de estoque. | 1:1 |
 | FORNECEDOR — ENTRADA_ESTOQUE | Um fornecedor pode estar associado a várias entradas. | 1:N |
-| ENTRADA_ESTOQUE — ITEM_ENTRADA | Uma entrada pode possuir vários produtos. | 1:N |
-| PRODUTO — ITEM_ENTRADA | Um produto pode aparecer em várias entradas. | 1:N |
+| ENTRADA_ESTOQUE — PRODUTO | Uma entrada pode conter vários produtos; um produto pode aparecer em várias entradas. O relacionamento registra a quantidade recebida. | N:M |
 
 ## 6.4 Restrições aplicadas ao modelo
 
@@ -322,8 +300,9 @@ Foram classificados principalmente como:
 - `id_funcionario` é utilizado quando o canal é BALCÃO.
 - Pedidos do APLICATIVO não precisam de funcionário ou totem.
 - Um pedido pode possuir múltiplos pagamentos para representar divisão da conta.
-- Um produto possui um único registro de estoque atual.
-- Uma entrada de estoque pode conter diversos produtos por meio de ITEM_ENTRADA.
+- A quantidade disponível é mantida em PRODUTO, não pode ser negativa e é atualizada pelas vendas e entradas de estoque, junto com a data da última atualização.
+- Uma entrada de estoque se relaciona diretamente com os produtos recebidos.
+- As quantidades vendidas e os preços praticados são registrados no relacionamento PEDIDO — PRODUTO; a quantidade recebida é registrada no relacionamento ENTRADA_ESTOQUE — PRODUTO.
 - Não foi incluído controle individual de validade porque essa necessidade não foi identificada no levantamento.
 
 ---
@@ -341,21 +320,18 @@ Foram classificados principalmente como:
 | CLIENTE | realiza | PEDIDO | 1:N |
 | FUNCIONARIO | registra | PEDIDO | 1:N |
 | TOTEM | registra | PEDIDO | 1:N |
-| PEDIDO | possui | ITEM_PEDIDO | 1:N |
-| PRODUTO | compõe | ITEM_PEDIDO | 1:N |
+| PEDIDO | contém | PRODUTO | N:M |
 | PEDIDO | possui | PAGAMENTO | 1:N |
-| PRODUTO | possui | ESTOQUE | 1:1 |
 | FORNECEDOR | realiza | ENTRADA_ESTOQUE | 1:N |
-| ENTRADA_ESTOQUE | possui | ITEM_ENTRADA | 1:N |
-| PRODUTO | aparece em | ITEM_ENTRADA | 1:N |
+| ENTRADA_ESTOQUE | contém | PRODUTO | N:M |
 
 ### Observação sobre PEDIDO e PRODUTO
 
 A relação conceitual entre **PEDIDO** e **PRODUTO** é de muitos-para-muitos, pois um pedido pode conter vários produtos e um produto pode aparecer em vários pedidos.
 
-No DER, essa relação é representada por meio da entidade associativa **ITEM_PEDIDO**:
+No DER, essa relação é representada diretamente como **PEDIDO N:M PRODUTO**, com os atributos **quantidade** e **preco_unitario** no relacionamento. Assim, o modelo preserva a quantidade vendida e o preço praticado em cada pedido.
 
-**PEDIDO 1:N ITEM_PEDIDO N:1 PRODUTO**
+A relação entre **ENTRADA_ESTOQUE** e **PRODUTO** também é representada diretamente como **N:M**, pois uma entrada pode conter vários produtos e um produto pode aparecer em várias entradas. O atributo **quantidade** desse relacionamento registra o volume recebido de cada produto.
 
 ### Observação sobre pagamentos
 
@@ -370,22 +346,22 @@ A relação **PEDIDO — PAGAMENTO** foi definida como **1:N** porque uma conta 
 | Decisão | Justificativa |
 |---|---|
 | Escolha das entidades | Foram selecionadas entidades diretamente relacionadas aos processos observados na unidade: atendimento, pedidos, pagamentos, produtos, estoque e fornecedores. |
-| PEDIDO como entidade central | O pedido conecta o processo de venda aos clientes, canais, itens e pagamentos. |
-| ITEM_PEDIDO como entidade associativa | Resolve a relação N:M entre pedidos e produtos e permite registrar quantidade e preço histórico. |
+| PEDIDO como entidade central | O pedido conecta o processo de venda aos clientes, canais, produtos e pagamentos. |
+| Relacionamento PEDIDO — PRODUTO | Representa a relação N:M entre pedidos e produtos e registra quantidade e preço histórico como atributos do relacionamento. |
 | PAGAMENTO separado de PEDIDO | Permite representar mais de uma forma de pagamento no mesmo pedido. |
 | `valor_pagamento` | Necessário para registrar quanto foi pago em cada parte quando a conta é dividida. |
 | `canal_pedido` | Permite diferenciar TOTEM, BALCÃO e APLICATIVO sem criar uma entidade artificial para cada canal. |
 | FUNCIONARIO e TOTEM opcionais/condicionais em PEDIDO | Cada um é utilizado de acordo com o canal do pedido. |
-| ESTOQUE separado de PRODUTO | Evita duplicar a informação de quantidade disponível dentro do cadastro do produto. |
-| ENTRADA_ESTOQUE e ITEM_ENTRADA | Permitem registrar a data de recebimento e quais produtos/quantidades foram recebidos. |
+| Controle de estoque em PRODUTO | Os atributos quantidade_disponivel e data_atualizacao mantêm a disponibilidade de cada produto e são atualizados a cada venda ou recebimento. |
+| ENTRADA_ESTOQUE e seu relacionamento com PRODUTO | Permitem registrar a data de recebimento e quais produtos e quantidades foram recebidos. |
 | FORNECEDOR separado | Permite representar o fornecedor atual e possibilita cadastrar outros fornecedores futuramente. |
 
 ## 8.2 Por que não outras alternativas?
 
 | Alternativa | Motivo da rejeição |
 |---|---|
-| Manter `qtd_estoque` dentro de PRODUTO e também em ESTOQUE | Criaria duas fontes para a mesma informação de quantidade e poderia gerar inconsistência. |
-| Relacionar PEDIDO diretamente com PRODUTO sem ITEM_PEDIDO | Não permitiria representar corretamente quantidade e preço histórico de cada produto vendido. |
+| Duplicar a quantidade disponível em cadastros diferentes | Criaria duas fontes para a mesma informação e poderia gerar inconsistência; a quantidade atual é mantida em PRODUTO. |
+| Usar apenas o preço atual de PRODUTO para consultar vendas anteriores | Não preservaria o preço praticado em cada venda; esse valor é mantido no atributo preco_unitario do relacionamento PEDIDO — PRODUTO. |
 | PEDIDO 1:1 PAGAMENTO | Não representaria a possibilidade de dividir a conta entre diferentes formas de pagamento. |
 | Criar uma entidade APLICATIVO | O levantamento identificou o aplicativo como um canal/plataforma externa de pedido, e não como uma entidade de negócio necessária ao modelo atual. |
 | Criar controle de validade | A necessidade não foi identificada no processo observado, pois os produtos expostos são repostos diariamente. |
@@ -395,11 +371,11 @@ A relação **PEDIDO — PAGAMENTO** foi definida como **1:N** porque uma conta 
 
 O DER foi elaborado para representar os principais processos da unidade da We Coffee de forma integrada.
 
-A entidade PEDIDO funciona como núcleo do processo de vendas, conectando clientes, funcionários, totens, itens e pagamentos. A utilização de ITEM_PEDIDO permite representar corretamente os produtos vendidos e preservar o preço praticado no momento da venda.
+A entidade PEDIDO funciona como núcleo do processo de vendas, conectando clientes, funcionários, totens, produtos e pagamentos. A relação direta entre PEDIDO e PRODUTO representa os produtos presentes em cada compra, registra suas quantidades e preserva o preço praticado no momento da venda. O valor total do pedido é calculado pela soma de quantidade × preco_unitario de cada produto associado.
 
 A estrutura de pagamentos permite que um pedido tenha mais de uma forma de pagamento, refletindo a possibilidade de divisão da conta.
 
-O modelo de estoque foi separado do cadastro de produtos para evitar redundância e permitir o controle da quantidade atual. As entidades de entrada e fornecedor complementam esse processo ao registrar os recebimentos de produtos.
+O controle de estoque é representado pelos atributos quantidade_disponivel e data_atualizacao em PRODUTO. As vendas reduzem a quantidade disponível e os recebimentos a aumentam, mantendo a regra de quantidade não negativa. As entidades de entrada e fornecedor complementam esse processo ao registrar os recebimentos de produtos.
 
 A modelagem também foi preparada para crescimento futuro, permitindo novos produtos, fornecedores, funcionários, totens, pedidos e entradas de estoque sem alterar a estrutura principal.
 
@@ -416,7 +392,7 @@ A Inteligência Artificial foi utilizada como ferramenta de apoio durante o dese
 | **Prompts utilizados** | Exemplos: "Com base no levantamento realizado na We Coffee, identifique as entidades necessárias para o modelo conceitual."; "Com base nesses dois veja se bate o que está sendo pedido, esse ultimo que te mandei foi um exemplo de um amigo meu e veja o que o dele está certo e nosso errado\nesse Prompt, utilizei o arquivo de esqueleto do professor, o nosso readme.md e outro readme.md de um amigo para ter um comparativo onde poderíamos melhor nosso trabalho.";"Revise o modelo considerando que um pedido pode ser dividido em dois pagamentos."; "Analise o controle de estoque e fornecedor e indique como representar isso no modelo conceitual."; "Faça um pente-fino no README verificando se os requisitos, regras, dicionário e DER estão coerentes." |
 | **Resposta recebida** | A IA forneceu sugestões de estrutura, entidades, relacionamentos, cardinalidades, requisitos, regras e organização do documento. |
 | **Fontes consultadas e verificadas** | As informações sobre os processos da organização foram comparadas com o levantamento realizado pelo grupo, incluindo entrevista e observação da unidade. |
-| **Trechos rejeitados ou corrigidos** | Nem tudo que a IA sugeriu ficou no modelo final. O exemplo mais claro foi a cardinalidade entre PEDIDO e PAGAMENTO: a primeira sugestão veio como 1:1, o que simplesmente não bateria com o que vimos na loja — a divisão de conta é algo real e recorrente. Corrigimos para 1:N. Outro ponto ajustado foi a tentativa inicial de manter a quantidade em estoque tanto em PRODUTO quanto em ESTOQUE; percebemos que isso duplicaria a informação e resolvemos manter só em ESTOQUE. |
+| **Trechos rejeitados ou corrigidos** | Nem tudo que a IA sugeriu ficou no modelo final. O exemplo mais claro foi a cardinalidade entre PEDIDO e PAGAMENTO: a primeira sugestão veio como 1:1, o que simplesmente não bateria com o que vimos na loja — a divisão de conta é algo real e recorrente. Corrigimos para 1:N. Outro ponto ajustado foi a tentativa inicial de manter a quantidade disponível em mais de um cadastro; percebemos que isso duplicaria a informação e resolvemos manter a quantidade e a data de atualização em PRODUTO. |
 | **Justificativa da escolha final** | As decisões finais foram tomadas pelo grupo com base nas informações obtidas na organização e na necessidade de manter coerência entre o modelo e os processos observados. |
 | **Reflexão crítica** | De modo geral, a IA ajudou a organizar as ideias e a apontar inconsistências que a gente não tinha notado, mas todas as decisões finais passaram pela validação do grupo com base no que foi observado e coletado na visita e na entrevista — a IA sugeriu, mas quem decidiu foi o grupo mesmo. |
 
@@ -433,3 +409,18 @@ A Inteligência Artificial foi utilizada como ferramenta de apoio durante o dese
 O modelo conceitual desenvolvido representa os principais processos observados na unidade da We Coffee, incluindo atendimento, pedidos, pagamentos, preparação, entrega, estoque, entradas de produtos e fornecedores.
 
 A modelagem foi estruturada para manter consistência entre os processos levantados, os requisitos, as regras de negócio, o dicionário de dados e o DER.
+
+---
+
+## Alterações
+
+**23/10/2026**
+
+- Removidas as entidades ITEM_PEDIDO, ITEM_ENTRADA e ESTOQUE, incluindo suas seções no dicionário de dados e seus relacionamentos anteriores.
+- Preservados os requisitos funcionais e as regras de negócio de vendas, pagamentos, quantidades, preço histórico, disponibilidade e recebimento de produtos.
+- Representados diretamente os relacionamentos N:M entre PEDIDO e PRODUTO e entre ENTRADA_ESTOQUE e PRODUTO. Quantidade vendida e preço unitário da venda passaram a ser atributos do primeiro relacionamento; quantidade recebida passou a ser atributo do segundo.
+- Transferido o controle de estoque para PRODUTO, com os atributos quantidade_disponivel e data_atualizacao. As vendas reduzem a quantidade disponível e os recebimentos a aumentam, mantendo a regra de saldo não negativo.
+- Mantido o cálculo de valor_total do pedido pela soma de quantidade × preco_unitario dos produtos associados.
+- Revisados os requisitos, as descrições, as justificativas técnicas, as cardinalidades e a numeração das seções para refletir a estrutura atual.
+- Atualizado o dicionário em index.html, incluindo a busca e as contagens do modelo: 8 entidades, 7 relacionamentos e 37 atributos documentados, sendo 34 das entidades e 3 dos relacionamentos.
+- Atualizados os diagramas em PNG, JPG e PDF e adicionado o script WECOFFE/modelagem/gerar_der.py para gerar essas versões a partir da mesma definição.
