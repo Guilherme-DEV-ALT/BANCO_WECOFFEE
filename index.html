@@ -303,110 +303,71 @@
     </header>
     <hr>
     <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.0, 17/setembro/2026) — pedidos, produtos,
-        pagamentos, controle de estoque e fornecedores.</h1>
+        documentos fiscais, pagamentos e fornecedores.</h1>
     <main>
         <section class="grid">
-            <div class="card"><b>8</b><span>entidades no modelo</span></div>
-            <div class="card"><b>7</b><span>relacionamentos mapeados</span></div>
-            <div class="card"><b>37</b><span>atributos documentados</span></div>
+            <div class="card"><b>7</b><span>entidades no modelo</span></div>
+            <div class="card"><b>5</b><span>relacionamentos mapeados</span></div>
+            <div class="card"><b>32</b><span>atributos documentados</span></div>
             <div class="card"><b>MySQL 8</b><span>SGBD</span></div>
             <div class="card"><b>v1.0</b><span>17/set/2026</span></div>
         </section>
 
         <section class="panel">
-            <div class="panel-head">
-                <h2>1. Modelo conceitual</h2>
-            </div>
+            <div class="panel-head"><h2>1. Modelo conceitual</h2></div>
             <div class="flow-text">
-                <p>Este modelo representa a operação de uma unidade de cafeteria em que o cliente realiza um pedido
-                    por um dos três canais disponíveis (totem, balcão ou aplicativo), o pedido é composto por um ou
-                    mais produtos, é quitado por um ou mais pagamentos (permitindo divisão de conta) e
-                    consome o estoque, que por sua vez é reabastecido por entradas registradas a partir de
-                    fornecedores.</p>
-                <p><b>PEDIDO</b> é a entidade central do modelo: liga CLIENTE, FUNCIONARIO/TOTEM (conforme o canal),
-                    PRODUTO e PAGAMENTO. Os relacionamentos de PEDIDO e ENTRADA_ESTOQUE com PRODUTO são
-                    representados diretamente com cardinalidade N:M no modelo conceitual. O primeiro registra
-                    quantidade e preço unitário praticado na venda; o segundo registra a quantidade recebida.
-                    O controle de estoque fica nos atributos de quantidade disponível e data de atualização de PRODUTO.</p>
+                <p>O modelo representa PEDIDO, PRODUTO, CUPOM_FISCAL e PAGAMENTO, preservando os cadastros de
+                    CLIENTE, FUNCIONARIO e FORNECEDOR. Todo pedido gera uma nota fiscal, representada neste
+                    trabalho por CUPOM_FISCAL. Esse documento gera os registros de pagamento.</p>
+                <p>Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, com cardinalidade N:M e atributos
+                    quantidade e preço unitário da venda. Essa representação é válida no modelo conceitual;
+                    seu mapeamento para uma tabela associativa pertence à etapa lógica relacional.</p>
+                <p>A origem fica em PEDIDO.origem_pedido: TOTEM, BALCÃO ou DELIVERY. O equipamento utilizado
+                    é identificado pelo atributo PEDIDO.totem quando a origem é TOTEM, sem entidade própria.</p>
+                <p><b>Classificações conceituais:</b> os atributos são simples e monovalorados neste recorte.
+                    Identificadores distinguem as ocorrências; origens e status possuem domínios enumerados.
+                    valor_total é um <b>atributo derivado</b> da soma de quantidade × preço unitário da venda.
+                    Obrigatoriedade, opcionalidade e uso condicional são restrições complementares.</p>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Entidade</th>
-                            <th>Relaciona-se com</th>
-                            <th>Cardinalidade</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Entidade A</th><th>Relacionamento</th><th>Entidade B</th><th>Cardinalidade</th></tr></thead>
                     <tbody>
-                        <tr>
-                            <td><span class="tag">CLIENTE</span></td>
-                            <td><span class="tag">PEDIDO</span></td>
-                            <td>0:N — um cliente pode realizar vários pedidos; o pedido pode não ter cliente
-                                identificado</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">FUNCIONARIO</span></td>
-                            <td><span class="tag">PEDIDO</span></td>
-                            <td>0:N — um funcionário registra vários pedidos de balcão</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">TOTEM</span></td>
-                            <td><span class="tag">PEDIDO</span></td>
-                            <td>0:N — um totem registra vários pedidos</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">PEDIDO</span></td>
-                            <td><span class="tag">PRODUTO</span></td>
-                            <td>N:M — um pedido contém um ou mais produtos; um produto pode aparecer em vários pedidos</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">PEDIDO</span></td>
-                            <td><span class="tag">PAGAMENTO</span></td>
-                            <td>1:N — um pedido pode ter mais de um pagamento (conta dividida)</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">FORNECEDOR</span></td>
-                            <td><span class="tag">ENTRADA_ESTOQUE</span></td>
-                            <td>1:N — um fornecedor está associado a várias entradas</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag">ENTRADA_ESTOQUE</span></td>
-                            <td><span class="tag">PRODUTO</span></td>
-                            <td>N:M — uma entrada pode trazer vários produtos; um produto pode aparecer em várias entradas</td>
-                        </tr>
+                        <tr><td>CLIENTE</td><td>realiza</td><td>PEDIDO</td><td>1:N — cliente associado opcional</td></tr>
+                        <tr><td>FUNCIONARIO</td><td>registra</td><td>PEDIDO</td><td>1:N — conforme a origem BALCÃO</td></tr>
+                        <tr><td>PEDIDO</td><td>contém</td><td>PRODUTO</td><td>N:M — quantidade e preço unitário no relacionamento</td></tr>
+                        <tr><td>PEDIDO</td><td>gera</td><td>CUPOM_FISCAL</td><td>1:1 — todo pedido gera um documento</td></tr>
+                        <tr><td>CUPOM_FISCAL</td><td>gera</td><td>PAGAMENTO</td><td>1:N — admite divisão da conta</td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="entity-desc">
-                Cliente é a pessoa física ou jurídica que realiza a compra, com cadastro opcional. Funcionário é a
-                pessoa que atende no balcão e registra o pedido em nome do cliente. Totem é o equipamento de
-                autoatendimento usado para registrar pedido e pagamento. Pedido é o evento de compra, associado a um
-                canal e a um valor total.
-                Produto é o item comercializável (alimento ou bebida) do cardápio e registra sua quantidade
-                disponível e a data de atualização. Pagamento é o registro de quitação (total ou parcial) de um
-                pedido. Fornecedor é a pessoa jurídica que abastece a unidade com produtos. Entrada de estoque é o
-                evento de recebimento de produtos de um fornecedor.
-            </div>
+            <div class="entity-desc">FORNECEDOR permanece como cadastro, sem acrescentar relacionamentos nesta revisão.</div>
         </section>
 
         <section class="panel">
-            <div class="panel-head">
-                <h2>2. Fluxo de dados (visão de DFD)</h2>
-            </div>
+            <div class="panel-head"><h2>2. Fluxo de dados (visão de DFD)</h2></div>
             <div class="flow-text">
-                <p>Cliente chega à unidade e escolhe o canal (totem, balcão ou aplicativo) → o pedido é registrado em
-                    PEDIDO, vinculado a CLIENTE quando identificado e a FUNCIONARIO ou TOTEM conforme o canal → os
-                    produtos escolhidos são associados diretamente ao pedido, registrando quantidade e preço
-                    praticado no momento da venda → o valor total é calculado pela soma de quantidade × preço
-                    unitário dos produtos → o pedido é quitado por um ou mais registros em PAGAMENTO, que podem
-                    somar formas diferentes quando a conta é dividida → a confirmação do pedido decrementa a
-                    QT_DISPONIVEL em PRODUTO e atualiza DT_ATUALIZACAO → quando o estoque de um produto se aproxima do
-                    limite, a unidade solicita reposição ao FORNECEDOR, que gera uma ENTRADA_ESTOQUE associada aos
-                    produtos recebidos, com suas respectivas quantidades registradas no relacionamento → cada
-                    quantidade recebida incrementa a QT_DISPONIVEL em PRODUTO e atualiza DT_ATUALIZACAO → o
-                    conjunto de PEDIDO e PAGAMENTO do período sustenta a consulta gerencial de fechamento mensal
-                    citada no levantamento de requisitos.</p>
+                <p>O cliente escolhe a origem → PEDIDO registra origem_pedido, o totem quando aplicável e o nome
+                    da comanda → CONTÉM associa os produtos com quantidade e preço unitário → valor_total é
+                    derivado desses valores → PEDIDO gera CUPOM_FISCAL → CUPOM_FISCAL gera PAGAMENTO,
+                    inclusive em partes quando a conta é dividida → após a quitação, o pedido segue para
+                    preparo, identificação na comanda e entrega.</p>
+                <h3>Documento fiscal — RF20</h3>
+                <p>Todo pedido gera exatamente um CUPOM_FISCAL, e cada cupom pertence a exatamente um pedido.
+                    Cada PAGAMENTO referencia seu id_cupom_fiscal; o pedido é obtido por esse cupom.</p>
+                <h3>Pagamento e situação do pedido — RF17</h3>
+                <p>O valor pago é a soma de valor_pagamento apenas dos registros aprovados vinculados ao cupom
+                    do pedido. Recusados e estornados não entram nessa soma. Sem aprovados, o resultado é zero;
+                    entre zero e valor_total, o pedido está parcialmente pago; a igualdade caracteriza a quitação.
+                    Valor superior ao total é divergência a conciliar. Esses resultados são derivados em consulta.</p>
+                <p>Uma tentativa recusada não cancela o pedido nem invalida pagamentos aprovados anteriores.
+                    A nova tentativa gera outro registro no mesmo id_cupom_fiscal, preservando o registro recusado.</p>
+                <h3>Proposta de cancelamento — RF18</h3>
+                <p>A validar com a unidade: registrar CANCELADO em status_preparo e impedir a continuidade do
+                    preparo ou da entrega, mesmo se o pedido estiver pago. Cada valor aprovado exige devolução
+                    integral e só passa a Estornado após sua confirmação efetiva. Até lá, permanece Aprovado e
+                    a devolução fica pendente. Recusados não exigem estorno. Pedido, cupom e pagamentos
+                    permanecem no histórico. As regras completas constam da Seção 4.1.1 do README.</p>
             </div>
         </section>
 
@@ -479,9 +440,13 @@
                 <code>TP_</code> tipo (categorização), <code>IN_</code> indicador booleano, <code>VL_</code> valor
                 monetário, <code>DS_</code> descrição/texto livre.
                 <br><br>
-                <b>Nomenclatura física:</b> as colunas físicas do banco (as mesmas usadas no README do projeto)
-                seguem <code>snake_case</code> minúsculo, sem prefixo — por isso cada atributo nas tabelas abaixo traz
-                o nome lógico prefixado (dicionário) e a coluna física correspondente na tabela implementada.
+                <b>Referência para implementação:</b> as colunas propostas para o banco (com os mesmos nomes usados
+                no README) seguem <code>snake_case</code> minúsculo, sem prefixo. Cada atributo abaixo apresenta
+                o nome prefixado do dicionário e a coluna correspondente proposta. Tipos físicos, PKs, FKs e
+                índices orientam as etapas lógica e física; no DER conceitual, as associações são representadas
+                pelos relacionamentos e suas cardinalidades. Em uma representação estrita em Chen, essas
+                ligações não precisam ser repetidas como FKs nos atributos das entidades; os identificadores
+                próprios das entidades são preservados.
             </div>
         </section>
 
@@ -527,7 +492,7 @@
                             <td><code>nome</code></td>
                             <td>varchar(120)</td>
                             <td>Sim</td>
-                            <td>Nome do cliente, usado na identificação para entrega e no histórico de pedidos.</td>
+                            <td>Nome cadastrado do cliente; pode ser copiado para nome_comanda ao registrar o pedido.</td>
                         </tr>
                         <tr>
                             <td>ID_CPF_CNPJ</td>
@@ -592,78 +557,20 @@
             <div class="indices-note"><b>Índices:</b> PK <code>ID_FUNCIONARIO</code>.</div>
         </section>
 
-        <!-- TOTEM -->
-        <section class="panel entity-panel" data-entity="TOTEM totem id_totem tablet localizacao status">
-            <div class="panel-head">
-                <h2>TOTEM</h2>
-            </div>
-            <div class="code-block">TOTEM = @ID_TOTEM + ID_TABLET + DS_LOCALIZACAO + TP_STATUS</div>
-            <div class="entity-desc"><code>ID_TABLET</code> usa prefixo de identificador por ser o número de
-                série/identificação do equipamento, não um código de domínio interno; <code>TP_STATUS</code>
-                categoriza a situação do equipamento.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_TOTEM</span></td>
-                            <td><code>id_totem</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do totem.</td>
-                        </tr>
-                        <tr>
-                            <td>ID_TABLET</td>
-                            <td><code>identificador_tablet</code></td>
-                            <td>varchar(50)</td>
-                            <td>Sim (único)</td>
-                            <td>Identificação física do equipamento (tablet); evita duplicidade de cadastro do mesmo
-                                aparelho.</td>
-                        </tr>
-                        <tr>
-                            <td>DS_LOCALIZACAO</td>
-                            <td><code>localizacao_loja</code></td>
-                            <td>varchar(100)</td>
-                            <td>Sim</td>
-                            <td>Ponto de instalação do equipamento dentro da unidade.</td>
-                        </tr>
-                        <tr>
-                            <td>TP_STATUS</td>
-                            <td><code>status</code></td>
-                            <td>char(1) [A|I]</td>
-                            <td>Sim</td>
-                            <td>Situação do equipamento: <b>A</b>tivo ou <b>I</b>nativo; totens inativos não recebem
-                                novos pedidos.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_TOTEM</code>; índice único em
-                <code>ID_TABLET</code>.</div>
-        </section>
-
         <!-- PEDIDO -->
         <section class="panel entity-panel"
-            data-entity="PEDIDO pedido id_pedido cliente funcionario totem canal status preparo valor total">
+            data-entity="PEDIDO pedido id_pedido cliente funcionario totem origem_pedido delivery nome_comanda nome comanda canal status preparo valor total cancelado quitado">
             <div class="panel-head">
                 <h2>PEDIDO</h2>
             </div>
-            <div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO) + (ID_TOTEM) +
-                DT_HORA_PEDIDO +<br>
-                &nbsp;&nbsp;[TP_TOTEM | TP_BALCAO | TP_APLICATIVO] + VL_TOTAL + TP_STATUS_PREPARO</div>
-            <div class="entity-desc"><code>(ID_CLIENTE)</code> é opcional porque o pedido pode não ter cliente
-                identificado; <code>(ID_FUNCIONARIO)</code> e <code>(ID_TOTEM)</code> são condicionais — preenchidos
-                conforme o canal escolhido em <code>[TP_TOTEM | TP_BALCAO | TP_APLICATIVO]</code>, que exige escolher
-                exatamente um canal; <code>VL_TOTAL</code> é calculado pela soma de quantidade × preço unitário
-                dos produtos associados ao pedido.</div>
+            <div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO) + (DS_TOTEM) +
+                (NM_COMANDA) + DT_HORA_PEDIDO +<br>
+                &nbsp;&nbsp;[TP_TOTEM | TP_BALCAO | TP_DELIVERY] + VL_TOTAL + TP_STATUS_PREPARO</div>
+            <div class="entity-desc">ID_CLIENTE é opcional e ID_FUNCIONARIO é utilizado na origem BALCÃO.
+                DS_TOTEM é um atributo do pedido, sem FK: identifica o equipamento apenas na origem TOTEM.
+                origem_pedido admite TOTEM, BALCÃO ou DELIVERY. NM_COMANDA registra o nome de chamada mesmo
+                sem cliente associado; na ausência do nome, utiliza-se ID_PEDIDO. VL_TOTAL é derivado da soma
+                de quantidade × preço unitário do relacionamento CONTÉM; não é informado livremente.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -695,14 +602,22 @@
                             <td><code>id_funcionario</code></td>
                             <td>integer</td>
                             <td>Condicional (FK)</td>
-                            <td>Preenchido quando <code>TP_CANAL_PEDIDO = BALCAO</code>.</td>
+                            <td>Preenchido quando <code>TP_ORIGEM_PEDIDO = BALCAO</code>.</td>
                         </tr>
                         <tr>
-                            <td><span class="tag fk">ID_TOTEM</span></td>
-                            <td><code>id_totem</code></td>
-                            <td>integer</td>
-                            <td>Condicional (FK)</td>
-                            <td>Preenchido quando <code>TP_CANAL_PEDIDO = TOTEM</code>.</td>
+                            <td>DS_TOTEM</td>
+                            <td><code>totem</code></td>
+                            <td>varchar(50)</td>
+                            <td>Condicional (não é FK)</td>
+                            <td>Identifica o equipamento quando a origem é TOTEM; não preenchido nas demais origens.</td>
+                        </tr>
+                        <tr>
+                            <td>NM_COMANDA</td>
+                            <td><code>nome_comanda</code></td>
+                            <td>varchar(120)</td>
+                            <td>Não (quando ausente, usa-se o número do pedido)</td>
+                            <td>Nome de chamada registrado no próprio pedido, com ou sem cliente cadastrado.
+                                Preserva a identificação usada naquela compra e não exige cliente fictício.</td>
                         </tr>
                         <tr>
                             <td>DT_HORA_PEDIDO</td>
@@ -712,45 +627,46 @@
                             <td>Data e horário do registro do pedido.</td>
                         </tr>
                         <tr>
-                            <td>TP_CANAL_PEDIDO</td>
-                            <td><code>canal_pedido</code></td>
-                            <td>char(1) [T|B|A]</td>
+                            <td>TP_ORIGEM_PEDIDO</td>
+                            <td><code>origem_pedido</code></td>
+                            <td>char(1) [T|B|D]</td>
                             <td>Sim (escolha)</td>
-                            <td>Canal de origem: <b>T</b>otem, <b>B</b>alcão ou <b>A</b>plicativo; define quais
+                            <td>Origem do pedido: <b>T</b>otem, <b>B</b>alcão ou <b>D</b>elivery; define quais
                                 campos condicionais se aplicam.</td>
                         </tr>
                         <tr>
                             <td>VL_TOTAL</td>
                             <td><code>valor_total</code></td>
                             <td>decimal(10,2)</td>
-                            <td>Sim (calculado)</td>
-                            <td>Soma de quantidade × preço unitário dos produtos associados ao pedido; base para o fechamento mensal.</td>
+                            <td>Sim (derivado)</td>
+                            <td>Atributo derivado: soma de quantidade × preço unitário dos produtos associados ao pedido; base para o fechamento mensal.</td>
                         </tr>
                         <tr>
                             <td>TP_STATUS_PREPARO</td>
                             <td><code>status_preparo</code></td>
-                            <td>varchar(20) [RECEBIDO|EM_PREPARO|PRONTO|ENTREGUE]</td>
+                            <td>varchar(20) [RECEBIDO|EM_PREPARO|PRONTO|ENTREGUE|CANCELADO]</td>
                             <td>Sim</td>
-                            <td>Situação do pedido na esteira de preparo/entrega.</td>
+                            <td>Situação do pedido na esteira de preparo/entrega. CANCELADO é o estado proposto para impedir a continuidade do pedido, independentemente da devolução financeira.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div class="entity-desc"><b>Domínio de status_preparo:</b> RECEBIDO indica que o pedido aguarda
+                confirmação da quitação; EM_PREPARO indica preparação ou separação; PRONTO indica
+                disponibilidade para entrega; ENTREGUE confirma a entrega. CANCELADO é o estado proposto para
+                interromper a continuidade do atendimento, conforme as regras de cancelamento.</div>
             <div class="indices-note"><b>Índices:</b> PK <code>ID_PEDIDO</code>; índices em <code>ID_CLIENTE</code>,
-                <code>ID_FUNCIONARIO</code>, <code>ID_TOTEM</code> (FKs) e em <code>DT_HORA_PEDIDO</code> (consultas e
+                <code>ID_FUNCIONARIO</code> (FKs) e em <code>DT_HORA_PEDIDO</code> (consultas e
                 fechamento por período).</div>
         </section>
 
         <!-- PRODUTO -->
-        <section class="panel entity-panel" data-entity="PRODUTO produto id_produto nome preco estoque quantidade_disponivel qt_disponivel data_atualizacao dt_atualizacao">
+        <section class="panel entity-panel" data-entity="PRODUTO produto id_produto nome preco">
             <div class="panel-head">
                 <h2>PRODUTO</h2>
             </div>
-            <div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO + QT_DISPONIVEL + DT_ATUALIZACAO</div>
-            <div class="entity-desc">Os cinco campos são obrigatórios; o cadastro registra o nome, o preço de
-                venda atual e o controle de estoque do produto. A quantidade disponível não pode ser negativa;
-                vendas a reduzem e recebimentos a aumentam, atualizando a data da última movimentação. O preço
-                histórico de cada venda é preservado no relacionamento PEDIDO — PRODUTO.</div>
+            <div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO</div>
+            <div class="entity-desc">Os três campos são obrigatórios. PRODUTO registra o nome e o preço atual; o preço histórico de cada venda permanece no relacionamento PEDIDO — CONTÉM — PRODUTO.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -784,20 +700,8 @@
                             <td>Sim (&gt;0)</td>
                             <td>Preço de venda atual do produto.</td>
                         </tr>
-                        <tr>
-                            <td>QT_DISPONIVEL</td>
-                            <td><code>quantidade_disponivel</code></td>
-                            <td>integer</td>
-                            <td>Sim (&gt;=0)</td>
-                            <td>Quantidade atualmente disponível para venda; diminui nas vendas e aumenta nos recebimentos.</td>
-                        </tr>
-                        <tr>
-                            <td>DT_ATUALIZACAO</td>
-                            <td><code>data_atualizacao</code></td>
-                            <td>datetime</td>
-                            <td>Sim</td>
-                            <td>Data/hora da última movimentação de venda ou recebimento que alterou a quantidade disponível.</td>
-                        </tr>
+
+
                     </tbody>
                 </table>
             </div>
@@ -805,19 +709,41 @@
                 (busca por nome no cadastro/cardápio).</div>
         </section>
 
+        <!-- CUPOM_FISCAL -->
+        <section class="panel entity-panel" data-entity="CUPOM_FISCAL cupom fiscal nota id_cupom_fiscal id_pedido numero data_hora_emissao">
+            <div class="panel-head"><h2>CUPOM_FISCAL</h2></div>
+            <div class="code-block">CUPOM_FISCAL = @ID_CUPOM_FISCAL + ID_PEDIDO + ID_NUMERO_CUPOM + DT_HORA_EMISSAO</div>
+            <div class="entity-desc">Todo pedido gera um documento fiscal, denominado nota fiscal do pedido neste
+                modelo. Cada cupom pertence a um único pedido e gera um ou mais registros de pagamento.</div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Atributo</th><th>Coluna no BD</th><th>Tipo físico</th><th>Obrigatório</th><th>Significado e relevância</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="tag pk">ID_CUPOM_FISCAL</span></td><td><code>id_cupom_fiscal</code></td><td>integer</td><td>Sim (PK)</td><td>Identificador único do documento fiscal.</td></tr>
+                        <tr><td><span class="tag fk">ID_PEDIDO</span></td><td><code>id_pedido</code></td><td>integer</td><td>Sim (FK, único)</td><td>Pedido que gera o documento; cada pedido tem exatamente um cupom.</td></tr>
+                        <tr><td>ID_NUMERO_CUPOM</td><td><code>numero</code></td><td>varchar(50)</td><td>Sim (único na unidade)</td><td>Número do documento fiscal.</td></tr>
+                        <tr><td>DT_HORA_EMISSAO</td><td><code>data_hora_emissao</code></td><td>datetime</td><td>Sim</td><td>Data e horário da emissão.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="indices-note"><b>Índices:</b> PK ID_CUPOM_FISCAL; índice único em ID_PEDIDO e no número do documento no escopo da unidade.</div>
+        </section>
+
         <!-- PAGAMENTO -->
         <section class="panel entity-panel"
-            data-entity="PAGAMENTO pagamento id_pagamento pix credito debito dinheiro aprovado recusado">
+            data-entity="PAGAMENTO pagamento id_pagamento pix credito debito dinheiro aprovado recusado estornado quitacao">
             <div class="panel-head">
                 <h2>PAGAMENTO</h2>
             </div>
-            <div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_PEDIDO + [TP_PIX | TP_CREDITO | TP_DEBITO |
+            <div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL + [TP_PIX | TP_CREDITO | TP_DEBITO |
                 TP_DINHEIRO] +<br>
-                &nbsp;&nbsp;VL_PAGAMENTO + [TP_APROVADO | TP_RECUSADO] + DT_HORA_PAGAMENTO</div>
-            <div class="entity-desc">Um pedido pode ter <code>1{ }N</code> pagamentos (não representado aqui como
-                iteração explícita porque cada pagamento é uma linha independente ligada por <code>ID_PEDIDO</code>),
+                &nbsp;&nbsp;VL_PAGAMENTO + [TP_APROVADO | TP_RECUSADO | TP_ESTORNADO] + DT_HORA_PAGAMENTO</div>
+            <div class="entity-desc">Um cupom fiscal pode gerar <code>1{ }N</code> pagamentos (não representado aqui como
+                iteração explícita porque cada pagamento é uma linha independente ligada por <code>ID_CUPOM_FISCAL</code>),
                 o que permite dividir a conta entre formas diferentes; <code>[TP_PIX | TP_CREDITO | TP_DEBITO |
-                    TP_DINHEIRO]</code> exige escolher exatamente uma forma por registro de pagamento.</div>
+                    TP_DINHEIRO]</code> exige escolher exatamente uma forma por registro de pagamento.
+                Somente pagamentos aprovados compõem o valor pago. Propõe-se o estado Estornado para registrar
+                a devolução integral confirmada de um pagamento anteriormente aprovado.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -838,11 +764,11 @@
                             <td>Identificador único do pagamento.</td>
                         </tr>
                         <tr>
-                            <td><span class="tag fk">ID_PEDIDO</span></td>
-                            <td><code>id_pedido</code></td>
+                            <td><span class="tag fk">ID_CUPOM_FISCAL</span></td>
+                            <td><code>id_cupom_fiscal</code></td>
                             <td>integer</td>
                             <td>Sim (FK)</td>
-                            <td>Pedido a que este pagamento se refere.</td>
+                            <td>Documento fiscal que gera o pagamento; o pedido é obtido pelo cupom.</td>
                         </tr>
                         <tr>
                             <td>TP_FORMA_PAGTO</td>
@@ -857,15 +783,17 @@
                             <td><code>valor_pagamento</code></td>
                             <td>decimal(10,2)</td>
                             <td>Sim (&gt;0)</td>
-                            <td>Valor quitado nesta forma; a soma dos pagamentos de um pedido deve igualar
-                                <code>VL_TOTAL</code>.</td>
+                            <td>Valor da tentativa nesta forma; somente valores aprovados compõem o valor pago.
+                                O pedido está quitado quando a soma dos aprovados iguala <code>VL_TOTAL</code>.
+                                Recusados e estornados são excluídos dessa soma.</td>
                         </tr>
                         <tr>
                             <td>TP_STATUS_PGTO</td>
                             <td><code>status_pagamento</code></td>
-                            <td>char(1) [A|R]</td>
+                            <td>char(1) [A|R|E]</td>
                             <td>Sim (escolha)</td>
-                            <td>Situação do pagamento: <b>A</b>provado ou <b>R</b>ecusado.</td>
+                            <td><b>A</b>provado ou <b>R</b>ecusado; <b>E</b>stornado é o estado proposto após
+                                devolução integral confirmada. Cancelar o pedido não muda um pagamento para Estornado automaticamente.</td>
                         </tr>
                         <tr>
                             <td>DT_HORA_PAGAMENTO</td>
@@ -878,19 +806,17 @@
                 </table>
             </div>
             <div class="indices-note"><b>Índices:</b> PK <code>ID_PAGAMENTO</code>; índice em
-                <code>ID_PEDIDO</code> (localizar todos os pagamentos de um pedido); índice em
+                <code>ID_CUPOM_FISCAL</code> (localizar todos os pagamentos do cupom); índice em
                 <code>DT_HORA_PAGAMENTO</code> (fechamento mensal).</div>
         </section>
 
         <!-- FORNECEDOR -->
-        <section class="panel entity-panel" data-entity="FORNECEDOR fornecedor id_fornecedor nome">
+        <section class="panel entity-panel" data-entity="FORNECEDOR fornecedor id_fornecedor cnpj">
             <div class="panel-head">
                 <h2>FORNECEDOR</h2>
             </div>
-            <div class="code-block">FORNECEDOR = @ID_FORNECEDOR + NM_FORNECEDOR</div>
-            <div class="entity-desc">Estrutura mínima nesta versão do modelo, alinhada ao que foi levantado na
-                entrevista (contato e dados fiscais completos do fornecedor não foram exigidos no escopo atual).
-            </div>
+            <div class="code-block">FORNECEDOR = @ID_FORNECEDOR + ID_CNPJ</div>
+            <div class="entity-desc">ID_FORNECEDOR é o identificador único; ID_CNPJ registra o CNPJ obrigatório do fornecedor. O cadastro é preservado sem acrescentar relacionamentos nesta revisão.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -911,11 +837,11 @@
                             <td>Identificador único do fornecedor.</td>
                         </tr>
                         <tr>
-                            <td>NM_FORNECEDOR</td>
-                            <td><code>nome</code></td>
-                            <td>varchar(120)</td>
+                            <td>ID_CNPJ</td>
+                            <td><code>cnpj</code></td>
+                            <td>varchar(18)</td>
                             <td>Sim</td>
-                            <td>Razão social ou nome fantasia do fornecedor.</td>
+                            <td>CNPJ do fornecedor.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -923,63 +849,11 @@
             <div class="indices-note"><b>Índices:</b> PK <code>ID_FORNECEDOR</code>.</div>
         </section>
 
-        <!-- ENTRADA_ESTOQUE -->
-        <section class="panel entity-panel"
-            data-entity="ENTRADA_ESTOQUE entrada estoque id_entrada fornecedor data">
-            <div class="panel-head">
-                <h2>ENTRADA_ESTOQUE</h2>
-            </div>
-            <div class="code-block">ENTRADA_ESTOQUE = @ID_ENTRADA + ID_FORNECEDOR + DT_ENTRADA</div>
-            <div class="entity-desc"><code>ID_FORNECEDOR</code> obrigatório liga toda entrada a um fornecedor
-                conhecido; os produtos recebidos são associados diretamente à entrada no modelo conceitual,
-                com a quantidade de cada produto registrada no relacionamento ENTRADA_ESTOQUE — PRODUTO.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_ENTRADA</span></td>
-                            <td><code>id_entrada</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único da entrada de estoque.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_FORNECEDOR</span></td>
-                            <td><code>id_fornecedor</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Fornecedor responsável pelo recebimento.</td>
-                        </tr>
-                        <tr>
-                            <td>DT_ENTRADA</td>
-                            <td><code>data_entrada</code></td>
-                            <td>date</td>
-                            <td>Sim</td>
-                            <td>Data em que os produtos foram recebidos.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_ENTRADA</code>; índice em
-                <code>ID_FORNECEDOR</code> (FK); índice em <code>DT_ENTRADA</code> (relatórios por período).</div>
-        </section>
-
         <section class="panel">
             <div class="panel-head">
                 <h2>Atributos dos relacionamentos</h2>
             </div>
-            <div class="entity-desc">No modelo conceitual, os relacionamentos N:M registram os dados de cada
-                produto em uma venda ou em um recebimento. São três atributos de relacionamento, além dos 34
-                atributos das oito entidades.</div>
+            <div class="entity-desc">Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, de cardinalidade N:M. Seus dois atributos descrevem a participação do produto no pedido, além dos 30 atributos das sete entidades.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -993,25 +867,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>PEDIDO — PRODUTO</td>
+                            <td>PEDIDO — CONTÉM — PRODUTO</td>
                             <td><code>quantidade</code></td>
                             <td>integer</td>
                             <td>Sim (&gt;0)</td>
-                            <td>Quantidade do produto vendida no pedido; utilizada no cálculo do total e na baixa de estoque.</td>
+                            <td>Quantidade do produto vendida no pedido; utilizada no cálculo do total do pedido.</td>
                         </tr>
                         <tr>
-                            <td>PEDIDO — PRODUTO</td>
+                            <td>PEDIDO — CONTÉM — PRODUTO</td>
                             <td><code>preco_unitario</code></td>
                             <td>decimal(10,2)</td>
                             <td>Sim</td>
                             <td>Preço praticado no momento da venda; preserva o histórico independentemente de reajustes futuros.</td>
-                        </tr>
-                        <tr>
-                            <td>ENTRADA_ESTOQUE — PRODUTO</td>
-                            <td><code>quantidade</code></td>
-                            <td>integer</td>
-                            <td>Sim (&gt;0)</td>
-                            <td>Quantidade recebida do produto na entrada; incrementa quantidade_disponivel em PRODUTO e atualiza data_atualizacao.</td>
                         </tr>
                     </tbody>
                 </table>
