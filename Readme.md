@@ -348,6 +348,10 @@ As indicações de PK e FK no dicionário antecipam o mapeamento para o modelo l
 
 ![DER da We Coffee com pedido, produto, cupom fiscal e pagamento](<./WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png>)
 
+[Arquivo editável no brModelo 3](<./WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3>)
+
+O diagrama apresenta os 28 atributos conceituais, com identificadores em círculos preenchidos, atributos opcionais ou condicionais tracejados e `valor_total` indicado como derivado. As quatro FKs documentadas na Seção 5 são referências para o modelo lógico e aparecem no DER por meio dos relacionamentos, sem repetição como atributos. Assim, permanecem 32 atributos documentados no dicionário: 28 conceituais e 4 referências de FK.
+
 ## 7.2 Principais relacionamentos
 
 | Entidade A | Relacionamento | Entidade B | Cardinalidade |
@@ -441,6 +445,12 @@ A modelagem foi estruturada para manter consistência entre os processos levanta
 ---
 
 ## Alterações
+
+### Apresentação dos atributos no DER — 27/10/2026
+
+- Incluídos todos os atributos conceituais no desenho, seguindo a disposição visual do exemplo fornecido e preservando as sete entidades e os cinco relacionamentos vigentes.
+- Adicionado o arquivo editável `.brM3`, validado por reabertura no motor do brModelo, e atualizadas as versões PDF, PNG e JPG.
+- Esclarecida a contagem de 28 atributos conceituais e quatro referências de FK no dicionário, sem alteração das regras de negócio.
 
 ### Revisão da estrutura — 26/10/2026
 
