@@ -1,0 +1,17 @@
+tabela	registros
+cliente	20
+funcionario	6
+produto	12
+fornecedor	2
+pedido	120
+pedido_produto	270
+cupom_fiscal	120
+pagamento	165
+entrada_estoque	3
+entrada_produto	14
+tabelas
+10
+colunas
+44
+fks
+9

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3740" height="2320" viewBox="0 0 3740 2320" role="img" aria-labelledby="title desc">
+<title id="title">We Coffee: modelo lógico relacional da Entrega 2</title>
+<desc id="desc">Dez tabelas, quarenta e quatro colunas e nove chaves estrangeiras. Tipos, PKs e FKs aparecem em cada linha. Cardinalidades mínimas de pedido, cupom e recebimento dependem das rotinas transacionais e das auditorias documentadas.</desc>
+<rect width="3740" height="2320" fill="white"/>
+<g font-family="Arial, sans-serif" fill="#24374a">
+<text x="1870" y="63" text-anchor="middle" font-size="40">WE COFFEE · MODELO LÓGICO RELACIONAL</text>
+<text x="1870" y="112" text-anchor="middle" font-size="25">10 tabelas · 44 colunas · 9 FKs · MySQL 8 · proposta técnica de estoque a validar</text>
+<polyline points="415,430 415,850" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="460" y="470" text-anchor="middle" font-size="24">(0,n)</text>
+<text x="460" y="825" text-anchor="middle" font-size="24">(0,1)</text>
+<polyline points="1305,430 1305,650 720,650 720,850" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="1350" y="470" text-anchor="middle" font-size="24">(0,n)</text>
+<text x="765" y="825" text-anchor="middle" font-size="24">(0,1)</text>
+<polyline points="890,1065 1450,1065" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="950" y="1035" text-anchor="middle" font-size="24">(1,n)</text>
+<text x="1380" y="1035" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="2740,1065 2300,1065" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="2660" y="1035" text-anchor="middle" font-size="24">(0,n)</text>
+<text x="2370" y="1035" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="490,1350 490,1740" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="540" y="1400" text-anchor="middle" font-size="24">(1,1)</text>
+<text x="540" y="1700" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="890,1860 1450,1860" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="960" y="1830" text-anchor="middle" font-size="24">(1,n)</text>
+<text x="1380" y="1830" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="3140,400 3140,500" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="3195" y="440" text-anchor="middle" font-size="24">(0,n)</text>
+<text x="3195" y="480" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="3540,650 3640,650 3640,1840 3540,1840" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="3590" y="620" text-anchor="middle" font-size="24">(1,n)</text>
+<text x="3590" y="1880" text-anchor="middle" font-size="24">(1,1)</text>
+<polyline points="3140,1300 3140,1720" fill="none" stroke="#526579" stroke-width="3"/>
+<text x="3195" y="1350" text-anchor="middle" font-size="24">(0,n)</text>
+<text x="3195" y="1680" text-anchor="middle" font-size="24">(1,1)</text>
+<g id="cliente"><rect x="90" y="200" width="650" height="230" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 90 267 H 740" stroke="#24374a" stroke-width="2"/><text x="415" y="244" text-anchor="middle" font-size="29" font-weight="700">CLIENTE</text>
+<text x="114" y="308" font-size="25">id_cliente</text><text x="716" y="308" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="114" y="346" font-size="25">nome</text><text x="716" y="346" text-anchor="end" font-size="24">VARCHAR(120)</text>
+<text x="114" y="384" font-size="25">cpf_cnpj</text><text x="716" y="384" text-anchor="end" font-size="24">VARCHAR(18)</text>
+</g>
+<g id="funcionario"><rect x="980" y="200" width="650" height="230" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 980 267 H 1630" stroke="#24374a" stroke-width="2"/><text x="1305" y="244" text-anchor="middle" font-size="29" font-weight="700">FUNCIONARIO</text>
+<text x="1004" y="308" font-size="25">id_funcionario</text><text x="1606" y="308" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="1004" y="346" font-size="25">nome</text><text x="1606" y="346" text-anchor="end" font-size="24">VARCHAR(120)</text>
+<text x="1004" y="384" font-size="25">cargo</text><text x="1606" y="384" text-anchor="end" font-size="24">VARCHAR(60)</text>
+</g>
+<g id="produto"><rect x="2740" y="900" width="800" height="400" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 2740 967 H 3540" stroke="#24374a" stroke-width="2"/><text x="3140" y="944" text-anchor="middle" font-size="29" font-weight="700">PRODUTO</text>
+<text x="2764" y="1008" font-size="25">id_produto</text><text x="3516" y="1008" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="2764" y="1046" font-size="25">nome</text><text x="3516" y="1046" text-anchor="end" font-size="24">VARCHAR(120)</text>
+<text x="2764" y="1084" font-size="25">preco</text><text x="3516" y="1084" text-anchor="end" font-size="24">DECIMAL(10,2)</text>
+<text x="2764" y="1122" font-size="25">quantidade_disponivel</text><text x="3516" y="1122" text-anchor="end" font-size="24">INT UNSIGNED</text>
+<text x="2764" y="1160" font-size="25">estoque_minimo</text><text x="3516" y="1160" text-anchor="end" font-size="24">INT UNSIGNED</text>
+<text x="2764" y="1198" font-size="25">data_atualizacao</text><text x="3516" y="1198" text-anchor="end" font-size="24">DATETIME</text>
+</g>
+<g id="fornecedor"><rect x="2740" y="200" width="800" height="200" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 2740 267 H 3540" stroke="#24374a" stroke-width="2"/><text x="3140" y="244" text-anchor="middle" font-size="29" font-weight="700">FORNECEDOR</text>
+<text x="2764" y="308" font-size="25">id_fornecedor</text><text x="3516" y="308" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="2764" y="346" font-size="25">cnpj</text><text x="3516" y="346" text-anchor="end" font-size="24">VARCHAR(18)</text>
+</g>
+<g id="pedido"><rect x="90" y="850" width="800" height="500" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 90 917 H 890" stroke="#24374a" stroke-width="2"/><text x="490" y="894" text-anchor="middle" font-size="29" font-weight="700">PEDIDO</text>
+<text x="114" y="958" font-size="25">id_pedido</text><text x="866" y="958" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="114" y="996" font-size="25">id_cliente</text><text x="866" y="996" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  FK</text>
+<text x="114" y="1034" font-size="25">id_funcionario</text><text x="866" y="1034" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  FK</text>
+<text x="114" y="1072" font-size="25">totem</text><text x="866" y="1072" text-anchor="end" font-size="24">VARCHAR(50)</text>
+<text x="114" y="1110" font-size="25">nome_comanda</text><text x="866" y="1110" text-anchor="end" font-size="24">VARCHAR(120)</text>
+<text x="114" y="1148" font-size="25">data_hora</text><text x="866" y="1148" text-anchor="end" font-size="24">DATETIME</text>
+<text x="114" y="1186" font-size="25">origem_pedido</text><text x="866" y="1186" text-anchor="end" font-size="24">CHAR(1)</text>
+<text x="114" y="1224" font-size="25">status_preparo</text><text x="866" y="1224" text-anchor="end" font-size="24">VARCHAR(20)</text>
+<text x="114" y="1262" font-size="25">baixa_estoque_realizada</text><text x="866" y="1262" text-anchor="end" font-size="24">BOOLEAN</text>
+</g>
+<g id="pedido_produto"><rect x="1450" y="900" width="850" height="350" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 1450 967 H 2300" stroke="#24374a" stroke-width="2"/><text x="1875" y="944" text-anchor="middle" font-size="29" font-weight="700">PEDIDO_PRODUTO</text>
+<text x="1474" y="1008" font-size="25">id_pedido</text><text x="2276" y="1008" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK, FK</text>
+<text x="1474" y="1046" font-size="25">id_produto</text><text x="2276" y="1046" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK, FK</text>
+<text x="1474" y="1084" font-size="25">quantidade</text><text x="2276" y="1084" text-anchor="end" font-size="24">INT UNSIGNED</text>
+<text x="1474" y="1122" font-size="25">preco_unitario</text><text x="2276" y="1122" text-anchor="end" font-size="24">DECIMAL(10,2)</text>
+<text x="1474" y="1160" font-size="25">quantidade_devolvida</text><text x="2276" y="1160" text-anchor="end" font-size="24">INT UNSIGNED</text>
+</g>
+<g id="cupom_fiscal"><rect x="90" y="1740" width="800" height="300" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 90 1807 H 890" stroke="#24374a" stroke-width="2"/><text x="490" y="1784" text-anchor="middle" font-size="29" font-weight="700">CUPOM_FISCAL</text>
+<text x="114" y="1848" font-size="25">id_cupom_fiscal</text><text x="866" y="1848" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="114" y="1886" font-size="25">id_pedido</text><text x="866" y="1886" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  FK</text>
+<text x="114" y="1924" font-size="25">numero</text><text x="866" y="1924" text-anchor="end" font-size="24">VARCHAR(50)</text>
+<text x="114" y="1962" font-size="25">data_hora_emissao</text><text x="866" y="1962" text-anchor="end" font-size="24">DATETIME</text>
+</g>
+<g id="pagamento"><rect x="1450" y="1740" width="800" height="360" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 1450 1807 H 2250" stroke="#24374a" stroke-width="2"/><text x="1850" y="1784" text-anchor="middle" font-size="29" font-weight="700">PAGAMENTO</text>
+<text x="1474" y="1848" font-size="25">id_pagamento</text><text x="2226" y="1848" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="1474" y="1886" font-size="25">id_cupom_fiscal</text><text x="2226" y="1886" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  FK</text>
+<text x="1474" y="1924" font-size="25">forma_pagamento</text><text x="2226" y="1924" text-anchor="end" font-size="24">CHAR(1)</text>
+<text x="1474" y="1962" font-size="25">valor_pagamento</text><text x="2226" y="1962" text-anchor="end" font-size="24">DECIMAL(10,2)</text>
+<text x="1474" y="2000" font-size="25">status_pagamento</text><text x="2226" y="2000" text-anchor="end" font-size="24">CHAR(1)</text>
+<text x="1474" y="2038" font-size="25">data_hora_pagamento</text><text x="2226" y="2038" text-anchor="end" font-size="24">DATETIME</text>
+</g>
+<g id="entrada_estoque"><rect x="2740" y="500" width="800" height="260" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 2740 567 H 3540" stroke="#24374a" stroke-width="2"/><text x="3140" y="544" text-anchor="middle" font-size="29" font-weight="700">ENTRADA_ESTOQUE</text>
+<text x="2764" y="608" font-size="25">id_entrada_estoque</text><text x="3516" y="608" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK</text>
+<text x="2764" y="646" font-size="25">id_fornecedor</text><text x="3516" y="646" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  FK</text>
+<text x="2764" y="684" font-size="25">data_hora</text><text x="3516" y="684" text-anchor="end" font-size="24">DATETIME</text>
+</g>
+<g id="entrada_produto"><rect x="2740" y="1720" width="800" height="260" fill="white" stroke="#24374a" stroke-width="2.5"/><path d="M 2740 1787 H 3540" stroke="#24374a" stroke-width="2"/><text x="3140" y="1764" text-anchor="middle" font-size="29" font-weight="700">ENTRADA_PRODUTO</text>
+<text x="2764" y="1828" font-size="25">id_entrada_estoque</text><text x="3516" y="1828" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK, FK</text>
+<text x="2764" y="1866" font-size="25">id_produto</text><text x="3516" y="1866" text-anchor="end" font-size="24" font-weight="700">INT UNSIGNED  PK, FK</text>
+<text x="2764" y="1904" font-size="25">quantidade_recebida</text><text x="3516" y="1904" text-anchor="end" font-size="24">INT UNSIGNED</text>
+</g>
+<text x="1870" y="2200" text-anchor="middle" font-size="25">As tabelas PEDIDO_PRODUTO e ENTRADA_PRODUTO implementam os relacionamentos N:M do DER.</text>
+<text x="1870" y="2245" text-anchor="middle" font-size="23">NOT NULL, UNIQUE, CHECK, DEFAULT e restrições entre linhas constam do dicionário e do script. valor_total é calculado em view.</text>
+<text x="1870" y="2290" text-anchor="middle" font-size="22">Notação visual do brModelo. Arquivo nativo editável disponível. Cardinalidade mínima exige criação transacional completa e auditoria.</text>
+</g></svg>

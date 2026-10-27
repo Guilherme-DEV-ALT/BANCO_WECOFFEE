@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="2640" viewBox="0 0 1900 2640" role="img" aria-labelledby="title desc">
+<title id="title">Fluxograma da We Coffee: vendas, pagamentos e recebimentos</title>
+<desc id="desc">Recebimentos somam unidades. Quitação baixa estoque uma vez. Cancelamento antes do preparo devolve unidades; depois, apenas retorno físico confirmado. Estorno financeiro é independente. Proposta a validar com a unidade.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#526579"/></marker></defs>
+<rect width="1900" height="2640" fill="#fff"/>
+<polyline data-from="origem" data-to="pedido" points="650,255 650,305" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="pedido" data-to="produto" points="650,405 650,455" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="produto" data-to="cupom" points="650,555 650,605" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cupom" data-to="cancelar" points="650,685 650,730" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cancelar" data-to="tentativa" points="650,870 650,935" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cancelar" data-to="cancelado" points="900,800 1530,800 1530,860" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="tentativa" data-to="soma" points="650,1035 650,1090" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="soma" data-to="excesso" points="650,1210 650,1225" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="excesso" data-to="conciliar" points="900,1300 1060,1300 1060,1395" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="conciliar" data-to="soma" points="1210,1457 1240,1457 1240,1140 910,1140" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="excesso" data-to="quitado" points="650,1375 650,1455" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="quitado" data-to="aguardar" points="400,1530 340,1530" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="aguardar" data-to="cancelar" points="40,1530 20,1530 20,800 400,800" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="quitado" data-to="preparo" points="650,1605 650,1710" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="preparo" data-to="comanda" points="650,1810 650,1870" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="comanda" data-to="cancelar2" points="650,1960 650,2010" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cancelar2" data-to="entrega" points="650,2150 650,2260" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cancelar2" data-to="cancelado" points="900,2080 1260,2080 1260,915 1280,915" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="entrega" data-to="fim" points="650,2345 650,2420" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="cancelado" data-to="historico" points="1530,970 1530,1015" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="historico" data-to="devolver" points="1530,1165 1530,1195" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="devolver" data-to="solicitar" points="1530,1345 1530,1410" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="devolver" data-to="canceladofim" points="1770,1270 1870,1270 1870,2400 1780,2400" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="solicitar" data-to="confirmar" points="1530,1520 1530,1600" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="confirmar" data-to="pendente" points="1530,1730 1530,1835" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="pendente" data-to="esperar" points="1530,1985 1530,2060" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="pendente" data-to="canceladofim" points="1770,1910 1870,1910 1870,2400 1780,2400" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="recebimento" data-to="entrada_itens" points="1530,265 1530,325" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="entrada_itens" data-to="somar_saldo" points="1530,425 1530,490" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline data-from="somar_saldo" data-to="fim_entrada" points="1530,600 1530,665" fill="none" stroke="#526579" stroke-width="2.3" marker-end="url(#arrow)"/>
+<g id="origem">
+<rect x="390" y="175" width="520" height="80" rx="24" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="209.5" font-weight="700">Origem do pedido</tspan><tspan x="650" y="236.5">TOTEM · BALCÃO · DELIVERY</tspan></text></g>
+<g id="pedido">
+<rect x="390" y="305" width="520" height="100" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="336" font-weight="700">Registrar PEDIDO</tspan><tspan x="650" y="363">origem_pedido, totem quando aplicável</tspan><tspan x="650" y="390">e nome_comanda, quando informado</tspan></text></g>
+<g id="produto">
+<rect x="390" y="455" width="520" height="100" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="486" font-weight="700">PEDIDO CONTÉM PRODUTO</tspan><tspan x="650" y="513">quantidade inteira &gt; 0</tspan><tspan x="650" y="540">preco_unitario &gt; 0</tspan></text></g>
+<g id="cupom">
+<rect x="390" y="605" width="520" height="80" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="639.5" font-weight="700">PEDIDO gera CUPOM_FISCAL</tspan><tspan x="650" y="666.5">um documento por pedido</tspan></text></g>
+<g id="cancelar">
+<polygon points="650,730 900,800 650,870 400,800" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="794.5" font-weight="700">Cancelamento solicitado</tspan><tspan x="650" y="821.5">e autorizado?</tspan></text></g>
+<g id="tentativa">
+<rect x="390" y="935" width="520" height="100" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="966" font-weight="700">Registrar tentativa, quando houver</tspan><tspan x="650" y="993">no mesmo CUPOM_FISCAL</tspan><tspan x="650" y="1020">Recusados permanecem no histórico</tspan></text></g>
+<g id="soma">
+<rect x="390" y="1090" width="520" height="120" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="1117.5" font-weight="700">Recalcular valor pago</tspan><tspan x="650" y="1144.5">Somar somente pagamentos Aprovados</tspan><tspan x="650" y="1171.5">Na primeira quitação, baixar estoque</tspan><tspan x="650" y="1198.5">uma única vez; exigir saldo suficiente</tspan></text></g>
+<g id="excesso">
+<polygon points="650,1225 900,1300 650,1375 400,1300" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="1294.5" font-weight="700">Valor pago maior</tspan><tspan x="650" y="1321.5">que valor_total?</tspan></text></g>
+<g id="conciliar">
+<rect x="910" y="1395" width="300" height="125" rx="3" fill="#fff8e8" stroke="#9b6200" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1060" y="1438.5" font-weight="700">Bloquear cobranças</tspan><tspan x="1060" y="1465.5">Conciliar divergência</tspan><tspan x="1060" y="1492.5">Recalcular após correção</tspan></text></g>
+<g id="quitado">
+<polygon points="650,1455 900,1530 650,1605 400,1530" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="1524.5" font-weight="700">Valor pago igual</tspan><tspan x="650" y="1551.5">a valor_total?</tspan></text></g>
+<g id="aguardar">
+<rect x="40" y="1475" width="300" height="110" rx="24" fill="#f5f8fc" stroke="#526579" stroke-width="2.3" stroke-dasharray="8 5"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="190" y="1511" font-weight="700">Não quitado</tspan><tspan x="190" y="1538">Aguardar pagamento</tspan><tspan x="190" y="1565">do saldo restante</tspan></text></g>
+<g id="preparo">
+<rect x="390" y="1710" width="520" height="100" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="1754.5" font-weight="700">Preparar ou separar pedido</tspan><tspan x="650" y="1781.5">RECEBIDO → EM_PREPARO → PRONTO</tspan></text></g>
+<g id="comanda">
+<rect x="390" y="1870" width="520" height="90" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="1909.5" font-weight="700">Identificar na comanda</tspan><tspan x="650" y="1936.5">nome_comanda ou número id_pedido</tspan></text></g>
+<g id="cancelar2">
+<polygon points="650,2010 900,2080 650,2150 400,2080" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="2074.5" font-weight="700">Cancelamento solicitado</tspan><tspan x="650" y="2101.5">e autorizado?</tspan></text></g>
+<g id="entrega">
+<rect x="390" y="2260" width="520" height="85" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="2297" font-weight="700">Entregar pedido</tspan><tspan x="650" y="2324">status_preparo = ENTREGUE</tspan></text></g>
+<g id="fim">
+<ellipse cx="650" cy="2460" rx="140" ry="40" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="650" y="2468" font-weight="700">Fim do atendimento</tspan></text></g>
+<g id="cancelado">
+<rect x="1280" y="860" width="500" height="110" rx="3" fill="#fff1f0" stroke="#9a2d31" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="896" font-weight="700">Registrar status_preparo = CANCELADO</tspan><tspan x="1530" y="923">Interromper preparo e entrega</tspan><tspan x="1530" y="950">A quitação não libera pedido cancelado</tspan></text></g>
+<g id="historico">
+<rect x="1280" y="1015" width="500" height="150" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="1057.5" font-weight="700">Antes do preparo: devolver unidades</tspan><tspan x="1530" y="1084.5">Após preparo: só retorno físico confirmado</tspan><tspan x="1530" y="1111.5">Preservar pedido, cupom e pagamentos</tspan><tspan x="1530" y="1138.5">Situação fiscal depende de PV02</tspan></text></g>
+<g id="devolver">
+<polygon points="1530,1195 1770,1270 1530,1345 1290,1270" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="1264.5" font-weight="700">Há valores Aprovados</tspan><tspan x="1530" y="1291.5">a devolver?</tspan></text></g>
+<g id="solicitar">
+<rect x="1280" y="1410" width="500" height="110" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="1446" font-weight="700">Solicitar devolução integral</tspan><tspan x="1530" y="1473">de cada pagamento aprovado</tspan><tspan x="1530" y="1500">Recusados não exigem devolução</tspan></text></g>
+<g id="confirmar">
+<rect x="1280" y="1600" width="500" height="130" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="1632.5" font-weight="700">Para cada devolução confirmada,</tspan><tspan x="1530" y="1659.5">alterar o pagamento para Estornado</tspan><tspan x="1530" y="1686.5">Até a confirmação, manter Aprovado</tspan><tspan x="1530" y="1713.5">e o valor pendente de devolução</tspan></text></g>
+<g id="pendente">
+<polygon points="1530,1835 1770,1910 1530,1985 1290,1910" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="1904.5" font-weight="700">Restam valores Aprovados</tspan><tspan x="1530" y="1931.5">a devolver?</tspan></text></g>
+<g id="esperar">
+<rect x="1280" y="2060" width="500" height="130" rx="24" fill="#f5f8fc" stroke="#526579" stroke-width="2.3" stroke-dasharray="8 5"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="2106" font-weight="700">CANCELADO · devolução pendente</tspan><tspan x="1530" y="2133">Aguardar confirmação dos valores restantes</tspan><tspan x="1530" y="2160">e reavaliar a situação financeira</tspan></text></g>
+<g id="canceladofim">
+<rect x="1280" y="2350" width="500" height="100" rx="24" fill="#fff1f0" stroke="#9a2d31" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="2394.5" font-weight="700">CANCELADO</tspan><tspan x="1530" y="2421.5">Sem valor pendente de devolução</tspan></text></g>
+<g id="recebimento">
+<rect x="1280" y="175" width="500" height="90" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="214.5" font-weight="700">Registrar ENTRADA_ESTOQUE</tspan><tspan x="1530" y="241.5">Fornecedor e data_hora</tspan></text></g>
+<g id="entrada_itens">
+<rect x="1280" y="325" width="500" height="100" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="356" font-weight="700">RECEBE PRODUTO</tspan><tspan x="1530" y="383">quantidade_recebida inteira &gt; 0</tspan><tspan x="1530" y="410">Ao menos um produto</tspan></text></g>
+<g id="somar_saldo">
+<rect x="1280" y="490" width="500" height="110" rx="3" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="526" font-weight="700">Somar unidades ao saldo do produto</tspan><tspan x="1530" y="553">Atualizar data_atualizacao</tspan><tspan x="1530" y="580">Preservar recebimento confirmado</tspan></text></g>
+<g id="fim_entrada">
+<rect x="1280" y="665" width="500" height="90" rx="24" fill="#ffffff" stroke="#24374a" stroke-width="2.3"/>
+<text text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#24374a"><tspan x="1530" y="704.5" font-weight="700">Fim do recebimento</tspan><tspan x="1530" y="731.5">Consultar saldo e mínimo em G08</tspan></text></g>
+<text x="950" y="57" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#475467">WE COFFEE | FLUXO OPERACIONAL</text>
+<text x="950" y="103" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#475467">Pedido, documento fiscal e pagamento · revisão de 27/10/2026</text>
+<text x="950" y="137" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" fill="#475467">Recebimentos, baixa e devoluções: proposta técnica sujeita à validação com a unidade.</text>
+<text x="677" y="909" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="1100" y="780" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" fill="#475467">Sim · proposta PV01</text>
+<text x="984" y="1280" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Sim</text>
+<text x="1080" y="1118" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#475467">Correção confirmada</text>
+<text x="677" y="1418" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="369" y="1511" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="196" y="777" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Nova tentativa</text>
+<text x="677" y="1660" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Sim · quitado</text>
+<text x="677" y="2210" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="1050" y="2060" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Sim</text>
+<text x="1558" y="1383" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Sim</text>
+<text x="1814" y="1251" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="1558" y="2026" text-anchor="start" font-family="Arial, sans-serif" font-size="20" fill="#475467">Sim</text>
+<text x="1814" y="1891" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Não</text>
+<text x="950" y="2564" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" fill="#475467">Reavaliar cancelamentos antes de nova tentativa, preparo e entrega; estágios e autorizações dependem de PV01.</text>
+<text x="950" y="2603" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#475467">Estorno financeiro não devolve produto automaticamente. Retorno após preparo depende da confirmação física por item.</text>
+</svg>

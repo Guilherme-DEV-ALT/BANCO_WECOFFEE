@@ -1,0 +1,83 @@
+id_pedido	comanda	nome	quantidade	preco_unitario
+1	Chamada ficticia 1	Espresso demonstrativo	2	8.50
+1	Chamada ficticia 1	Chocolate demonstrativo	1	18.00
+id_produto	preco_atual	preco_da_venda
+1	9.50	8.50
+1	9.50	8.50
+1	9.50	8.50
+cadastros_descartaveis_restantes
+0
+mes	pedidos_quitados	vendas_quitadas	ticket_medio
+2026-07	33	1437.00	43.55
+2026-08	33	1428.50	43.29
+2026-09	32	1395.50	43.61
+id_produto	nome	unidades_vendidas	valor_vendido
+8	Bolo demonstrativo	35	665.00
+12	Agua demonstrativa	35	210.00
+4	Cha demonstrativo	34	374.00
+1	Espresso demonstrativo	24	204.00
+2	Cappuccino demonstrativo	24	336.00
+3	Latte demonstrativo	24	384.00
+5	Chocolate demonstrativo	24	432.00
+6	Croissant demonstrativo	24	360.00
+7	Pao de queijo demonstrativo	24	216.00
+9	Sanduiche demonstrativo	24	528.00
+10	Cookie demonstrativo	24	240.00
+11	Suco demonstrativo	24	312.00
+origem_pedido	pedidos	valor_vendido	participacao_percentual
+B	33	1530.00	33.67
+D	32	1404.00	32.65
+T	33	1327.00	33.67
+mes	registrados	cancelados	taxa_cancelamento
+2026-07	40	3	7.50
+2026-08	40	3	7.50
+2026-09	40	3	7.50
+mes	devolucao_pendente	pedidos_com_divergencia
+2026-07	44.00	0
+2026-08	35.00	0
+2026-09	38.00	1
+forma_pagamento	tentativas	recusadas	taxa_recusa
+C	39	7	17.95
+D	41	6	14.63
+P	43	3	6.98
+X	42	3	7.14
+id_cliente	nome	compras_quitadas	cliente_recorrente	clientes_recorrentes_total
+10	Cliente ficticio 10	6	1	18
+12	Cliente ficticio 12	6	1	18
+14	Cliente ficticio 14	6	1	18
+2	Cliente ficticio 02	5	1	18
+4	Cliente ficticio 04	5	1	18
+6	Cliente ficticio 06	5	1	18
+8	Cliente ficticio 08	5	1	18
+16	Cliente ficticio 16	5	1	18
+18	Cliente ficticio 18	5	1	18
+1	Cliente ficticio 01	3	1	18
+5	Cliente ficticio 05	3	1	18
+9	Cliente ficticio 09	3	1	18
+11	Cliente ficticio 11	3	1	18
+13	Cliente ficticio 13	3	1	18
+15	Cliente ficticio 15	3	1	18
+3	Cliente ficticio 03	2	1	18
+7	Cliente ficticio 07	2	1	18
+17	Cliente ficticio 17	2	1	18
+19	Cliente ficticio 19	0	0	18
+20	Cliente ficticio 20	0	0	18
+id_produto	nome	quantidade_disponivel	estoque_minimo	unidades_ate_minimo	produtos_abaixo_minimo
+3	Latte demonstrativo	76	100	24	3
+2	Cappuccino demonstrativo	83	100	17	3
+1	Espresso demonstrativo	86	100	14	3
+id_fornecedor	cnpj	id_produto	nome	unidades_recebidas
+1	00000000000100	1	Espresso demonstrativo	110
+1	00000000000100	2	Cappuccino demonstrativo	110
+1	00000000000100	3	Latte demonstrativo	100
+1	00000000000100	4	Cha demonstrativo	100
+1	00000000000100	5	Chocolate demonstrativo	100
+1	00000000000100	6	Croissant demonstrativo	100
+2	00000000000200	7	Pao de queijo demonstrativo	100
+2	00000000000200	8	Bolo demonstrativo	100
+2	00000000000200	9	Sanduiche demonstrativo	100
+2	00000000000200	10	Cookie demonstrativo	100
+2	00000000000200	11	Suco demonstrativo	100
+2	00000000000200	12	Agua demonstrativa	100
+id_pedido	valor_total	valor_pago
+120	47.00	47.01

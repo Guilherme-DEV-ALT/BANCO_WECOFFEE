@@ -1,0 +1,35 @@
+Validação final em schema vazio separado; código idêntico ao entregue, alterando somente o nome do schema.
+versao_mysql	banco	testes_aprovados
+8.4.13	wecoffee_entrega2_validacao_final	31
+nome	resultado	detalhe
+T01 preco zero	PASS	HY000: Check constraint 'ck_produto_preco' is violated.
+T02 nome vazio	PASS	HY000: Check constraint 'ck_produto_nome' is violated.
+T03 documento duplicado	PASS	23000: Duplicate entry '00000000001' for key 'cliente.uq_cliente_documento'
+T04 cliente inexistente	PASS	23000: Cannot add or update a child row: a foreign key constraint fails (`wecoffee_entrega2_validacao_final`.`pedido`, CONSTRAINT `fk_pedido_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE REST
+T05 totem ausente	PASS	HY000: Check constraint 'ck_pedido_totem' is violated.
+T06 balcao sem funcionario	PASS	HY000: Check constraint 'ck_pedido_funcionario' is violated.
+T07 pedido sem produtos	PASS	45000: RN05/RN11: informar produtos e ao menos uma tentativa
+T08 quantidade fracionaria	PASS	45000: RN05/RN06: quantidade inteira e preco em centavos
+T09 preco com fracao de centavo	PASS	45000: RN05/RN06: quantidade inteira e preco em centavos
+T10 preparo sem quitacao	PASS	45000: RN15: preparo ou entrega exigem quitacao exata
+T11 alteracao de preco historico	PASS	45000: RN06: itens ficam imutaveis apos tentativa de pagamento
+T12 exclusao de pagamento	PASS	45000: RN23: tentativas financeiras permanecem no historico
+T13 alteracao de cupom	PASS	45000: RN20: cupom emitido e preservado
+T14 devolucao acima do vendido	PASS	45000: RN27: devolucao fisica confirmada deve respeitar quantidade e cancelamento
+T15 estorno sem cancelamento	PASS	45000: RN19: estorno confirmado exige pagamento aprovado e pedido cancelado
+T16 estoque insuficiente	PASS	45000: RN25/RN26: estoque insuficiente para quitacao
+T17 rollback de pedido sem saldo	PASS	Condicao esperada confirmada
+T18 recebimento vazio	PASS	45000: RN24: entrada deve conter ao menos um produto
+T19 recebimento fracionario	PASS	45000: RN24: quantidade recebida deve ser inteira e positiva
+T20 cancelamento apos entrega	PASS	45000: RN17/RN18: transicao de preparo nao permitida
+T21 recusado nao compoe valor pago	PASS	Condicao esperada confirmada
+T22 estornado nao compoe valor pago	PASS	Condicao esperada confirmada
+T23 cancelamento antes do preparo devolve tudo	PASS	Condicao esperada confirmada
+T24 cancelamento apos preparo preserva consumo	PASS	Condicao esperada confirmada
+T25 divergencia intencional detectada	PASS	Condicao esperada confirmada
+T26 diferenca exata de um centavo	PASS	Condicao esperada confirmada
+T27 historico preserva preco original	PASS	Condicao esperada confirmada
+T28 quitacao baixa quantidade exata	PASS	Condicao esperada confirmada
+T29 nova recusa nao repete baixa	PASS	Condicao esperada confirmada
+T30 transacao de quitacao revertida	PASS	Condicao esperada confirmada
+T31 reversao preserva saldo	PASS	Condicao esperada confirmada
