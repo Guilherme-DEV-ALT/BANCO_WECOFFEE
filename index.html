@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dicionário de Dados — We Coffee</title>
+    <title>Dicionário de Dados — We Coffee · v1.2</title>
     <link rel="icon" href="WECOFFE/dicionario/img/wecoffee_logo_transparente_512.png">
 </head>
 <style>
@@ -292,6 +292,30 @@
             min-width: 100%
         }
     }
+
+    .policy-nav {display:flex;flex-wrap:wrap;gap:10px 20px;margin:0 0 22px;padding:14px 2px;font-size:14px;line-height:1.6}
+    .policy-nav strong {color:var(--muted)}
+    .policy-nav a,.policy-body a {color:#5139c6;text-underline-offset:3px}
+    .policy-body {padding:20px;font-size:14.5px;line-height:1.65}
+    .policy-body p {margin:0 0 16px}
+    .policy-body h3 {margin:24px 0 14px;font-size:17px;color:var(--text)}
+    .policy-body h3:first-child {margin-top:0}
+    .policy-body ul {padding-left:24px;margin:0 0 18px}
+    .policy-body li {margin-bottom:6px}
+    .policy-notice {background:#faf9ff;color:#51477b;border-left:3px solid #b9a6ff;padding:14px 16px;margin:0 0 18px;border-radius:0 8px 8px 0}
+    .policy-wrap {margin:0 0 18px;border:1px solid var(--line);border-radius:10px;max-height:720px}
+    .policy-table {min-width:680px;line-height:1.55}
+    .policy-table td:first-child {font-weight:600;width:21%}
+    .policy-table td {overflow-wrap:anywhere}
+    .access-table {min-width:930px}
+    .access-table td:first-child {width:29%}
+    .retention-table {min-width:1080px}
+    .retention-table td {width:25%}
+    .log-table td:first-child {font-family:Consolas,monospace;font-size:13px;width:27%}
+    .expression-reading+.expression-reading {border-top:1px solid var(--line);padding-top:12px;margin-top:24px}
+    .policy-body .expression-code {margin:0 0 16px;white-space:pre-wrap;overflow-wrap:anywhere}
+    .policy-panel {scroll-margin-top:18px}
+    @media(max-width:600px){.policy-body{padding:16px}.policy-nav{padding:0 2px}.policy-body h3{font-size:16px}.policy-body .expression-code{font-size:12px;padding:14px}}
 </style>
 
 <body>
@@ -302,22 +326,24 @@
         <p style="text-align: center;">MOONLIGHT COFFEE CAFETERIA LTDA. — WE COFFEE</p>
     </header>
     <hr>
-    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.0, 17/setembro/2026) — pedidos, produtos,
-        documentos fiscais, pagamentos e fornecedores.</h1>
+    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.2, 28/outubro/2026) — pedidos, produtos,
+        documentos fiscais e pagamentos.</h1>
     <main>
         <section class="grid">
-            <div class="card"><b>7</b><span>entidades no modelo</span></div>
+            <div class="card"><b>6</b><span>entidades no modelo</span></div>
             <div class="card"><b>5</b><span>relacionamentos mapeados</span></div>
-            <div class="card"><b>32</b><span>atributos documentados</span></div>
+            <div class="card"><b>30</b><span>atributos do modelo documentados</span></div>
             <div class="card"><b>MySQL 8</b><span>SGBD</span></div>
-            <div class="card"><b>v1.0</b><span>17/set/2026</span></div>
+            <div class="card"><b>v1.2</b><span>28/out/2026</span></div>
         </section>
+
+        <nav class="policy-nav" aria-label="Complementos do dicionário"><strong>Complementos da v1.2:</strong><a href="#logs-auditoria">Logs</a><a href="#permissoes-retencao">Permissões e retenção</a><a href="#leitura-expressoes">Leitura das expressões</a><a href="#dados-pessoais">Dados pessoais</a><a href="#controle-versao">Versões</a></nav>
 
         <section class="panel">
             <div class="panel-head"><h2>1. Modelo conceitual</h2></div>
             <div class="flow-text">
                 <p>O modelo representa PEDIDO, PRODUTO, CUPOM_FISCAL e PAGAMENTO, preservando os cadastros de
-                    CLIENTE, FUNCIONARIO e FORNECEDOR. Todo pedido gera uma nota fiscal, representada neste
+                    CLIENTE e FUNCIONARIO. Todo pedido gera uma nota fiscal, representada neste
                     trabalho por CUPOM_FISCAL. Esse documento gera os registros de pagamento.</p>
                 <p>Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, com cardinalidade N:M e atributos
                     quantidade e preço unitário da venda. Essa representação é válida no modelo conceitual;
@@ -334,14 +360,13 @@
                     <thead><tr><th>Entidade A</th><th>Relacionamento</th><th>Entidade B</th><th>Cardinalidade</th></tr></thead>
                     <tbody>
                         <tr><td>CLIENTE</td><td>realiza</td><td>PEDIDO</td><td>1:N — cliente associado opcional</td></tr>
-                        <tr><td>FUNCIONARIO</td><td>registra</td><td>PEDIDO</td><td>1:N — conforme a origem BALCÃO</td></tr>
+                        <tr><td>FUNCIONARIO</td><td>registra</td><td>PEDIDO</td><td>1:N — associação opcional em PEDIDO</td></tr>
                         <tr><td>PEDIDO</td><td>contém</td><td>PRODUTO</td><td>N:M — quantidade e preço unitário no relacionamento</td></tr>
                         <tr><td>PEDIDO</td><td>gera</td><td>CUPOM_FISCAL</td><td>1:1 — todo pedido gera um documento</td></tr>
                         <tr><td>CUPOM_FISCAL</td><td>gera</td><td>PAGAMENTO</td><td>1:N — admite divisão da conta</td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="entity-desc">FORNECEDOR permanece como cadastro, sem acrescentar relacionamentos nesta revisão.</div>
         </section>
 
         <section class="panel">
@@ -454,8 +479,8 @@
             <div class="panel-head">
                 <h2>4. Dicionário de dados por entidade</h2>
                 <input id="searchEntities" onkeyup="filterEntities(this.value)"
-                    placeholder="Pesquisar entidade ou atributo...">
-                <span id="entityCount"></span>
+                    placeholder="Pesquisar entidade ou atributo do modelo..." aria-label="Pesquisar entidade ou atributo do modelo">
+                <span id="entityCount" aria-live="polite"></span>
             </div>
         </section>
 
@@ -541,7 +566,7 @@
                             <td><code>nome</code></td>
                             <td>varchar(120)</td>
                             <td>Sim</td>
-                            <td>Nome do funcionário; aparece nas consultas de pedidos de balcão.</td>
+                            <td>Nome do funcionário; aparece nas consultas quando houver associação ao pedido de balcão.</td>
                         </tr>
                         <tr>
                             <td>DS_CARGO</td>
@@ -563,10 +588,8 @@
             <div class="panel-head">
                 <h2>PEDIDO</h2>
             </div>
-            <div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO) + (DS_TOTEM) +
-                (NM_COMANDA) + DT_HORA_PEDIDO +<br>
-                &nbsp;&nbsp;[TP_TOTEM | TP_BALCAO | TP_DELIVERY] + VL_TOTAL + TP_STATUS_PREPARO</div>
-            <div class="entity-desc">ID_CLIENTE é opcional e ID_FUNCIONARIO é utilizado na origem BALCÃO.
+            <div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO)<br>       + (DS_TOTEM) + (NM_COMANDA) + DT_HORA_PEDIDO<br>       + TP_ORIGEM_PEDIDO + VL_TOTAL + TP_STATUS_PREPARO</div>
+            <div class="entity-desc">ID_CLIENTE e ID_FUNCIONARIO são opcionais, inclusive nas vendas de BALCÃO.
                 DS_TOTEM é um atributo do pedido, sem FK: identifica o equipamento apenas na origem TOTEM.
                 origem_pedido admite TOTEM, BALCÃO ou DELIVERY. NM_COMANDA registra o nome de chamada mesmo
                 sem cliente associado; na ausência do nome, utiliza-se ID_PEDIDO. VL_TOTAL é derivado da soma
@@ -601,8 +624,8 @@
                             <td><span class="tag fk">ID_FUNCIONARIO</span></td>
                             <td><code>id_funcionario</code></td>
                             <td>integer</td>
-                            <td>Condicional (FK)</td>
-                            <td>Preenchido quando <code>TP_ORIGEM_PEDIDO = BALCAO</code>.</td>
+                            <td>Não (FK opcional)</td>
+                            <td>Vínculo opcional com funcionário cadastrado, inclusive na origem BALCÃO. O atendimento utiliza um registro que permanece aberto para as vendas, sem exigir identificação individual em cada pedido.</td>
                         </tr>
                         <tr>
                             <td>DS_TOTEM</td>
@@ -735,15 +758,8 @@
             <div class="panel-head">
                 <h2>PAGAMENTO</h2>
             </div>
-            <div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL + [TP_PIX | TP_CREDITO | TP_DEBITO |
-                TP_DINHEIRO] +<br>
-                &nbsp;&nbsp;VL_PAGAMENTO + [TP_APROVADO | TP_RECUSADO | TP_ESTORNADO] + DT_HORA_PAGAMENTO</div>
-            <div class="entity-desc">Um cupom fiscal pode gerar <code>1{ }N</code> pagamentos (não representado aqui como
-                iteração explícita porque cada pagamento é uma linha independente ligada por <code>ID_CUPOM_FISCAL</code>),
-                o que permite dividir a conta entre formas diferentes; <code>[TP_PIX | TP_CREDITO | TP_DEBITO |
-                    TP_DINHEIRO]</code> exige escolher exatamente uma forma por registro de pagamento.
-                Somente pagamentos aprovados compõem o valor pago. Propõe-se o estado Estornado para registrar
-                a devolução integral confirmada de um pagamento anteriormente aprovado.</div>
+            <div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL<br>          + TP_FORMA_PAGTO + VL_PAGAMENTO<br>          + TP_STATUS_PGTO + DT_HORA_PAGAMENTO</div>
+            <div class="entity-desc">Um cupom fiscal pode gerar <code>1{ }N</code> pagamentos; cada pagamento é uma linha independente ligada por <code>ID_CUPOM_FISCAL</code>. <code>TP_FORMA_PAGTO</code> registra uma única forma por tentativa, permitindo dividir a conta entre formas diferentes. <code>TP_STATUS_PGTO</code> registra Aprovado ou Recusado; Estornado é o estado proposto após devolução integral confirmada. Somente pagamentos aprovados compõem o valor pago.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -810,50 +826,12 @@
                 <code>DT_HORA_PAGAMENTO</code> (fechamento mensal).</div>
         </section>
 
-        <!-- FORNECEDOR -->
-        <section class="panel entity-panel" data-entity="FORNECEDOR fornecedor id_fornecedor cnpj">
-            <div class="panel-head">
-                <h2>FORNECEDOR</h2>
-            </div>
-            <div class="code-block">FORNECEDOR = @ID_FORNECEDOR + ID_CNPJ</div>
-            <div class="entity-desc">ID_FORNECEDOR é o identificador único; ID_CNPJ registra o CNPJ obrigatório do fornecedor. O cadastro é preservado sem acrescentar relacionamentos nesta revisão.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_FORNECEDOR</span></td>
-                            <td><code>id_fornecedor</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do fornecedor.</td>
-                        </tr>
-                        <tr>
-                            <td>ID_CNPJ</td>
-                            <td><code>cnpj</code></td>
-                            <td>varchar(18)</td>
-                            <td>Sim</td>
-                            <td>CNPJ do fornecedor.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_FORNECEDOR</code>.</div>
-        </section>
 
         <section class="panel">
             <div class="panel-head">
                 <h2>Atributos dos relacionamentos</h2>
             </div>
-            <div class="entity-desc">Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, de cardinalidade N:M. Seus dois atributos descrevem a participação do produto no pedido, além dos 30 atributos das sete entidades.</div>
+            <div class="entity-desc">Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, de cardinalidade N:M. Seus dois atributos descrevem a participação do produto no pedido, além dos 28 atributos documentados nas seis entidades. São 30 atributos documentados ao todo: 26 conceituais e quatro referências de FK para o modelo lógico.</div>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -885,19 +863,37 @@
             </div>
         </section>
 
-        <section class="panel">
-            <div class="panel-head">
-                <h2>5. Observação sobre dados pessoais</h2>
-            </div>
-            <div class="note">
-                <code>ID_CPF_CNPJ</code> em CLIENTE é dado pessoal opcional (LGPD, art. 5º, II). Por ser coletado
-                apenas quando o próprio cliente o fornece e não ser exigido para a realização do pedido, seu
-                tratamento deve se limitar às finalidades de identificação e emissão fiscal, sem uso para outras
-                finalidades sem base legal ou consentimento.
-            </div>
+        <section class="panel policy-panel" id="logs-auditoria" aria-labelledby="logs-auditoria-title">
+            <div class="panel-head"><h2 id="logs-auditoria-title">5. Logs de acesso e operações</h2></div>
+            <div class="policy-body"><p>O sistema deverá registrar eventos relevantes para acompanhar consultas, alterações e tentativas de operações não autorizadas.</p><div class="policy-notice"><strong>Proposta de auditoria:</strong> logs e autenticação ainda dependerão de modelagem e implementação próprias. Os campos abaixo não integram as seis entidades e os 30 atributos do modelo atual.</div><h3>Dados propostos para cada registro</h3><div class="table-wrap policy-wrap"><table class="policy-table log-table"><thead><tr><th scope="col">Campo</th><th scope="col">Informação registrada</th></tr></thead><tbody><tr><td>id_log</td><td>Identificador único do evento.</td></tr><tr><td>data_hora_evento</td><td>Data e horário da ocorrência.</td></tr><tr><td>identificacao_ator</td><td>Conta, serviço ou sessão responsável, quando identificável.</td></tr><tr><td>perfil_utilizado</td><td>Perfil de acesso utilizado na operação, quando disponível.</td></tr><tr><td>operacao</td><td>Consulta, inclusão, alteração, cancelamento, estorno, exclusão, autenticação ou exportação.</td></tr><tr><td>entidade_alvo</td><td>Entidade ou recurso acessado, quando aplicável.</td></tr><tr><td>referencia_registro</td><td>Identificador do registro afetado, quando houver um registro específico.</td></tr><tr><td>resultado</td><td>SUCESSO, NEGADO ou FALHA.</td></tr><tr><td>motivo</td><td>Justificativa ou código de erro, quando aplicável, evitando reproduzir dados pessoais desnecessários.</td></tr></tbody></table></div><h3>Eventos previstos</h3><ul><li>Consulta ou exportação de dados pessoais de clientes.</li><li>Inclusão e alteração de cadastros.</li><li>Alteração do preço atual de um produto.</li><li>Registro de pedidos e tentativas de pagamento.</li><li>Cancelamento de pedidos e confirmação de estornos.</li><li>Tentativas de operações sem permissão.</li><li>Alterações nas permissões de acesso.</li></ul><p>O resultado do log indica o resultado da <strong>operação no sistema</strong>. Por exemplo, registrar corretamente uma tentativa de pagamento recusada pode gerar um log de SUCESSO, enquanto o pagamento permanece Recusado.</p><p>Os perfis operacionais não poderão editar ou apagar os registros de auditoria. Sua eliminação dependerá de procedimento de retenção aprovado.</p><div class="policy-notice"><strong>Identificação no balcão:</strong> como o atendimento utiliza um registro que permanece aberto, o log poderá identificar essa sessão. Isso não comprova qual funcionário realizou pessoalmente a ação. O vínculo por <code>PEDIDO.id_funcionario</code> continuará opcional.</div></div>
         </section>
 
-        <footer>Dicionário de Dados — We Coffee · v1.0 · 17/setembro/2026</footer>
+        <section class="panel policy-panel" id="permissoes-retencao" aria-labelledby="permissoes-retencao-title">
+            <div class="panel-head"><h2 id="permissoes-retencao-title">6. Permissões por operação e retenção</h2></div>
+            <div class="policy-body"><h3>6.1 Perfis propostos</h3><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Perfil</th><th scope="col">Finalidade</th></tr></thead><tbody><tr><td>Atendimento</td><td>Registrar e acompanhar pedidos, clientes e tentativas de pagamento necessárias ao atendimento.</td></tr><tr><td>Gerência</td><td>Administrar cadastros, consultar resultados e autorizar operações excepcionais.</td></tr><tr><td>Consulta gerencial</td><td>Consultar relatórios agregados, sem alterar registros nem acessar dados pessoais desnecessários.</td></tr></tbody></table></div><p>Os perfis e suas atribuições deverão ser confirmados com a organização. A participação de uma pessoa na escala não concede automaticamente acesso ao sistema.</p><h3>6.2 Matriz de acesso proposta</h3><div class="table-wrap policy-wrap"><table class="policy-table access-table"><thead><tr><th scope="col">Operação</th><th scope="col">Atendimento</th><th scope="col">Gerência</th><th scope="col">Consulta gerencial</th></tr></thead><tbody><tr><td>Consultar produtos e preços</td><td>Permitido</td><td>Permitido</td><td>Permitido</td></tr><tr><td>Cadastrar ou alterar produtos e preços</td><td>Não permitido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Cadastrar ou atualizar clientes durante o atendimento</td><td>Permitido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Administrar o cadastro de funcionários</td><td>Não permitido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Registrar pedidos e tentativas de pagamento</td><td>Permitido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Atualizar a situação de preparo</td><td>Permitido, conforme as regras do pedido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Solicitar cancelamento ou estorno</td><td>Permitido</td><td>Permitido</td><td>Não permitido</td></tr><tr><td>Autorizar e registrar cancelamento ou estorno</td><td>Não permitido</td><td>Permitido, conforme procedimento validado</td><td>Não permitido</td></tr><tr><td>Consultar relatórios</td><td>Somente operacionais necessários ao atendimento</td><td>Gerenciais</td><td>Agregados, sem identificação de clientes</td></tr><tr><td>Consultar logs</td><td>Não permitido</td><td>Permitido para acompanhamento autorizado</td><td>Não permitido</td></tr><tr><td>Excluir pedidos, cupons ou pagamentos como forma de cancelamento</td><td>Não permitido</td><td>Não permitido</td><td>Não permitido</td></tr><tr><td>Editar ou apagar manualmente logs</td><td>Não permitido</td><td>Não permitido</td><td>Não permitido</td></tr></tbody></table></div><p>Operações sem autorização expressa na matriz deverão ser negadas. Mesmo quando permitidas, continuam sujeitas às regras de negócio: a permissão para registrar um estorno, por exemplo, não dispensa a confirmação da devolução financeira.</p><p>Limpeza e segurança terceirizadas não receberão acesso aos dados de clientes e vendas nesta proposta. Eventuais acessos relacionados à escala deverão ser definidos separadamente.</p><p>As permissões técnicas dos canais TOTEM e DELIVERY também deverão ser especificadas, sem presumir que utilizam os mesmos acessos dos funcionários.</p><h3>6.3 Política de retenção proposta</h3><p>Para cada categoria, deverão ser definidos <strong>prazo, marco inicial da contagem, justificativa, responsável pela aprovação e destino após o período</strong>.</p><div class="table-wrap policy-wrap"><table class="policy-table retention-table"><thead><tr><th scope="col">Categoria</th><th scope="col">Finalidade da conservação</th><th scope="col">Referência para definir o período</th><th scope="col">Tratamento posterior</th></tr></thead><tbody><tr><td>CLIENTE — nome e CPF/CNPJ</td><td>Identificação e demais finalidades confirmadas para o cadastro</td><td>Necessidade do cadastro e eventuais motivos de conservação aplicáveis</td><td>Avaliar eliminação ou anonimização dos dados que deixarem de ser necessários.</td></tr><tr><td>PEDIDO — nome da comanda</td><td>Identificação e chamada durante o atendimento</td><td>Conclusão do atendimento e resolução de pendências que justifiquem sua conservação</td><td>Avaliar remoção ou anonimização do nome, preservando os dados necessários da venda.</td></tr><tr><td>FUNCIONARIO — nome e cargo</td><td>Identificação cadastral e vínculos registrados</td><td>Encerramento do vínculo e necessidades de conservação confirmadas</td><td>Avaliar conservação restrita, arquivamento ou anonimização, preservando a integridade das referências.</td></tr><tr><td>PRODUTO</td><td>Cadastro e identificação dos produtos vendidos</td><td>Utilização no catálogo e existência de histórico associado</td><td>Preservar as referências necessárias às vendas anteriores.</td></tr><tr><td>PEDIDO e CONTÉM</td><td>Histórico da compra, quantidades e preços praticados</td><td>Data do pedido e finalidades de conservação aplicáveis</td><td>Preservar a consistência do histórico; definir procedimento autorizado de arquivamento ou eliminação.</td></tr><tr><td>CUPOM_FISCAL e PAGAMENTO</td><td>Registro fiscal, financeiro, conciliação e tratamento de contestações</td><td>Regras aplicáveis ao documento e à operação, a confirmar com o responsável</td><td>Destinação somente após validação das necessidades de conservação.</td></tr><tr><td>Logs</td><td>Auditoria e investigação de ocorrências</td><td>Data do evento e período necessário para acompanhamento</td><td>Eliminação controlada após o prazo aprovado, ressalvadas ocorrências que exijam conservação.</td></tr></tbody></table></div><div class="policy-notice"><strong>Os prazos numéricos permanecem pendentes de validação.</strong> A LGPD não determina um período único de conservação para todos os dados; a análise depende da finalidade e das hipóteses aplicáveis. <a href="https://www.gov.br/anpd/pt-br/acesso-a-informacao/perguntas-frequentes" target="_blank" rel="noopener noreferrer">Orientação da ANPD sobre tempo de tratamento</a>.</div><p>A aprovação deste conteúdo não significa que os prazos já foram definidos.</p></div>
+        </section>
+
+        <section class="panel policy-panel" id="leitura-expressoes" aria-labelledby="leitura-expressoes-title">
+            <div class="panel-head"><h2 id="leitura-expressoes-title">7. Leitura das expressões</h2></div>
+            <div class="policy-body"><p>As expressões utilizam os nomes dos atributos do próprio dicionário. Os valores possíveis são apresentados separadamente como domínios.</p><article class="expression-reading" id="leitura-cliente"><h3>CLIENTE</h3><pre class="code-block expression-code">CLIENTE = @ID_CLIENTE + NM_CLIENTE + (ID_CPF_CNPJ)</pre><p><strong>Leitura:</strong> Cada cliente possui identificador único e nome obrigatório. CPF/CNPJ é opcional e, quando informado, deve ser único.</p></article><article class="expression-reading" id="leitura-funcionario"><h3>FUNCIONARIO</h3><pre class="code-block expression-code">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + DS_CARGO</pre><p><strong>Leitura:</strong> Cada funcionário possui identificador único, nome e cargo obrigatórios. Essa obrigatoriedade pertence ao cadastro e não torna obrigatório associar um funcionário a cada pedido.</p></article><article class="expression-reading" id="leitura-pedido"><h3>PEDIDO</h3><pre class="code-block expression-code">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO)
+       + (DS_TOTEM) + (NM_COMANDA) + DT_HORA_PEDIDO
+       + TP_ORIGEM_PEDIDO + VL_TOTAL + TP_STATUS_PREPARO</pre><p><strong>Leitura:</strong> Cada pedido possui identificador único, data e horário, origem e situação de preparo. O cliente, o funcionário associado e o nome da comanda são opcionais. A identificação do totem é obrigatória somente na origem TOTEM. Na ausência de nome de comanda, utiliza-se o número do pedido. VL_TOTAL é derivado da soma de quantidade multiplicada pelo preço unitário de cada produto associado.</p><ul class="domain-list"><li><strong>Origem:</strong> TOTEM, BALCÃO ou DELIVERY, representados fisicamente por T, B e D.</li><li><strong>Preparo:</strong> RECEBIDO, EM_PREPARO, PRONTO e ENTREGUE; CANCELADO permanece como estado proposto para cancelamentos.</li></ul></article><article class="expression-reading" id="leitura-produto"><h3>PRODUTO</h3><pre class="code-block expression-code">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO</pre><p><strong>Leitura:</strong> Cada produto possui identificador único, nome e preço atual obrigatórios. O preço deve ser maior que zero. Alterações nesse preço não modificam o preço histórico registrado nas vendas.</p></article><article class="expression-reading" id="leitura-cupom-fiscal"><h3>CUPOM_FISCAL</h3><pre class="code-block expression-code">CUPOM_FISCAL = @ID_CUPOM_FISCAL + ID_PEDIDO
+             + ID_NUMERO_CUPOM + DT_HORA_EMISSAO</pre><p><strong>Leitura:</strong> Cada cupom possui identificador único, referência obrigatória ao pedido, número e data/hora de emissão. Cada pedido gera exatamente um cupom, e o número do documento é único no escopo da unidade.</p></article><article class="expression-reading" id="leitura-pagamento"><h3>PAGAMENTO</h3><pre class="code-block expression-code">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL
+          + TP_FORMA_PAGTO + VL_PAGAMENTO
+          + TP_STATUS_PGTO + DT_HORA_PAGAMENTO</pre><p><strong>Leitura:</strong> Cada tentativa possui identificador único, vínculo obrigatório com um cupom, forma, valor, situação e data/hora de processamento. Um cupom pode reunir várias tentativas, permitindo divisão da conta e novas tentativas após recusa. Somente valores aprovados compõem o valor pago.</p><ul class="domain-list"><li><strong>Forma:</strong> PIX, Crédito, Débito ou Dinheiro — códigos P, C, D e X.</li><li><strong>Situação:</strong> Aprovado ou Recusado; Estornado é o estado proposto após devolução integral confirmada — códigos A, R e E.</li></ul></article><article class="expression-reading" id="leitura-contem"><h3>PEDIDO — CONTÉM — PRODUTO</h3><p><strong>Leitura:</strong> um pedido contém um ou mais produtos, e um produto pode participar de vários pedidos. Cada associação registra:</p><ul><li><code>quantidade</code>: inteira, obrigatória e maior que zero;</li><li><code>preco_unitario</code>: obrigatório, correspondente ao preço praticado naquela venda.</li></ul><p>Esses dados pertencem ao relacionamento CONTÉM. O total do pedido resulta da soma de <code>quantidade × preco_unitario</code>.</p></article></div>
+        </section>
+
+        <section class="panel policy-panel" id="dados-pessoais" aria-labelledby="dados-pessoais-title">
+            <div class="panel-head"><h2 id="dados-pessoais-title">8. Dados pessoais</h2></div>
+            <div class="policy-body"><p>O nome e o CPF de uma pessoa natural são dados pessoais conforme o <strong>art. 5º, I, da LGPD</strong>. O inciso II trata de dados pessoais sensíveis. <a href="https://www.gov.br/anpd/pt-br/acesso-a-informacao/perguntas-frequentes" target="_blank" rel="noopener noreferrer">Definições da ANPD</a>.</p><p>A opcionalidade de CPF/CNPJ no cadastro é uma regra do atendimento e não define, por si só, a base legal do tratamento.</p><p>As finalidades, os acessos e os critérios de conservação deverão ser registrados e validados. Os logs deverão evitar senhas, credenciais e cópias desnecessárias de documentos ou dados pessoais.</p></div>
+        </section>
+
+        <section class="panel policy-panel" id="controle-versao" aria-labelledby="controle-versao-title">
+            <div class="panel-head"><h2 id="controle-versao-title">9. Controle de versão</h2></div>
+            <div class="policy-body"><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Versão</th><th scope="col">Data</th><th scope="col">Registro</th></tr></thead><tbody><tr><td>v1.1</td><td>28/10/2026</td><td>Retirada de FORNECEDOR, atualização das contagens e vínculo opcional com funcionário.</td></tr><tr><td>v1.2</td><td>28/10/2026</td><td>Documentação de logs, matriz de acesso, critérios de retenção, leitura das expressões e revisão da referência à LGPD.</td></tr></tbody></table></div><p>A versão v1.2 identifica esta revisão documental. Os perfis, os controles de auditoria e os prazos de retenção conservam as pendências de validação indicadas nas respectivas seções.</p></div>
+        </section>
+
+        <footer>Dicionário de Dados — We Coffee · v1.2 · 28/outubro/2026</footer>
     </main>
 
     <script>
