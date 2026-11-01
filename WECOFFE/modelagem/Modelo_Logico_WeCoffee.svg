@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2110" height="1220" viewBox="0 0 2110 1220">
+<rect width="2110" height="1220" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#111;font-size:17px}.title{font-weight:bold;font-size:20px}.card{font-size:18px}</style>
+<text x="40" y="32" class="title">We Coffee — Modelo lógico relacional · Estoque incluído apenas nesta camada</text>
+<path d="M 200 244 V 400" stroke="#222" stroke-width="2" fill="none"/>
+<text x="210" y="270" class="card">(0, 1)</text>
+<text x="210" y="380" class="card">(0, n)</text>
+<path d="M 785 244 V 310 H 390 V 400" stroke="#222" stroke-width="2" fill="none"/>
+<text x="795" y="270" class="card">(0, 1)</text>
+<text x="400" y="380" class="card">(0, n)</text>
+<path d="M 490 470 H 560" stroke="#222" stroke-width="2" fill="none"/>
+<text x="495" y="453" class="card">(1, 1)</text>
+<text x="495" y="500" class="card">(1, 1)</text>
+<path d="M 1010 470 H 1080" stroke="#222" stroke-width="2" fill="none"/>
+<text x="1015" y="453" class="card">(1, 1)</text>
+<text x="1015" y="500" class="card">(1, n)</text>
+<path d="M 240 714 V 810 H 650 V 900" stroke="#222" stroke-width="2" fill="none"/>
+<text x="250" y="745" class="card">(1, 1)</text>
+<text x="660" y="880" class="card">(1, n)</text>
+<path d="M 1010 970 H 1080" stroke="#222" stroke-width="2" fill="none"/>
+<text x="1015" y="954" class="card">(0, n)</text>
+<text x="1015" y="999" class="card">(1, 1)</text>
+<path d="M 1530 970 H 1600" stroke="#222" stroke-width="2" fill="none"/>
+<text x="1535" y="954" class="card">(1, 1)</text>
+<text x="1535" y="999" class="card">(1, 1)</text>
+<path d="M 1825 448 V 900" stroke="#222" stroke-width="2" fill="none"/>
+<text x="1835" y="480" class="card">(0, n)</text>
+<text x="1835" y="880" class="card">(1, 1)</text>
+<path d="M 1010 150 H 1600" stroke="#222" stroke-width="2" fill="none"/>
+<text x="1020" y="135" class="card">(1, 1)</text>
+<text x="1520" y="135" class="card">(0, n)</text>
+<path d="M 950 900 V 760 H 1560 V 330 H 1600" stroke="#222" stroke-width="2" fill="none"/>
+<text x="865" y="880" class="card">(0, 1)</text>
+<text x="1485" y="315" class="card">(0, n)</text>
+<rect x="40" y="100" width="450" height="144" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 40 142 H 490" stroke="#111"/>
+<text x="52" y="128" class="title">CLIENTE</text>
+<text x="52" y="166">id_cliente</text>
+<text x="275" y="166">INT</text>
+<text x="417" y="166">PK</text>
+<text x="52" y="200">nome</text>
+<text x="275" y="200">VARCHAR(150)</text>
+<text x="417" y="200"></text>
+<text x="52" y="234">cpf_cnpj</text>
+<text x="275" y="234">VARCHAR(14)</text>
+<text x="417" y="234"></text>
+<rect x="560" y="100" width="450" height="144" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 560 142 H 1010" stroke="#111"/>
+<text x="572" y="128" class="title">FUNCIONARIO</text>
+<text x="572" y="166">id_funcionario</text>
+<text x="795" y="166">INT</text>
+<text x="937" y="166">PK</text>
+<text x="572" y="200">nome</text>
+<text x="795" y="200">VARCHAR(150)</text>
+<text x="937" y="200"></text>
+<text x="572" y="234">cargo</text>
+<text x="795" y="234">VARCHAR(80)</text>
+<text x="937" y="234"></text>
+<rect x="40" y="400" width="450" height="314" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 40 442 H 490" stroke="#111"/>
+<text x="52" y="428" class="title">PEDIDO</text>
+<text x="52" y="466">id_pedido</text>
+<text x="275" y="466">INT</text>
+<text x="417" y="466">PK</text>
+<text x="52" y="500">id_cliente</text>
+<text x="275" y="500">INT</text>
+<text x="417" y="500">FK</text>
+<text x="52" y="534">id_funcionario</text>
+<text x="275" y="534">INT</text>
+<text x="417" y="534">FK</text>
+<text x="52" y="568">totem</text>
+<text x="275" y="568">VARCHAR(50)</text>
+<text x="417" y="568"></text>
+<text x="52" y="602">nome_comanda</text>
+<text x="275" y="602">VARCHAR(150)</text>
+<text x="417" y="602"></text>
+<text x="52" y="636">data_hora</text>
+<text x="275" y="636">DATETIME</text>
+<text x="417" y="636"></text>
+<text x="52" y="670">origem_pedido</text>
+<text x="275" y="670">VARCHAR(10)</text>
+<text x="417" y="670"></text>
+<text x="52" y="704">status_preparo</text>
+<text x="275" y="704">VARCHAR(12)</text>
+<text x="417" y="704"></text>
+<rect x="560" y="400" width="450" height="178" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 560 442 H 1010" stroke="#111"/>
+<text x="572" y="428" class="title">CUPOM_FISCAL</text>
+<text x="572" y="466">id_cupom_fiscal</text>
+<text x="795" y="466">INT</text>
+<text x="937" y="466">PK</text>
+<text x="572" y="500">id_pedido</text>
+<text x="795" y="500">INT</text>
+<text x="937" y="500">FK</text>
+<text x="572" y="534">numero</text>
+<text x="795" y="534">VARCHAR(50)</text>
+<text x="937" y="534"></text>
+<text x="572" y="568">data_hora_emissao</text>
+<text x="795" y="568">DATETIME</text>
+<text x="937" y="568"></text>
+<rect x="1080" y="400" width="450" height="246" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 1080 442 H 1530" stroke="#111"/>
+<text x="1092" y="428" class="title">PAGAMENTO</text>
+<text x="1092" y="466">id_pagamento</text>
+<text x="1315" y="466">INT</text>
+<text x="1457" y="466">PK</text>
+<text x="1092" y="500">id_cupom_fiscal</text>
+<text x="1315" y="500">INT</text>
+<text x="1457" y="500">FK</text>
+<text x="1092" y="534">forma_pagamento</text>
+<text x="1315" y="534">VARCHAR(10)</text>
+<text x="1457" y="534"></text>
+<text x="1092" y="568">valor_pagamento</text>
+<text x="1315" y="568">DECIMAL(12,2)</text>
+<text x="1457" y="568"></text>
+<text x="1092" y="602">status_pagamento</text>
+<text x="1315" y="602">VARCHAR(10)</text>
+<text x="1457" y="602"></text>
+<text x="1092" y="636">data_hora_pagamento</text>
+<text x="1315" y="636">DATETIME</text>
+<text x="1457" y="636"></text>
+<rect x="560" y="900" width="450" height="178" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 560 942 H 1010" stroke="#111"/>
+<text x="572" y="928" class="title">ITEM_PEDIDO</text>
+<text x="572" y="966">id_pedido</text>
+<text x="795" y="966">INT</text>
+<text x="937" y="966">PK, FK</text>
+<text x="572" y="1000">id_produto</text>
+<text x="795" y="1000">INT</text>
+<text x="937" y="1000">PK, FK</text>
+<text x="572" y="1034">quantidade</text>
+<text x="795" y="1034">INT</text>
+<text x="937" y="1034"></text>
+<text x="572" y="1068">preco_unitario</text>
+<text x="795" y="1068">DECIMAL(12,2)</text>
+<text x="937" y="1068"></text>
+<rect x="1080" y="900" width="450" height="144" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 1080 942 H 1530" stroke="#111"/>
+<text x="1092" y="928" class="title">PRODUTO</text>
+<text x="1092" y="966">id_produto</text>
+<text x="1315" y="966">INT</text>
+<text x="1457" y="966">PK</text>
+<text x="1092" y="1000">nome</text>
+<text x="1315" y="1000">VARCHAR(150)</text>
+<text x="1457" y="1000"></text>
+<text x="1092" y="1034">preco</text>
+<text x="1315" y="1034">DECIMAL(12,2)</text>
+<text x="1457" y="1034"></text>
+<rect x="1600" y="900" width="450" height="178" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 1600 942 H 2050" stroke="#111"/>
+<text x="1612" y="928" class="title">ESTOQUE</text>
+<text x="1612" y="966">id_produto</text>
+<text x="1835" y="966">INT</text>
+<text x="1977" y="966">PK, FK</text>
+<text x="1612" y="1000">quantidade_disponivel</text>
+<text x="1835" y="1000">INT</text>
+<text x="1977" y="1000"></text>
+<text x="1612" y="1034">estoque_minimo</text>
+<text x="1835" y="1034">INT</text>
+<text x="1977" y="1034"></text>
+<text x="1612" y="1068">data_atualizacao</text>
+<text x="1835" y="1068">DATETIME</text>
+<text x="1977" y="1068"></text>
+<rect x="1600" y="100" width="450" height="348" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M 1600 142 H 2050" stroke="#111"/>
+<text x="1612" y="128" class="title">MOVIMENTACAO_ESTOQUE</text>
+<text x="1612" y="166">id_movimentacao</text>
+<text x="1835" y="166">INT</text>
+<text x="1977" y="166">PK</text>
+<text x="1612" y="200">id_produto</text>
+<text x="1835" y="200">INT</text>
+<text x="1977" y="200">FK</text>
+<text x="1612" y="234">id_pedido</text>
+<text x="1835" y="234">INT</text>
+<text x="1977" y="234">FK</text>
+<text x="1612" y="268">id_funcionario</text>
+<text x="1835" y="268">INT</text>
+<text x="1977" y="268">FK</text>
+<text x="1612" y="302">tipo</text>
+<text x="1835" y="302">VARCHAR(15)</text>
+<text x="1977" y="302"></text>
+<text x="1612" y="336">quantidade</text>
+<text x="1835" y="336">INT</text>
+<text x="1977" y="336"></text>
+<text x="1612" y="370">data_hora</text>
+<text x="1835" y="370">DATETIME</text>
+<text x="1977" y="370"></text>
+<text x="1612" y="404">motivo</text>
+<text x="1835" y="404">VARCHAR(255)</text>
+<text x="1977" y="404"></text>
+<text x="1612" y="438">referencia</text>
+<text x="1835" y="438">VARCHAR(80)</text>
+<text x="1977" y="438"></text>
+<text x="40" y="1140">Cardinalidade junto à tabela: quantidade de suas linhas para uma linha da tabela oposta. Ligação ITEM_PEDIDO–MOVIMENTACAO_ESTOQUE: FK composta.</text>
+<text x="40" y="1175">PK = chave primária · FK = chave estrangeira · NOT NULL, UNIQUE, CHECK e DEFAULT: dicionário lógico e script SQL.</text></svg>
