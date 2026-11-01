@@ -342,6 +342,27 @@
         <section class="panel">
             <div class="panel-head"><h2>1. Modelo conceitual</h2></div>
             <div class="flow-text">
+                <h3>DER — notação brModelo</h3>
+                <p><b>Software utilizado na criação do DER: brModelo 3</b>, com arquivo editável no formato .brM3.</p>
+                <p><a href="WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3">Baixar modelo editável</a> ·
+                    <a href="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png" target="_blank" rel="noopener">Abrir diagrama em tamanho original</a></p>
+                <a href="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png" target="_blank" rel="noopener">
+                    <img src="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png"
+                        alt="DER conceitual da We Coffee: seis entidades, cinco relacionamentos, identificadores preenchidos e atributos ligados externamente, sem chaves estrangeiras."
+                        style="display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px">
+                </a>
+                <h3>Como ler o diagrama</h3>
+                <ul>
+                    <li><b>Entidades:</b> retângulos. <b>Relacionamentos:</b> losangos, com o par (mín, máx) nos dois lados de cada relacionamento.</li>
+                    <li><b>Identificadores:</b> círculos preenchidos. Um identificador composto exige mais de um círculo preenchido na entidade. Se os atributos forem listados dentro do retângulo, todos os atributos identificadores devem estar sublinhados.</li>
+                    <li><b>Atributos comuns:</b> círculos vazios. Atributos multivalorados apresentam também sua cardinalidade, como (1, n).</li>
+                    <li><b>Atributos compostos:</b> a representação dos subatributos ligados ao atributo principal é opcional.</li>
+                    <li><b>Autorrelacionamento:</b> losango ligado duas vezes à mesma entidade, com cardinalidade em cada ligação.</li>
+                    <li><b>Generalização/especialização:</b> triângulo ligando a entidade genérica às especializadas; indicar totalidade e disjunção é opcional.</li>
+                    <li><b>Entidade associativa:</b> retângulo envolvendo o losango, permitindo atributos próprios e ligações com outras entidades.</li>
+                    <li><b>Atributos das entidades:</b> círculos externos ou lista interna com identificadores sublinhados. <b>Atributos de relacionamentos e entidades associativas:</b> exclusivamente externos, ligados ao losango ou à entidade associativa.</li>
+                </ul>
+                <p><b>Sem chaves estrangeiras no DER conceitual.</b> As referências de FK nas tabelas deste dicionário pertencem ao modelo lógico. No DER, quantidade e preco_unitario são atributos externos ligados ao relacionamento CONTÉM.</p>
                 <p>O modelo representa PEDIDO, PRODUTO, CUPOM_FISCAL e PAGAMENTO, preservando os cadastros de
                     CLIENTE e FUNCIONARIO. Todo pedido gera uma nota fiscal, representada neste
                     trabalho por CUPOM_FISCAL. Esse documento gera os registros de pagamento.</p>

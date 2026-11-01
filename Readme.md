@@ -583,6 +583,30 @@ As indicações de PK e FK no dicionário antecipam o mapeamento para o modelo l
 
 ## 7.1 DER da We Coffee
 
+**Software utilizado na criação do DER:** brModelo 3, com arquivo editável no formato `.brM3`.
+
+### Notação do modelo conceitual
+
+O DER deve seguir a notação do **brModelo**, conforme a orientação da atividade, aplicável a todos os grupos dos Casos A e B.
+
+| Elemento | Representação |
+|---|---|
+| Entidade | Retângulo. |
+| Relacionamento | Losango. |
+| Cardinalidade | Par `(mín, máx)` nos dois lados de cada relacionamento, como `(0, 1)`, `(1, n)` e `(0, n)`. |
+| Autorrelacionamento | Losango ligado duas vezes à mesma entidade, com cardinalidade em cada ligação. |
+| Atributo identificador | Círculo preenchido ligado à entidade; se os atributos forem listados dentro do retângulo, o identificador deve estar sublinhado. |
+| Identificador composto | Mais de um círculo preenchido na mesma entidade ou todos os atributos que compõem o identificador sublinhados na lista interna. |
+| Atributo comum | Círculo vazio ligado à entidade ou ao relacionamento correspondente. |
+| Atributo multivalorado | Círculo vazio acompanhado da cardinalidade do atributo, como `(1, n)`. |
+| Atributo composto | Pode apresentar subatributos ligados ao atributo principal; essa representação gráfica é opcional. |
+| Generalização/especialização | Triângulo ligando a entidade genérica às especializadas; a indicação de totalidade e disjunção é opcional. |
+| Entidade associativa | Retângulo envolvendo o losango do relacionamento, permitindo atributos próprios e relacionamentos com outras entidades. |
+
+Os atributos das **entidades** podem ser desenhados como círculos ligados ou listados dentro do retângulo, com os identificadores sublinhados nessa segunda opção. Os atributos de **relacionamentos e entidades associativas** devem ser exclusivamente externos, ligados ao losango ou à entidade associativa, sem listagem dentro de retângulos. No modelo atual, `quantidade` e `preco_unitario` estão ligados ao losango CONTÉM.
+
+**Não representar chaves estrangeiras no DER conceitual.** Os vínculos são expressos pelos relacionamentos; as referências de FK documentadas para implementação pertencem ao modelo lógico.
+
 ![DER da We Coffee com pedido, produto, cupom fiscal e pagamento](<./WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png>)
 
 [Arquivo editável no brModelo 3](<./WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3>)
