@@ -1,7 +1,7 @@
 // Gera SVG na notação visual do modelo lógico brModelo a partir dos DDLs.
-// Executar: node docs/gerar_modelo_logico.mjs
+// Executar: node WECOFFE/docs/gerar_modelo_logico.mjs
 import fs from 'node:fs/promises';
-const dir = new URL('../WECOFFE/modelagem/', import.meta.url);
+const dir = new URL('../modelagem/', import.meta.url);
 const ddl = (await fs.readFile(new URL('esquema_logico.sql',dir),'utf8')) + '\n'
   + (await fs.readFile(new URL('estoque_logico.sql',dir),'utf8'));
 const tables={};

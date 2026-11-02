@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dicionário de Dados — We Coffee · v1.3</title>
+    <title>Dicionário de Dados — We Coffee · v1.4</title>
     <link rel="icon" href="WECOFFE/dicionario/img/wecoffee_logo_transparente_512.png">
 </head>
 <style>
@@ -281,6 +281,9 @@
         }
     }
 
+    .integrity-table {min-width:1500px;line-height:1.5}
+    .integrity-table th,.integrity-table td {white-space:normal;vertical-align:top;overflow-wrap:anywhere}
+    .indices-note code {white-space:normal;overflow-wrap:anywhere}
     @media(max-width:600px) {
 
         .grid,
@@ -326,18 +329,19 @@
         <p style="text-align: center;">MOONLIGHT COFFEE CAFETERIA LTDA. — WE COFFEE</p>
     </header>
     <hr>
-    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.2, 28/outubro/2026) — pedidos, produtos,
+    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.4, 01/novembro/2026) — pedidos, produtos,
         documentos fiscais e pagamentos.</h1>
     <main>
         <section class="grid">
-            <div class="card"><b>6</b><span>entidades no modelo</span></div>
-            <div class="card"><b>5</b><span>relacionamentos mapeados</span></div>
-            <div class="card"><b>30</b><span>atributos do modelo documentados</span></div>
+            <div class="card"><b>6</b><span>entidades conceituais</span></div>
+            <div class="card"><b>9</b><span>tabelas lógicas</span></div>
+            <div class="card"><b>44</b><span>colunas físicas documentadas</span></div>
             <div class="card"><b>MySQL 8</b><span>SGBD</span></div>
-            <div class="card"><b>v1.2</b><span>28/out/2026</span></div>
+            <div class="card"><b>v1.4</b><span>01/nov/2026</span></div>
         </section>
 
-        <nav class="policy-nav" aria-label="Complementos do dicionário"><strong>Complementos da v1.2:</strong><a href="#logs-auditoria">Logs</a><a href="#permissoes-retencao">Permissões e retenção</a><a href="#leitura-expressoes">Leitura das expressões</a><a href="#dados-pessoais">Dados pessoais</a><a href="#controle-versao">Versões</a></nav>
+        <p class="entity-desc"><b>Fonte física:</b> <a href="WECOFFE/docs/script.sql">script SQL completo</a>. Este único HTML reúne as nove tabelas e todas as 44 colunas. PK implica NOT NULL; UNIQUE composto não torna cada componente individualmente único. NULL implícito não é um valor de negócio presumido. Não há coluna física valor_total: o total é calculado por SUM(quantidade × preco_unitario), conforme RN13. Estoque aparece somente a partir do modelo lógico; os arquivos conceituais permanecem preservados.</p>
+        <nav class="policy-nav" aria-label="Complementos do dicionário"><strong>Navegação:</strong><a href="#logs-auditoria">Logs</a><a href="#permissoes-retencao">Permissões e retenção</a><a href="#leitura-expressoes">Leitura das expressões</a><a href="#dados-pessoais">Dados pessoais</a><a href="#controle-versao">Versões</a></nav>
 
         <section class="panel">
             <div class="panel-head"><h2>1. Modelo conceitual</h2></div>
@@ -498,395 +502,882 @@
 
         <section class="panel">
             <div class="panel-head">
-                <h2>4. Dicionário de dados por entidade</h2>
+                <h2>4. Dicionário lógico — tipos e restrições por coluna</h2>
                 <input id="searchEntities" onkeyup="filterEntities(this.value)"
-                    placeholder="Pesquisar entidade ou atributo do modelo..." aria-label="Pesquisar entidade ou atributo do modelo">
+                    placeholder="Pesquisar tabela ou coluna..." aria-label="Pesquisar tabela ou coluna">
                 <span id="entityCount" aria-live="polite"></span>
             </div>
         </section>
 
-        <!-- CLIENTE -->
-        <section class="panel entity-panel" data-entity="CLIENTE cliente id_cliente nome cpf cnpj">
-            <div class="panel-head">
-                <h2>CLIENTE</h2>
-            </div>
-            <div class="code-block">CLIENTE = @ID_CLIENTE + NM_CLIENTE + (ID_CPF_CNPJ)</div>
-            <div class="entity-desc"><code>@ID_CLIENTE</code> é o identificador único; <code>NM_CLIENTE</code> é
-                obrigatório; <code>(ID_CPF_CNPJ)</code> é opcional porque o cliente pode não informar CPF/CNPJ no
-                momento do pedido — quando informado, deve ser único.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_CLIENTE</span></td>
-                            <td><code>id_cliente</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do cliente; não sofre operação matemática.</td>
-                        </tr>
-                        <tr>
-                            <td>NM_CLIENTE</td>
-                            <td><code>nome</code></td>
-                            <td>varchar(120)</td>
-                            <td>Sim</td>
-                            <td>Nome cadastrado do cliente; pode ser copiado para nome_comanda ao registrar o pedido.</td>
-                        </tr>
-                        <tr>
-                            <td>ID_CPF_CNPJ</td>
-                            <td><code>cpf_cnpj</code></td>
-                            <td>varchar(18)</td>
-                            <td>Não (único quando informado)</td>
-                            <td>CPF ou CNPJ do cliente; dado pessoal, coletado apenas quando o próprio cliente o
-                                informa.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_CLIENTE</code> (clusterizado); índice único em
-                <code>ID_CPF_CNPJ</code> (permite nulo, mas impede duplicidade quando preenchido).</div>
-        </section>
+<section class="panel entity-panel" id="tabela-cliente" data-entity="CLIENTE id_cliente nome cpf_cnpj">
+<div class="panel-head">
+<h2>CLIENTE</h2>
+</div>
+<div class="code-block">CLIENTE = @ID_CLIENTE + NM_CLIENTE + (ID_CPF_CNPJ)</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_cliente">
+<td>ID_CLIENTE</td>
+<td>
+<code>id_cliente</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador do cliente cadastrado (RN01).</td>
+</tr>
+<tr data-column="nome">
+<td>NOME</td>
+<td>
+<code>nome</code>
+</td>
+<td>VARCHAR(150)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Nome do cadastro, sem permitir texto vazio (RN02).</td>
+</tr>
+<tr data-column="cpf_cnpj">
+<td>CPF_CNPJ</td>
+<td>
+<code>cpf_cnpj</code>
+</td>
+<td>VARCHAR(14)</td>
+<td>Não — admite NULL</td>
+<td>UNIQUE</td>
+<td>NULL ou texto com 11/14 dígitos de 0 a 9.</td>
+<td>NULL (implícito)</td>
+<td>Documento opcional padronizado sem pontuação; não valida dígitos verificadores (RN02).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(nome)) &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (cpf_cnpj IS NULL OR (CHAR_LENGTH(cpf_cnpj) IN (11,14) AND cpf_cnpj REGEXP '^[0-9]+$'))</code>
+</li>
+</ul>
+</div>
+</section>
 
-        <!-- FUNCIONARIO -->
-        <section class="panel entity-panel" data-entity="FUNCIONARIO funcionario id_funcionario nome cargo">
-            <div class="panel-head">
-                <h2>FUNCIONARIO</h2>
-            </div>
-            <div class="code-block">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + DS_CARGO</div>
-            <div class="entity-desc">Os três campos são obrigatórios e conectados por <code>+</code>; não há grupo
-                opcional nesta entidade.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_FUNCIONARIO</span></td>
-                            <td><code>id_funcionario</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do funcionário.</td>
-                        </tr>
-                        <tr>
-                            <td>NM_FUNCIONARIO</td>
-                            <td><code>nome</code></td>
-                            <td>varchar(120)</td>
-                            <td>Sim</td>
-                            <td>Nome do funcionário; aparece nas consultas quando houver associação ao pedido de balcão.</td>
-                        </tr>
-                        <tr>
-                            <td>DS_CARGO</td>
-                            <td><code>cargo</code></td>
-                            <td>varchar(60)</td>
-                            <td>Sim</td>
-                            <td>Função exercida (ex.: atendente, barista); usada em relatórios de produtividade por
-                                cargo.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_FUNCIONARIO</code>.</div>
-        </section>
+<section class="panel entity-panel" id="tabela-funcionario" data-entity="FUNCIONARIO id_funcionario nome cargo">
+<div class="panel-head">
+<h2>FUNCIONARIO</h2>
+</div>
+<div class="code-block">FUNCIONARIO = @ID_FUNCIONARIO + NM_FUNCIONARIO + DS_CARGO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_funcionario">
+<td>ID_FUNCIONARIO</td>
+<td>
+<code>id_funcionario</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador do funcionário (RN01).</td>
+</tr>
+<tr data-column="nome">
+<td>NOME</td>
+<td>
+<code>nome</code>
+</td>
+<td>VARCHAR(150)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Nome do funcionário cadastrado (RN03).</td>
+</tr>
+<tr data-column="cargo">
+<td>CARGO</td>
+<td>
+<code>cargo</code>
+</td>
+<td>VARCHAR(80)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Função no cadastro (RN03).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(nome)) &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(cargo)) &gt; 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
-        <!-- PEDIDO -->
-        <section class="panel entity-panel"
-            data-entity="PEDIDO pedido id_pedido cliente funcionario totem origem_pedido delivery nome_comanda nome comanda canal status preparo valor total cancelado quitado">
-            <div class="panel-head">
-                <h2>PEDIDO</h2>
-            </div>
-            <div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO)<br>       + (DS_TOTEM) + (NM_COMANDA) + DT_HORA_PEDIDO<br>       + TP_ORIGEM_PEDIDO + VL_TOTAL + TP_STATUS_PREPARO</div>
-            <div class="entity-desc">ID_CLIENTE e ID_FUNCIONARIO são opcionais, inclusive nas vendas de BALCÃO.
-                DS_TOTEM é um atributo do pedido, sem FK: identifica o equipamento apenas na origem TOTEM.
-                origem_pedido admite TOTEM, BALCÃO ou DELIVERY. NM_COMANDA registra o nome de chamada mesmo
-                sem cliente associado; na ausência do nome, utiliza-se ID_PEDIDO. VL_TOTAL é derivado da soma
-                de quantidade × preço unitário do relacionamento CONTÉM; não é informado livremente.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_PEDIDO</span></td>
-                            <td><code>id_pedido</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do pedido.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_CLIENTE</span></td>
-                            <td><code>id_cliente</code></td>
-                            <td>integer</td>
-                            <td>Não (FK)</td>
-                            <td>Cliente relacionado, quando identificado.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_FUNCIONARIO</span></td>
-                            <td><code>id_funcionario</code></td>
-                            <td>integer</td>
-                            <td>Não (FK opcional)</td>
-                            <td>Vínculo opcional com funcionário cadastrado, inclusive na origem BALCÃO. O atendimento utiliza um registro que permanece aberto para as vendas, sem exigir identificação individual em cada pedido.</td>
-                        </tr>
-                        <tr>
-                            <td>DS_TOTEM</td>
-                            <td><code>totem</code></td>
-                            <td>varchar(50)</td>
-                            <td>Condicional (não é FK)</td>
-                            <td>Identifica o equipamento quando a origem é TOTEM; não preenchido nas demais origens.</td>
-                        </tr>
-                        <tr>
-                            <td>NM_COMANDA</td>
-                            <td><code>nome_comanda</code></td>
-                            <td>varchar(120)</td>
-                            <td>Não (quando ausente, usa-se o número do pedido)</td>
-                            <td>Nome de chamada registrado no próprio pedido, com ou sem cliente cadastrado.
-                                Preserva a identificação usada naquela compra e não exige cliente fictício.</td>
-                        </tr>
-                        <tr>
-                            <td>DT_HORA_PEDIDO</td>
-                            <td><code>data_hora</code></td>
-                            <td>datetime</td>
-                            <td>Sim</td>
-                            <td>Data e horário do registro do pedido.</td>
-                        </tr>
-                        <tr>
-                            <td>TP_ORIGEM_PEDIDO</td>
-                            <td><code>origem_pedido</code></td>
-                            <td>char(1) [T|B|D]</td>
-                            <td>Sim (escolha)</td>
-                            <td>Origem do pedido: <b>T</b>otem, <b>B</b>alcão ou <b>D</b>elivery; define quais
-                                campos condicionais se aplicam.</td>
-                        </tr>
-                        <tr>
-                            <td>VL_TOTAL</td>
-                            <td><code>valor_total</code></td>
-                            <td>decimal(10,2)</td>
-                            <td>Sim (derivado)</td>
-                            <td>Atributo derivado: soma de quantidade × preço unitário dos produtos associados ao pedido; base para o fechamento mensal.</td>
-                        </tr>
-                        <tr>
-                            <td>TP_STATUS_PREPARO</td>
-                            <td><code>status_preparo</code></td>
-                            <td>varchar(20) [RECEBIDO|EM_PREPARO|PRONTO|ENTREGUE|CANCELADO]</td>
-                            <td>Sim</td>
-                            <td>Situação do pedido na esteira de preparo/entrega. CANCELADO é o estado proposto para impedir a continuidade do pedido, independentemente da devolução financeira.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="entity-desc"><b>Domínio de status_preparo:</b> RECEBIDO indica que o pedido aguarda
-                confirmação da quitação; EM_PREPARO indica preparação ou separação; PRONTO indica
-                disponibilidade para entrega; ENTREGUE confirma a entrega. CANCELADO é o estado proposto para
-                interromper a continuidade do atendimento, conforme as regras de cancelamento.</div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_PEDIDO</code>; índices em <code>ID_CLIENTE</code>,
-                <code>ID_FUNCIONARIO</code> (FKs) e em <code>DT_HORA_PEDIDO</code> (consultas e
-                fechamento por período).</div>
-        </section>
+<section class="panel entity-panel" id="tabela-produto" data-entity="PRODUTO id_produto nome preco">
+<div class="panel-head">
+<h2>PRODUTO</h2>
+</div>
+<div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_produto">
+<td>ID_PRODUTO</td>
+<td>
+<code>id_produto</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador do produto pronto para venda (RN01).</td>
+</tr>
+<tr data-column="nome">
+<td>NOME</td>
+<td>
+<code>nome</code>
+</td>
+<td>VARCHAR(150)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Nome do produto (RN04).</td>
+</tr>
+<tr data-column="preco">
+<td>PRECO</td>
+<td>
+<code>preco</code>
+</td>
+<td>DECIMAL(12,2)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Maior que zero.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Preço atual; alterações não atualizam vendas anteriores (RN04, RN12).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(nome)) &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (preco &gt; 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
-        <!-- PRODUTO -->
-        <section class="panel entity-panel" data-entity="PRODUTO produto id_produto nome preco">
-            <div class="panel-head">
-                <h2>PRODUTO</h2>
-            </div>
-            <div class="code-block">PRODUTO = @ID_PRODUTO + NM_PRODUTO + VL_PRECO</div>
-            <div class="entity-desc">Os três campos são obrigatórios. PRODUTO registra o nome e o preço atual; o preço histórico de cada venda permanece no relacionamento PEDIDO — CONTÉM — PRODUTO.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_PRODUTO</span></td>
-                            <td><code>id_produto</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do produto.</td>
-                        </tr>
-                        <tr>
-                            <td>NM_PRODUTO</td>
-                            <td><code>nome</code></td>
-                            <td>varchar(120)</td>
-                            <td>Sim</td>
-                            <td>Nome do produto exibido no cardápio/comanda.</td>
-                        </tr>
-                        <tr>
-                            <td>VL_PRECO</td>
-                            <td><code>preco</code></td>
-                            <td>decimal(10,2)</td>
-                            <td>Sim (&gt;0)</td>
-                            <td>Preço de venda atual do produto.</td>
-                        </tr>
+<section class="panel entity-panel" id="tabela-pedido" data-entity="PEDIDO id_pedido id_cliente id_funcionario totem nome_comanda data_hora origem_pedido status_preparo">
+<div class="panel-head">
+<h2>PEDIDO</h2>
+</div>
+<div class="code-block">PEDIDO = @ID_PEDIDO + (ID_CLIENTE) + (ID_FUNCIONARIO) + (DS_TOTEM) + (NM_COMANDA) + DT_HORA_PEDIDO + TP_ORIGEM_PEDIDO + TP_STATUS_PREPARO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_pedido">
+<td>ID_PEDIDO</td>
+<td>
+<code>id_pedido</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador da compra; também usado na chamada quando não há nome (RN01, RN10).</td>
+</tr>
+<tr data-column="id_cliente">
+<td>ID_CLIENTE</td>
+<td>
+<code>id_cliente</code>
+</td>
+<td>INT</td>
+<td>Não — admite NULL</td>
+<td>FK (id_cliente) → CLIENTE(id_cliente); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>NULL (implícito)</td>
+<td>Cliente existente quando informado; ausência não impede venda (RN06, RN09).</td>
+</tr>
+<tr data-column="id_funcionario">
+<td>ID_FUNCIONARIO</td>
+<td>
+<code>id_funcionario</code>
+</td>
+<td>INT</td>
+<td>Não — admite NULL</td>
+<td>FK (id_funcionario) → FUNCIONARIO(id_funcionario); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>NULL (implícito)</td>
+<td>Funcionário associado opcional, inclusive no balcão (RN03, RN08).</td>
+</tr>
+<tr data-column="totem">
+<td>TOTEM</td>
+<td>
+<code>totem</code>
+</td>
+<td>VARCHAR(50)</td>
+<td>Não — admite NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Não vazio em TOTEM; NULL nos demais canais.</td>
+<td>NULL (implícito)</td>
+<td>Equipamento utilizado somente no autoatendimento (RN07).</td>
+</tr>
+<tr data-column="nome_comanda">
+<td>NOME_COMANDA</td>
+<td>
+<code>nome_comanda</code>
+</td>
+<td>VARCHAR(150)</td>
+<td>Não — admite NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>NULL ou texto não vazio.</td>
+<td>NULL (implícito)</td>
+<td>Identificação histórica usada para chamada, independente do cliente (RN10).</td>
+</tr>
+<tr data-column="data_hora">
+<td>DATA_HORA</td>
+<td>
+<code>data_hora</code>
+</td>
+<td>DATETIME</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio do tipo DATETIME.</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Instante do registro do pedido (RN06).</td>
+</tr>
+<tr data-column="origem_pedido">
+<td>ORIGEM_PEDIDO</td>
+<td>
+<code>origem_pedido</code>
+</td>
+<td>VARCHAR(10)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>TOTEM, BALCÃO ou DELIVERY.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Canal de atendimento (RN07).</td>
+</tr>
+<tr data-column="status_preparo">
+<td>STATUS_PREPARO</td>
+<td>
+<code>status_preparo</code>
+</td>
+<td>VARCHAR(12)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>RECEBIDO, EM_PREPARO, PRONTO, ENTREGUE ou CANCELADO (proposta RN23).</td>
+<td>'RECEBIDO'</td>
+<td>Estado de preparo; novo pedido deve iniciar RECEBIDO. Transições controladas por trigger e rotina (RN22–RN23, RN27).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (origem_pedido IN ('TOTEM','BALCÃO','DELIVERY'))</code>
+</li>
+<li>
+<code>CHECK ((origem_pedido = 'TOTEM' AND totem IS NOT NULL AND CHAR_LENGTH(TRIM(totem)) &gt; 0)
+     OR (origem_pedido IN ('BALCÃO','DELIVERY') AND totem IS NULL))</code>
+</li>
+<li>
+<code>CHECK (nome_comanda IS NULL OR CHAR_LENGTH(TRIM(nome_comanda)) &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (status_preparo IN ('RECEBIDO','EM_PREPARO','PRONTO','ENTREGUE','CANCELADO'))</code>
+</li>
+</ul>
+</div>
+</section>
 
+<section class="panel entity-panel" id="tabela-item_pedido" data-entity="ITEM_PEDIDO id_pedido id_produto quantidade preco_unitario">
+<div class="panel-head">
+<h2>ITEM_PEDIDO</h2>
+</div>
+<div class="code-block">ITEM_PEDIDO = @{ID_PEDIDO, ID_PRODUTO} + QT_PRODUTO + VL_PRECO_UNITARIO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_pedido">
+<td>ID_PEDIDO</td>
+<td>
+<code>id_pedido</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK composta (id_pedido, id_produto); FK (id_pedido) → PEDIDO(id_pedido); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Pedido ao qual o item pertence (RN11).</td>
+</tr>
+<tr data-column="id_produto">
+<td>ID_PRODUTO</td>
+<td>
+<code>id_produto</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK composta (id_pedido, id_produto); FK (id_produto) → PRODUTO(id_produto); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Produto participante da compra (RN11).</td>
+</tr>
+<tr data-column="quantidade">
+<td>QUANTIDADE</td>
+<td>
+<code>quantidade</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Inteiro maior que zero.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Unidades do produto naquele pedido (RN11).</td>
+</tr>
+<tr data-column="preco_unitario">
+<td>PRECO_UNITARIO</td>
+<td>
+<code>preco_unitario</code>
+</td>
+<td>DECIMAL(12,2)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio DECIMAL(12,2); sem CHECK numérico adicional.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Preço praticado na venda; preservado após baixa (RN12). RN12 não define limite numérico adicional.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (quantidade &gt; 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_PRODUTO</code>; índice em <code>NM_PRODUTO</code>
-                (busca por nome no cadastro/cardápio).</div>
-        </section>
+<section class="panel entity-panel" id="tabela-cupom_fiscal" data-entity="CUPOM_FISCAL id_cupom_fiscal id_pedido numero data_hora_emissao">
+<div class="panel-head">
+<h2>CUPOM_FISCAL</h2>
+</div>
+<div class="code-block">CUPOM_FISCAL = @ID_CUPOM_FISCAL + ID_PEDIDO + ID_NUMERO_CUPOM + DT_HORA_EMISSAO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_cupom_fiscal">
+<td>ID_CUPOM_FISCAL</td>
+<td>
+<code>id_cupom_fiscal</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador do documento fiscal simulado (RN01).</td>
+</tr>
+<tr data-column="id_pedido">
+<td>ID_PEDIDO</td>
+<td>
+<code>id_pedido</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>UNIQUE; FK (id_pedido) → PEDIDO(id_pedido); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Pedido que gerou o cupom; no máximo um cupom por pedido (RN14).</td>
+</tr>
+<tr data-column="numero">
+<td>NUMERO</td>
+<td>
+<code>numero</code>
+</td>
+<td>VARCHAR(50)</td>
+<td>Sim — NOT NULL</td>
+<td>UNIQUE</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Número único no escopo desta unidade (RN15).</td>
+</tr>
+<tr data-column="data_hora_emissao">
+<td>DATA_HORA_EMISSAO</td>
+<td>
+<code>data_hora_emissao</code>
+</td>
+<td>DATETIME</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio do tipo DATETIME.</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Data e hora de emissão (RN15).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(numero)) &gt; 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
-        <!-- CUPOM_FISCAL -->
-        <section class="panel entity-panel" data-entity="CUPOM_FISCAL cupom fiscal nota id_cupom_fiscal id_pedido numero data_hora_emissao">
-            <div class="panel-head"><h2>CUPOM_FISCAL</h2></div>
-            <div class="code-block">CUPOM_FISCAL = @ID_CUPOM_FISCAL + ID_PEDIDO + ID_NUMERO_CUPOM + DT_HORA_EMISSAO</div>
-            <div class="entity-desc">Todo pedido gera um documento fiscal, denominado nota fiscal do pedido neste
-                modelo. Cada cupom pertence a um único pedido e gera um ou mais registros de pagamento.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>Atributo</th><th>Coluna no BD</th><th>Tipo físico</th><th>Obrigatório</th><th>Significado e relevância</th></tr></thead>
-                    <tbody>
-                        <tr><td><span class="tag pk">ID_CUPOM_FISCAL</span></td><td><code>id_cupom_fiscal</code></td><td>integer</td><td>Sim (PK)</td><td>Identificador único do documento fiscal.</td></tr>
-                        <tr><td><span class="tag fk">ID_PEDIDO</span></td><td><code>id_pedido</code></td><td>integer</td><td>Sim (FK, único)</td><td>Pedido que gera o documento; cada pedido tem exatamente um cupom.</td></tr>
-                        <tr><td>ID_NUMERO_CUPOM</td><td><code>numero</code></td><td>varchar(50)</td><td>Sim (único na unidade)</td><td>Número do documento fiscal.</td></tr>
-                        <tr><td>DT_HORA_EMISSAO</td><td><code>data_hora_emissao</code></td><td>datetime</td><td>Sim</td><td>Data e horário da emissão.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK ID_CUPOM_FISCAL; índice único em ID_PEDIDO e no número do documento no escopo da unidade.</div>
-        </section>
+<section class="panel entity-panel" id="tabela-pagamento" data-entity="PAGAMENTO id_pagamento id_cupom_fiscal forma_pagamento valor_pagamento status_pagamento data_hora_pagamento">
+<div class="panel-head">
+<h2>PAGAMENTO</h2>
+</div>
+<div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL + TP_FORMA_PAGTO + VL_PAGAMENTO + TP_STATUS_PGTO + DT_HORA_PAGAMENTO</div>
+<div class="entity-desc">Tabela do modelo lógico, com tipos e restrições do script MySQL vigente.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_pagamento">
+<td>ID_PAGAMENTO</td>
+<td>
+<code>id_pagamento</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador de cada tentativa, inclusive recusada (RN01, RN21).</td>
+</tr>
+<tr data-column="id_cupom_fiscal">
+<td>ID_CUPOM_FISCAL</td>
+<td>
+<code>id_cupom_fiscal</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>FK (id_cupom_fiscal) → CUPOM_FISCAL(id_cupom_fiscal); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Documento ao qual pertence a tentativa ou parcela (RN16, RN18).</td>
+</tr>
+<tr data-column="forma_pagamento">
+<td>FORMA_PAGAMENTO</td>
+<td>
+<code>forma_pagamento</code>
+</td>
+<td>VARCHAR(10)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>PIX, Crédito, Débito ou Dinheiro.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Meio usado nesta tentativa (RN17).</td>
+</tr>
+<tr data-column="valor_pagamento">
+<td>VALOR_PAGAMENTO</td>
+<td>
+<code>valor_pagamento</code>
+</td>
+<td>DECIMAL(12,2)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Maior que zero.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Valor da tentativa; soma como pago apenas quando Aprovado (RN17, RN19).</td>
+</tr>
+<tr data-column="status_pagamento">
+<td>STATUS_PAGAMENTO</td>
+<td>
+<code>status_pagamento</code>
+</td>
+<td>VARCHAR(10)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Aprovado, Recusado ou Estornado (proposta RN24).</td>
+<td>Sem DEFAULT explícito</td>
+<td>Resultado financeiro atual; Estornado depende de devolução confirmada na proposta RN24.</td>
+</tr>
+<tr data-column="data_hora_pagamento">
+<td>DATA_HORA_PAGAMENTO</td>
+<td>
+<code>data_hora_pagamento</code>
+</td>
+<td>DATETIME</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio do tipo DATETIME.</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Instante da tentativa, sem representar a data de estorno posterior (RN17).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (forma_pagamento IN ('PIX','Crédito','Débito','Dinheiro'))</code>
+</li>
+<li>
+<code>CHECK (valor_pagamento &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (status_pagamento IN ('Aprovado','Recusado','Estornado'))</code>
+</li>
+</ul>
+</div>
+</section>
 
-        <!-- PAGAMENTO -->
-        <section class="panel entity-panel"
-            data-entity="PAGAMENTO pagamento id_pagamento pix credito debito dinheiro aprovado recusado estornado quitacao">
-            <div class="panel-head">
-                <h2>PAGAMENTO</h2>
-            </div>
-            <div class="code-block">PAGAMENTO = @ID_PAGAMENTO + ID_CUPOM_FISCAL<br>          + TP_FORMA_PAGTO + VL_PAGAMENTO<br>          + TP_STATUS_PGTO + DT_HORA_PAGAMENTO</div>
-            <div class="entity-desc">Um cupom fiscal pode gerar <code>1{ }N</code> pagamentos; cada pagamento é uma linha independente ligada por <code>ID_CUPOM_FISCAL</code>. <code>TP_FORMA_PAGTO</code> registra uma única forma por tentativa, permitindo dividir a conta entre formas diferentes. <code>TP_STATUS_PGTO</code> registra Aprovado ou Recusado; Estornado é o estado proposto após devolução integral confirmada. Somente pagamentos aprovados compõem o valor pago.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Atributo</th>
-                            <th>Coluna no BD</th>
-                            <th>Tipo físico</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="tag pk">ID_PAGAMENTO</span></td>
-                            <td><code>id_pagamento</code></td>
-                            <td>integer</td>
-                            <td>Sim (PK)</td>
-                            <td>Identificador único do pagamento.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="tag fk">ID_CUPOM_FISCAL</span></td>
-                            <td><code>id_cupom_fiscal</code></td>
-                            <td>integer</td>
-                            <td>Sim (FK)</td>
-                            <td>Documento fiscal que gera o pagamento; o pedido é obtido pelo cupom.</td>
-                        </tr>
-                        <tr>
-                            <td>TP_FORMA_PAGTO</td>
-                            <td><code>forma_pagamento</code></td>
-                            <td>char(1) [P|C|D|X]</td>
-                            <td>Sim (escolha)</td>
-                            <td>Forma de pagamento: <b>P</b>IX, <b>C</b>rédito, <b>D</b>ébito ou dinheiro
-                                (<b>X</b>).</td>
-                        </tr>
-                        <tr>
-                            <td>VL_PAGAMENTO</td>
-                            <td><code>valor_pagamento</code></td>
-                            <td>decimal(10,2)</td>
-                            <td>Sim (&gt;0)</td>
-                            <td>Valor da tentativa nesta forma; somente valores aprovados compõem o valor pago.
-                                O pedido está quitado quando a soma dos aprovados iguala <code>VL_TOTAL</code>.
-                                Recusados e estornados são excluídos dessa soma.</td>
-                        </tr>
-                        <tr>
-                            <td>TP_STATUS_PGTO</td>
-                            <td><code>status_pagamento</code></td>
-                            <td>char(1) [A|R|E]</td>
-                            <td>Sim (escolha)</td>
-                            <td><b>A</b>provado ou <b>R</b>ecusado; <b>E</b>stornado é o estado proposto após
-                                devolução integral confirmada. Cancelar o pedido não muda um pagamento para Estornado automaticamente.</td>
-                        </tr>
-                        <tr>
-                            <td>DT_HORA_PAGAMENTO</td>
-                            <td><code>data_hora_pagamento</code></td>
-                            <td>datetime</td>
-                            <td>Sim</td>
-                            <td>Data e horário em que o pagamento foi processado.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="indices-note"><b>Índices:</b> PK <code>ID_PAGAMENTO</code>; índice em
-                <code>ID_CUPOM_FISCAL</code> (localizar todos os pagamentos do cupom); índice em
-                <code>DT_HORA_PAGAMENTO</code> (fechamento mensal).</div>
-        </section>
+<section class="panel entity-panel" id="tabela-estoque" data-entity="ESTOQUE id_produto quantidade_disponivel estoque_minimo data_atualizacao">
+<div class="panel-head">
+<h2>ESTOQUE — somente a partir do modelo lógico</h2>
+</div>
+<div class="code-block">ESTOQUE = @ID_PRODUTO + QT_DISPONIVEL + QT_MINIMA + DT_ATUALIZACAO</div>
+<div class="entity-desc">Extensão exclusivamente lógica/física; não é acrescentada ao DER conceitual.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_produto">
+<td>ID_PRODUTO</td>
+<td>
+<code>id_produto</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único; FK (id_produto) → PRODUTO(id_produto); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Produto com saldo único; registro criado pelo trigger de PRODUTO (RN25).</td>
+</tr>
+<tr data-column="quantidade_disponivel">
+<td>QUANTIDADE_DISPONIVEL</td>
+<td>
+<code>quantidade_disponivel</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Inteiro maior ou igual a zero.</td>
+<td>0</td>
+<td>Saldo materializado, mantido atomicamente pelos movimentos e conciliado por A12 (RN25, RN31–RN32).</td>
+</tr>
+<tr data-column="estoque_minimo">
+<td>ESTOQUE_MINIMO</td>
+<td>
+<code>estoque_minimo</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Inteiro maior ou igual a zero.</td>
+<td>0</td>
+<td>Limite configurável de reposição; cinco é somente exemplo da carga (RN30).</td>
+</tr>
+<tr data-column="data_atualizacao">
+<td>DATA_ATUALIZACAO</td>
+<td>
+<code>data_atualizacao</code>
+</td>
+<td>DATETIME</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio do tipo DATETIME.</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Data/hora do último movimento aplicado; não é histórico de sincronização dos canais (RN26).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (quantidade_disponivel &gt;= 0)</code>
+</li>
+<li>
+<code>CHECK (estoque_minimo &gt;= 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
-
-        <section class="panel">
-            <div class="panel-head">
-                <h2>Atributos dos relacionamentos</h2>
-            </div>
-            <div class="entity-desc">Há um único relacionamento PEDIDO — CONTÉM — PRODUTO, de cardinalidade N:M. Seus dois atributos descrevem a participação do produto no pedido, além dos 28 atributos documentados nas seis entidades. São 30 atributos documentados ao todo: 26 conceituais e quatro referências de FK para o modelo lógico.</div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Relacionamento</th>
-                            <th>Atributo</th>
-                            <th>Tipo</th>
-                            <th>Obrigatório</th>
-                            <th>Significado e relevância</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>PEDIDO — CONTÉM — PRODUTO</td>
-                            <td><code>quantidade</code></td>
-                            <td>integer</td>
-                            <td>Sim (&gt;0)</td>
-                            <td>Quantidade do produto vendida no pedido; utilizada no cálculo do total do pedido.</td>
-                        </tr>
-                        <tr>
-                            <td>PEDIDO — CONTÉM — PRODUTO</td>
-                            <td><code>preco_unitario</code></td>
-                            <td>decimal(10,2)</td>
-                            <td>Sim</td>
-                            <td>Preço praticado no momento da venda; preserva o histórico independentemente de reajustes futuros.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+<section class="panel entity-panel" id="tabela-movimentacao_estoque" data-entity="MOVIMENTACAO_ESTOQUE id_movimentacao id_produto id_pedido id_funcionario tipo quantidade data_hora motivo referencia">
+<div class="panel-head">
+<h2>MOVIMENTACAO_ESTOQUE — somente a partir do modelo lógico</h2>
+</div>
+<div class="code-block">MOVIMENTACAO_ESTOQUE = @ID_MOVIMENTACAO + ID_PRODUTO + (ID_PEDIDO) + ID_FUNCIONARIO + TP_MOVIMENTO + QT_MOVIMENTO + DT_HORA + DS_MOTIVO + ID_REFERENCIA</div>
+<div class="entity-desc">Extensão exclusivamente lógica/física; não é acrescentada ao DER conceitual.</div>
+<div class="table-wrap">
+<table class="integrity-table">
+<thead>
+<tr>
+<th scope="col">Atributo</th>
+<th scope="col">Coluna no BD</th>
+<th scope="col">Tipo físico</th>
+<th scope="col">Obrigatoriedade</th>
+<th scope="col">Chaves / unicidade</th>
+<th scope="col">Valores permitidos</th>
+<th scope="col">Valor padrão / geração</th>
+<th scope="col">Significado / RN</th>
+</tr>
+</thead>
+<tbody>
+<tr data-column="id_movimentacao">
+<td>ID_MOVIMENTACAO</td>
+<td>
+<code>id_movimentacao</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>PK; único</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito; AUTO_INCREMENT</td>
+<td>Identificador do lançamento imutável (RN26, RN29).</td>
+</tr>
+<tr data-column="id_produto">
+<td>ID_PRODUTO</td>
+<td>
+<code>id_produto</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>FK (id_produto) → ESTOQUE(id_produto); RESTRICT; FK composta (id_pedido,id_produto) → ITEM_PEDIDO(id_pedido,id_produto); RESTRICT; UNIQUE em conjunto (id_pedido,id_produto,tipo)</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Estoque movimentado e produto do item quando houver pedido (RN25–RN28).</td>
+</tr>
+<tr data-column="id_pedido">
+<td>ID_PEDIDO</td>
+<td>
+<code>id_pedido</code>
+</td>
+<td>INT</td>
+<td>Não — admite NULL</td>
+<td>FK composta (id_pedido,id_produto) → ITEM_PEDIDO(id_pedido,id_produto); RESTRICT; UNIQUE em conjunto (id_pedido,id_produto,tipo)</td>
+<td>Preenchido em VENDA/RETORNO; NULL em ENTRADA/PERDA/AJUSTE_ENTRADA/AJUSTE_SAIDA.</td>
+<td>NULL (implícito)</td>
+<td>Pedido obrigatório em VENDA/RETORNO e ausente nas demais operações (RN27–RN28).</td>
+</tr>
+<tr data-column="id_funcionario">
+<td>ID_FUNCIONARIO</td>
+<td>
+<code>id_funcionario</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>FK (id_funcionario) → FUNCIONARIO(id_funcionario); RESTRICT</td>
+<td>Inteiro; referências devem existir quando informadas.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Responsável pelo lançamento; não torna obrigatório o funcionário na venda (RN26, RN29).</td>
+</tr>
+<tr data-column="tipo">
+<td>TIPO</td>
+<td>
+<code>tipo</code>
+</td>
+<td>VARCHAR(15)</td>
+<td>Sim — NOT NULL</td>
+<td>UNIQUE em conjunto (id_pedido,id_produto,tipo)</td>
+<td>ENTRADA, VENDA, PERDA, AJUSTE_ENTRADA, AJUSTE_SAIDA ou RETORNO.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Determina entrada ou saída do saldo (RN26–RN28).</td>
+</tr>
+<tr data-column="quantidade">
+<td>QUANTIDADE</td>
+<td>
+<code>quantidade</code>
+</td>
+<td>INT</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Inteiro maior que zero.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Magnitude positiva; venda e retorno correspondem ao item integral (RN26–RN28).</td>
+</tr>
+<tr data-column="data_hora">
+<td>DATA_HORA</td>
+<td>
+<code>data_hora</code>
+</td>
+<td>DATETIME</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Domínio do tipo DATETIME.</td>
+<td>CURRENT_TIMESTAMP</td>
+<td>Instante do movimento (RN26).</td>
+</tr>
+<tr data-column="motivo">
+<td>MOTIVO</td>
+<td>
+<code>motivo</code>
+</td>
+<td>VARCHAR(255)</td>
+<td>Sim — NOT NULL</td>
+<td>Sem unicidade ou chave própria</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Justificativa rastreável do lançamento (RN26, RN29).</td>
+</tr>
+<tr data-column="referencia">
+<td>REFERENCIA</td>
+<td>
+<code>referencia</code>
+</td>
+<td>VARCHAR(80)</td>
+<td>Sim — NOT NULL</td>
+<td>UNIQUE</td>
+<td>Texto não vazio.</td>
+<td>Sem DEFAULT explícito</td>
+<td>Identificador único de operação para evitar repetição (RN29).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="indices-note">
+<b>Restrições CHECK implementadas nesta tabela:</b> <ul>
+<li>
+<code>CHECK (quantidade &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (tipo IN ('ENTRADA','VENDA','PERDA','AJUSTE_ENTRADA','AJUSTE_SAIDA','RETORNO'))</code>
+</li>
+<li>
+<code>CHECK ((tipo IN ('VENDA','RETORNO') AND id_pedido IS NOT NULL)
+     OR (tipo IN ('ENTRADA','PERDA','AJUSTE_ENTRADA','AJUSTE_SAIDA') AND id_pedido IS NULL))</code>
+</li>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(motivo)) &gt; 0)</code>
+</li>
+<li>
+<code>CHECK (CHAR_LENGTH(TRIM(referencia)) &gt; 0)</code>
+</li>
+</ul>
+</div>
+</section>
 
         <section class="panel policy-panel" id="logs-auditoria" aria-labelledby="logs-auditoria-title">
             <div class="panel-head"><h2 id="logs-auditoria-title">5. Logs de acesso e operações</h2></div>
-            <div class="policy-body"><p>O sistema deverá registrar eventos relevantes para acompanhar consultas, alterações e tentativas de operações não autorizadas.</p><div class="policy-notice"><strong>Proposta de auditoria:</strong> logs e autenticação ainda dependerão de modelagem e implementação próprias. Os campos abaixo não integram as seis entidades e os 30 atributos do modelo atual.</div><h3>Dados propostos para cada registro</h3><div class="table-wrap policy-wrap"><table class="policy-table log-table"><thead><tr><th scope="col">Campo</th><th scope="col">Informação registrada</th></tr></thead><tbody><tr><td>id_log</td><td>Identificador único do evento.</td></tr><tr><td>data_hora_evento</td><td>Data e horário da ocorrência.</td></tr><tr><td>identificacao_ator</td><td>Conta, serviço ou sessão responsável, quando identificável.</td></tr><tr><td>perfil_utilizado</td><td>Perfil de acesso utilizado na operação, quando disponível.</td></tr><tr><td>operacao</td><td>Consulta, inclusão, alteração, cancelamento, estorno, exclusão, autenticação ou exportação.</td></tr><tr><td>entidade_alvo</td><td>Entidade ou recurso acessado, quando aplicável.</td></tr><tr><td>referencia_registro</td><td>Identificador do registro afetado, quando houver um registro específico.</td></tr><tr><td>resultado</td><td>SUCESSO, NEGADO ou FALHA.</td></tr><tr><td>motivo</td><td>Justificativa ou código de erro, quando aplicável, evitando reproduzir dados pessoais desnecessários.</td></tr></tbody></table></div><h3>Eventos previstos</h3><ul><li>Consulta ou exportação de dados pessoais de clientes.</li><li>Inclusão e alteração de cadastros.</li><li>Alteração do preço atual de um produto.</li><li>Registro de pedidos e tentativas de pagamento.</li><li>Cancelamento de pedidos e confirmação de estornos.</li><li>Tentativas de operações sem permissão.</li><li>Alterações nas permissões de acesso.</li></ul><p>O resultado do log indica o resultado da <strong>operação no sistema</strong>. Por exemplo, registrar corretamente uma tentativa de pagamento recusada pode gerar um log de SUCESSO, enquanto o pagamento permanece Recusado.</p><p>Os perfis operacionais não poderão editar ou apagar os registros de auditoria. Sua eliminação dependerá de procedimento de retenção aprovado.</p><div class="policy-notice"><strong>Identificação no balcão:</strong> como o atendimento utiliza um registro que permanece aberto, o log poderá identificar essa sessão. Isso não comprova qual funcionário realizou pessoalmente a ação. O vínculo por <code>PEDIDO.id_funcionario</code> continuará opcional.</div></div>
+            <div class="policy-body"><p>O sistema deverá registrar eventos relevantes para acompanhar consultas, alterações e tentativas de operações não autorizadas.</p><div class="policy-notice"><strong>Proposta de auditoria:</strong> logs e autenticação ainda dependerão de modelagem e implementação próprias. Os campos de log abaixo são propostas e não integram as nove tabelas/44 colunas físicas documentadas.</div><h3>Dados propostos para cada registro</h3><div class="table-wrap policy-wrap"><table class="policy-table log-table"><thead><tr><th scope="col">Campo</th><th scope="col">Informação registrada</th></tr></thead><tbody><tr><td>id_log</td><td>Identificador único do evento.</td></tr><tr><td>data_hora_evento</td><td>Data e horário da ocorrência.</td></tr><tr><td>identificacao_ator</td><td>Conta, serviço ou sessão responsável, quando identificável.</td></tr><tr><td>perfil_utilizado</td><td>Perfil de acesso utilizado na operação, quando disponível.</td></tr><tr><td>operacao</td><td>Consulta, inclusão, alteração, cancelamento, estorno, exclusão, autenticação ou exportação.</td></tr><tr><td>entidade_alvo</td><td>Entidade ou recurso acessado, quando aplicável.</td></tr><tr><td>referencia_registro</td><td>Identificador do registro afetado, quando houver um registro específico.</td></tr><tr><td>resultado</td><td>SUCESSO, NEGADO ou FALHA.</td></tr><tr><td>motivo</td><td>Justificativa ou código de erro, quando aplicável, evitando reproduzir dados pessoais desnecessários.</td></tr></tbody></table></div><h3>Eventos previstos</h3><ul><li>Consulta ou exportação de dados pessoais de clientes.</li><li>Inclusão e alteração de cadastros.</li><li>Alteração do preço atual de um produto.</li><li>Registro de pedidos e tentativas de pagamento.</li><li>Cancelamento de pedidos e confirmação de estornos.</li><li>Tentativas de operações sem permissão.</li><li>Alterações nas permissões de acesso.</li></ul><p>O resultado do log indica o resultado da <strong>operação no sistema</strong>. Por exemplo, registrar corretamente uma tentativa de pagamento recusada pode gerar um log de SUCESSO, enquanto o pagamento permanece Recusado.</p><p>Os perfis operacionais não poderão editar ou apagar os registros de auditoria. Sua eliminação dependerá de procedimento de retenção aprovado.</p><div class="policy-notice"><strong>Identificação no balcão:</strong> como o atendimento utiliza um registro que permanece aberto, o log poderá identificar essa sessão. Isso não comprova qual funcionário realizou pessoalmente a ação. O vínculo por <code>PEDIDO.id_funcionario</code> continuará opcional.</div></div>
         </section>
 
         <section class="panel policy-panel" id="permissoes-retencao" aria-labelledby="permissoes-retencao-title">
@@ -911,39 +1402,10 @@
 
         <section class="panel policy-panel" id="controle-versao" aria-labelledby="controle-versao-title">
             <div class="panel-head"><h2 id="controle-versao-title">9. Controle de versão</h2></div>
-            <div class="policy-body"><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Versão</th><th scope="col">Data</th><th scope="col">Registro</th></tr></thead><tbody><tr><td>v1.1</td><td>28/10/2026</td><td>Retirada de FORNECEDOR, atualização das contagens e vínculo opcional com funcionário.</td></tr><tr><td>v1.2</td><td>28/10/2026</td><td>Documentação de logs, matriz de acesso, critérios de retenção, leitura das expressões e revisão da referência à LGPD.</td></tr><tr><td>v1.3</td><td>01/11/2026</td><td>Complemento de estoque exclusivamente lógico/físico; DER conceitual preservado.</td></tr></tbody></table></div><p>A versão v1.3 acrescenta o estoque na camada lógica. Os perfis, os controles de auditoria e os prazos de retenção conservam as pendências de validação indicadas nas respectivas seções.</p></div>
+            <div class="policy-body"><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Versão</th><th scope="col">Data</th><th scope="col">Registro</th></tr></thead><tbody><tr><td>v1.1</td><td>28/10/2026</td><td>Retirada de FORNECEDOR, atualização das contagens e vínculo opcional com funcionário.</td></tr><tr><td>v1.2</td><td>28/10/2026</td><td>Documentação de logs, matriz de acesso, critérios de retenção, leitura das expressões e revisão da referência à LGPD.</td></tr><tr><td>v1.4</td><td>01/11/2026</td><td>Consolidação das nove tabelas, 44 colunas e todas as restrições no mesmo HTML, alinhadas ao script MySQL.</td></tr><tr><td>v1.3</td><td>01/11/2026</td><td>Complemento de estoque exclusivamente lógico/físico; DER conceitual preservado.</td></tr></tbody></table></div><p>A versão v1.4 consolida tipos e restrições das nove tabelas na camada lógica. Os perfis, os controles de auditoria e os prazos de retenção conservam as pendências de validação indicadas nas respectivas seções.</p></div>
         </section>
 
-        <section class="panel policy-panel" id="estoque-logico" aria-labelledby="estoque-logico-title">
-            <div class="panel-head"><h2 id="estoque-logico-title">10. Estoque — complemento exclusivo do modelo lógico</h2></div>
-            <div class="policy-body">
-                <p>Controle de produtos prontos e baixa na liberação para preparo confirmados pelo grupo em 01/11/2026. Por orientação expressa, estas tabelas e seus atributos não integram o DER conceitual. As contagens de seis entidades e 26 atributos conceituais continuam se referindo à camada conceitual; o modelo lógico completo possui nove tabelas e 44 colunas.</p>
-                <p><a href="WECOFFE/modelagem/Modelo_Logico_WeCoffee.svg">Diagrama lógico</a> · <a href="docs/script.sql">Script SQL completo (MySQL)</a> · <a href="Readme.md#5-dicionário-de-dados-do-modelo-lógico">Dicionário lógico completo e restrições</a></p>
-                <h3>ESTOQUE</h3>
-                <div class="table-wrap"><table><thead><tr><th>Coluna</th><th>Tipo</th><th>Chave / restrições</th></tr></thead><tbody>
-                <tr><td>id_produto</td><td>INT</td><td>PK, FK para PRODUTO; obrigatório (RN25).</td></tr>
-                <tr><td>quantidade_disponivel</td><td>INT</td><td>NOT NULL, DEFAULT 0, CHECK &gt;= 0; mantido pelos movimentos (RN25, RN31–RN32).</td></tr>
-                <tr><td>estoque_minimo</td><td>INT</td><td>NOT NULL, DEFAULT 0, CHECK &gt;= 0 (RN30).</td></tr>
-                <tr><td>data_atualizacao</td><td>DATETIME</td><td>NOT NULL, DEFAULT CURRENT_TIMESTAMP; data do último lançamento aplicado (RN26).</td></tr>
-                </tbody></table></div>
-                <h3>MOVIMENTACAO_ESTOQUE</h3>
-                <div class="table-wrap"><table><thead><tr><th>Coluna</th><th>Tipo</th><th>Chave / restrições</th></tr></thead><tbody>
-                <tr><td>id_movimentacao</td><td>INT</td><td>PK, AUTO_INCREMENT, NOT NULL.</td></tr>
-                <tr><td>id_produto</td><td>INT</td><td>NOT NULL, FK para ESTOQUE e parte da FK composta para ITEM_PEDIDO.</td></tr>
-                <tr><td>id_pedido</td><td>INT</td><td>Opcional; obrigatório em VENDA/RETORNO; FK composta (id_pedido,id_produto) para ITEM_PEDIDO.</td></tr>
-                <tr><td>id_funcionario</td><td>INT</td><td>NOT NULL, FK para FUNCIONARIO; responsável pelo lançamento, sem tornar obrigatório o funcionário na venda.</td></tr>
-                <tr><td>tipo</td><td>VARCHAR(15)</td><td>NOT NULL; ENTRADA, VENDA, PERDA, AJUSTE_ENTRADA, AJUSTE_SAIDA ou RETORNO.</td></tr>
-                <tr><td>quantidade</td><td>INT</td><td>NOT NULL, CHECK &gt; 0. Sinal determinado pelo tipo.</td></tr>
-                <tr><td>data_hora</td><td>DATETIME</td><td>NOT NULL, DEFAULT CURRENT_TIMESTAMP.</td></tr>
-                <tr><td>motivo</td><td>VARCHAR(255)</td><td>NOT NULL e não vazio.</td></tr>
-                <tr><td>referencia</td><td>VARCHAR(80)</td><td>NOT NULL, UNIQUE e não vazia.</td></tr>
-                </tbody></table></div>
-                <p>UNIQUE (id_pedido,id_produto,tipo) impede segunda baixa ou segundo retorno do mesmo item; movimentos sem pedido admitem vários lançamentos. Todas as FKs usam RESTRICT. Triggers impedem edição/exclusão de movimentos e alterações de composição após baixa. Entradas/ajustes, liberação e retorno são executados por rotinas transacionais; saldo insuficiente reverte a operação inteira. Retorno é integral por item e exige confirmação explícita de revenda. Não há reposição automática por cancelamento ou estorno.</p>
-                <p>G08–G09 respondem P2 e K10–K12; A12–A16 auditam saldo, baixas e retornos. Valores mínimos e movimentos de demonstração são fictícios. A publicação da disponibilidade nos canais externos exige integração própria.</p>
-            </div>
-        </section>
-
-        <footer>Dicionário de Dados — We Coffee · v1.2 · 28/outubro/2026</footer>
+        <section class="panel policy-panel" id="integridade-transacional"><div class="panel-head"><h2>10. Regras entre tabelas e limites da implementação</h2></div><div class="policy-body"><p>As FKs impedem referências órfãs, mas não garantem que todo pedido tenha item e cupom, ou que todo cupom tenha tentativa. A01–A03 verificam essas cardinalidades mínimas; a conclusão do cadastro exige serviço transacional próprio.</p><p>sp_liberar_preparo exige quitação exata e baixa integral, com reversão de todas as baixas se faltar saldo. Triggers preservam a composição após baixa e rejeitam UPDATE/DELETE de movimentos. sp_retornar_estoque exige cancelamento, baixa anterior e confirmação de aptidão para revenda; nesta versão o retorno é integral por item, no máximo uma vez. Cancelamento e estorno não repõem saldo automaticamente. A12–A16 auditam estoque e conciliação.</p><p>sp_registrar_movimentacao registra entradas, perdas e ajustes com responsável, motivo e referência única. As rotinas gerenciam a própria transação e devem ser chamadas fora de uma transação já aberta. As contas da aplicação devem usar EXECUTE nas rotinas, sem escrita direta nos saldos/movimentos; a criação desses perfis não está implementada no script. Não existe sincronização dos canais externos nem controle de validade/lotes nesta versão.</p><p>O PDF 02-03g_Exemplo_Dicionario_Dados.pdf não foi disponibilizado nesta revisão. A estrutura atual de expressões e fichas foi preservada e ampliada; a correspondência exata com o PDF precisa ser conferida quando o arquivo estiver acessível.</p></div></section><footer>Dicionário de Dados — We Coffee · v1.4 · 01/novembro/2026</footer>
     </main>
 
     <script>

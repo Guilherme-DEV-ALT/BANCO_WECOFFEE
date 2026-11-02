@@ -372,7 +372,7 @@ Não foram atribuídos tempos de resposta, percentuais de disponibilidade ou vol
 | Registrar eventos e consultar logs conforme autorização, distinguindo o resultado da operação da situação do pagamento. | RF22, RF23 e RNF03. | [Seção 5 — Logs de acesso e operações](./index.html#logs-auditoria). |
 | Autorizar ou negar operações conforme o perfil e a matriz de acesso, com registro das tentativas negadas. | RF23, RF22 e RNF03. | [Seção 6.1 — Perfis e Seção 6.2 — Matriz de acesso](./index.html#permissoes-retencao). |
 
-RF22 e RF23 formalizam propostas já documentadas no HTML; sua redação não significa que autenticação, perfis e auditoria estejam implementados ou confirmados pela organização. Os campos de log não integram as seis entidades e os 30 atributos do modelo atual e ainda dependem de modelagem própria.
+RF22 e RF23 formalizam propostas já documentadas no HTML; sua redação não significa que autenticação, perfis e auditoria estejam implementados ou confirmados pela organização. Os campos de log não integram as nove tabelas e 44 colunas do modelo lógico atual e ainda dependem de modelagem própria.
 
 No balcão, a identificação de uma sessão compartilhada não comprova qual funcionário executou pessoalmente uma ação e não torna `PEDIDO.id_funcionario` obrigatório. O controle de acesso deve preservar RF06 e RN08. Consultas ou exportações que não estejam expressamente autorizadas na matriz devem ser negadas até sua definição.
 
@@ -631,7 +631,7 @@ Os atributos das **entidades** podem ser desenhados como círculos ligados ou li
 
 [Arquivo editável no brModelo 3](<./WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3>)
 
-O DER, o arquivo editável brModelo e as exportações PNG, JPG e PDF apresentam **seis entidades, cinco relacionamentos e 26 atributos conceituais**, sem FORNECEDOR. O dicionário documenta **30 atributos**: 26 conceituais e quatro referências de FK para o modelo lógico. O HTML está alinhado a essas contagens e trata `PEDIDO.id_funcionario` como opcional, inclusive nas vendas de balcão. O registro manual de escala solicitado em RF25, exemplificado na Seção 2.10, ainda não está representado no DER; sua representação permanece pendente de modelagem. Nomes, códigos e dias do exemplo continuam fictícios.
+O DER, o arquivo editável brModelo e as exportações PNG, JPG e PDF apresentam **seis entidades, cinco relacionamentos e 26 atributos conceituais**, sem FORNECEDOR. O dicionário conceitual da Seção 5 desta entrega documenta **30 atributos**: 26 conceituais e quatro referências de FK para o modelo lógico. O HTML consolidado documenta separadamente as **nove tabelas e 44 colunas físicas** da Entrega 2, incluindo as extensões exclusivamente lógicas. Ele trata `PEDIDO.id_funcionario` como opcional, inclusive nas vendas de balcão. O registro manual de escala solicitado em RF25, exemplificado na Seção 2.10, ainda não está representado no DER; sua representação permanece pendente de modelagem. Nomes, códigos e dias do exemplo continuam fictícios.
 
 O DER conceitual não representa abastecimento ou estoque por decisão do grupo. O controle quantitativo foi definido em 01/11/2026 e é representado exclusivamente a partir do modelo lógico, conforme a Seção 2.9.2. O registro informativo de campanhas previsto em RF24 ainda não possui representação específica. Concessão e resgate de benefícios não integram RF24 nesta etapa. Os registros de campanha e escala foram incluídos nos requisitos por solicitação do grupo, mas ainda precisam ser representados no dicionário e no DER; as contagens acima descrevem os artefatos atuais.
 
@@ -781,7 +781,7 @@ O esqueleto fornecido pelo professor menciona a seção 6 para o registro de IA.
 
 # Entrega 2 — Proposta de Modelo Lógico e Arquitetura Analítica
 
-Esta entrega apresenta a conversão relacional das seis entidades do modelo conceitual vigente. O resultado contém **nove tabelas**: as seis entidades convertidas, ITEM_PEDIDO (CONTÉM) e as extensões lógicas ESTOQUE e MOVIMENTACAO_ESTOQUE. Trata-se de uma proposta lógica: o script completo está em `docs/script.sql`, validado em instância temporária do MySQL, sem implantação no ambiente operacional. As regras RNxx citadas correspondem à Seção 4 da Entrega 1. Campanhas e escala (RF24 e RF25) continuam pendentes de modelagem. O estoque foi incluído apenas nas camadas lógica e física, conforme a decisão do grupo.
+Esta entrega apresenta a conversão relacional das seis entidades do modelo conceitual vigente. O resultado contém **nove tabelas**: as seis entidades convertidas, ITEM_PEDIDO (CONTÉM) e as extensões lógicas ESTOQUE e MOVIMENTACAO_ESTOQUE. Trata-se de uma proposta lógica: o script completo está em `WECOFFE/docs/script.sql`, validado em instância temporária do MySQL, sem implantação no ambiente operacional. As regras RNxx citadas correspondem à Seção 4 da Entrega 1. Campanhas e escala (RF24 e RF25) continuam pendentes de modelagem. O estoque foi incluído apenas nas camadas lógica e física, conforme a decisão do grupo.
 
 ## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
 
@@ -895,7 +895,7 @@ O modelo apoia a consolidação mensal das vendas, comparação de canais, ident
 
 ### Indicadores e rastreabilidade
 
-Os códigos P1 e P2 abaixo identificam os dois problemas já descritos na caracterização da organização. As consultas G01–G09 estão no [script SQL completo da Seção 3](./docs/script.sql), com a pergunta e os problemas/KPIs atendidos nos cabeçalhos. Foram executadas com massa fictícia no MySQL 8.0.46.
+Os códigos P1 e P2 abaixo identificam os dois problemas já descritos na caracterização da organização. As consultas G01–G09 estão no [script SQL completo da Seção 3](./WECOFFE/docs/script.sql), com a pergunta e os problemas/KPIs atendidos nos cabeçalhos. Foram executadas com massa fictícia no MySQL 8.0.46.
 
 | Problema ou KPI | Definição e interpretação | Tabelas envolvidas | Consulta no script |
 |---|---|---|---|
@@ -943,17 +943,17 @@ NOT NULL, UNIQUE, CHECK e DEFAULT ficam fora do desenho e estão documentados na
 
 ## 3. Script SQL Completo
 
-**Arquivo para entrega e execução:** [docs/script.sql](./docs/script.sql). **SGBD:** MySQL 8.0.16 ou superior; testado no **MySQL Community Server 8.0.46**, em 01/11/2026.
+**Arquivo para entrega e execução:** [WECOFFE/docs/script.sql](./WECOFFE/docs/script.sql). **SGBD:** MySQL 8.0.16 ou superior; testado no **MySQL Community Server 8.0.46**, em 01/11/2026.
 
 O arquivo contém, nesta ordem: CREATE DATABASE e USE; criação das nove tabelas com constraints; INSERT INTO da massa fictícia; SELECT com JOIN; UPDATE de preço atual; DELETE de produto sem referências; consultas gerenciais G01–G09; consultas de auditoria A01–A16. Usa InnoDB, utf8mb4 e collation utf8mb4_0900_as_cs, distinguindo maiúsculas e acentos nos domínios textuais.
 
 ### Execução do zero
 
 1. Conectar-se ao MySQL com usuário autorizado a criar banco e tabelas. O nome `wecoffee_academico` deve estar livre; o script não remove nem reaproveita banco existente.
-2. No MySQL Workbench, abrir `docs/script.sql` e executar o arquivo inteiro, interrompendo em caso de erro. Alternativamente, no cliente mysql, executar `SOURCE C:/caminho/do/repositorio/docs/script.sql;`.
+2. No MySQL Workbench, abrir `WECOFFE/docs/script.sql` e executar o arquivo inteiro, interrompendo em caso de erro. Alternativamente, no cliente mysql, executar `SOURCE C:/caminho/do/repositorio/WECOFFE/docs/script.sql;`.
 3. Conferir a carga, os resultados gerenciais e as auditorias abaixo. A execução inclui UPDATE e DELETE demonstrativos sobre a própria massa fictícia.
 
-O teste ocorreu em uma instância temporária inicialmente vazia, separada da instalação habitual, ouvindo somente em localhost. Resultado: **execução integral sem erros**. Evidências: [saída das consultas](./docs/resultado_execucao_mysql.txt), [61 verificações aprovadas](./docs/resultado_validacao_mysql.txt) e [validador PowerShell](./docs/validar_script.ps1). Também passaram [4 verificações de atomicidade e concorrência](./docs/resultado_concorrencia_mysql.txt), usando [duas conexões independentes em banco de teste separado](./docs/validar_concorrencia_estoque.ps1). O validador exige cliente mysql e conexão com a instância de teste já carregada; não deve ser usado em dados operacionais.
+O teste ocorreu em uma instância temporária inicialmente vazia, separada da instalação habitual, ouvindo somente em localhost. Resultado: **execução integral sem erros**. Evidências: [saída das consultas](./WECOFFE/docs/resultado_execucao_mysql.txt), [61 verificações aprovadas](./WECOFFE/docs/resultado_validacao_mysql.txt) e [validador PowerShell](./WECOFFE/docs/validar_script.ps1). Também passaram [4 verificações de atomicidade e concorrência](./WECOFFE/docs/resultado_concorrencia_mysql.txt), usando [duas conexões independentes em banco de teste separado](./WECOFFE/docs/validar_concorrencia_estoque.ps1). O validador exige cliente mysql e conexão com a instância de teste já carregada; não deve ser usado em dados operacionais.
 
 A validação conferiu os totais sem multiplicação por JOIN, preservação do preço histórico e rejeição de violações de PK, FK, UNIQUE, NOT NULL, CHECK e exclusão de registros referenciados. Injeções temporárias, revertidas com ROLLBACK, comprovaram que A01–A04, A12 e A15 encontram os problemas esperados; a alteração de item com baixa passou a ser rejeitada por trigger. As regras entre tabelas ainda dependentes de serviço transacional continuam descritas na Seção 1.5; auditoria detecta inconsistência e não substitui prevenção.
 
@@ -982,11 +982,11 @@ A04 examina a situação atual; não comprova em qual instante o pedido foi libe
 
 G01–G09 cobrem P1, P2 e todos os KPIs K01–K12 da Seção 1.6. G08 responde sobre saldo atual, indisponibilidade e reposição; G09 consolida movimentações. A cobertura de estoque está concluída neste recorte. Sincronização com canais externos e duração histórica da ruptura não são medidas pelo banco atual.
 
-Os arquivos [esquema_logico.sql](./WECOFFE/modelagem/esquema_logico.sql) (núcleo original), [estoque_logico.sql](./WECOFFE/modelagem/estoque_logico.sql) (extensão lógica/física) e [consultas_gerenciais.sql](./WECOFFE/modelagem/consultas_gerenciais.sql) são recortes auxiliares. Para entrega e demonstração, utilizar somente `docs/script.sql`, que reúne criação, carga, operações e consultas.
+Os arquivos [esquema_logico.sql](./WECOFFE/modelagem/esquema_logico.sql) (núcleo original), [estoque_logico.sql](./WECOFFE/modelagem/estoque_logico.sql) (extensão lógica/física) e [consultas_gerenciais.sql](./WECOFFE/modelagem/consultas_gerenciais.sql) são recortes auxiliares. Para entrega e demonstração, utilizar somente `WECOFFE/docs/script.sql`, que reúne criação, carga, operações e consultas.
 
 ## 4. Massa de Dados
 
-A carga está **incluída no arquivo [docs/script.sql](./docs/script.sql)**, nos blocos 4 e 4.2; não há arquivo separado a executar. O script cria as tabelas, insere a massa e aplica as rotinas que produzem os estados finais. Todos os nomes, clientes, preços, valores, identificadores de documentos, mínimos e movimentos são **fictícios**. Não foram importados cadastros, documentos pessoais ou valores de vendas da organização. CPF/CNPJ permanece NULL nos clientes da carga.
+A carga está **incluída no arquivo [WECOFFE/docs/script.sql](./WECOFFE/docs/script.sql)**, nos blocos 4 e 4.2; não há arquivo separado a executar. O script cria as tabelas, insere a massa e aplica as rotinas que produzem os estados finais. Todos os nomes, clientes, preços, valores, identificadores de documentos, mínimos e movimentos são **fictícios**. Não foram importados cadastros, documentos pessoais ou valores de vendas da organização. CPF/CNPJ permanece NULL nos clientes da carga.
 
 ### 4.1 Relação com o contexto e porte da organização
 
@@ -1030,11 +1030,15 @@ As datas das chamadas de rotina são fixadas pelo relógio da sessão somente du
 
 Com o período padrão de outubro, G01 consolida **30 pedidos quitados não cancelados, R$ 1.574,00 e ticket médio global de R$ 52,47**, apresentados por canal. Em setembro, são nove pedidos quitados e R$ 501,00. Nos dois meses juntos, são 39 pedidos quitados, R$ 2.075,00 e ticket médio global de R$ 53,21. Pedidos cancelados, parcialmente pagos, recusados ou com excesso não entram nessas vendas quitadas.
 
-O script foi executado do zero no **MySQL 8.0.46**, sem erros. Passaram [61 verificações de integridade e cobertura](./docs/resultado_validacao_mysql.txt) e [quatro de atomicidade/concorrência](./docs/resultado_concorrencia_mysql.txt). Os testes conferem contagens, meses, canais, clientes sem pedidos, situações financeiras, disponibilidade e totais; também injetam falhas revertidas com ROLLBACK. A [saída da execução](./docs/resultado_execucao_mysql.txt) permite conferir os resultados. O registro de uso de LLM está na **Seção 6 desta entrega**.
+O script foi executado do zero no **MySQL 8.0.46**, sem erros. Passaram [61 verificações de integridade e cobertura](./WECOFFE/docs/resultado_validacao_mysql.txt) e [quatro de atomicidade/concorrência](./WECOFFE/docs/resultado_concorrencia_mysql.txt). Os testes conferem contagens, meses, canais, clientes sem pedidos, situações financeiras, disponibilidade e totais; também injetam falhas revertidas com ROLLBACK. A [saída da execução](./WECOFFE/docs/resultado_execucao_mysql.txt) permite conferir os resultados. O registro de uso de LLM está na **Seção 6 desta entrega**.
 
-## 5. Dicionário de Dados do Modelo Lógico
+## 5. Repositório GitHub e Dicionário de Dados
 
-Esta seção complementa o dicionário conceitual da Seção 5 da Entrega 1 e do HTML. Tipos, limites e padrões abaixo correspondem ao DDL proposto desta entrega. As chaves são listadas também na Seção 1.3.
+O relatório técnico está neste [Readme.md](./Readme.md), exibido pelo GitHub como README do repositório. O **dicionário completo está em um único arquivo HTML: [index.html](./index.html)**. Ele reúne as nove tabelas e 44 colunas físicas, expressões de composição e restrições por coluna: tipo, obrigatoriedade, PK/FK, unicidade simples/composta, valores permitidos, DEFAULT e geração automática. Os CHECKs completos e as regras transacionais também estão documentados nesse arquivo.
+
+O [script MySQL de referência](./WECOFFE/docs/script.sql) define a implementação. Os tipos do HTML foram conferidos com ele, incluindo textos, decimais, datas e FKs compostas. ESTOQUE e MOVIMENTACAO_ESTOQUE aparecem somente na documentação lógica/física; o DER conceitual continua preservado.
+
+O arquivo `02-03g_Exemplo_Dicionario_Dados.pdf` não está disponível no repositório nem teve localização informada. Foi preservado o formato existente de expressões e tabelas; a comparação exata com esse exemplo permanece pendente de acesso ao PDF. A síntese abaixo complementa o HTML e não exige outro arquivo de dicionário. As chaves são listadas também na Seção 1.3.
 
 ### CLIENTE
 
@@ -1142,7 +1146,7 @@ CHECK não garante regras entre tabelas. A baixa, a quitação na liberação, o
 | Prompt do grupo | Solicitação da Seção 4: massa fictícia, volume justificado por tabela, variedade de cenários, consistência e registro do uso de LLM. Complemento recebido: “Não tenho pode usar dados ficticios ou os que já estão registrado em algum lugar por aqui”. |
 | Instrução operacional de geração | Gerar 45 pedidos complementares aos 15 casos existentes, em setembro/outubro, com uma a três linhas, clientes recorrentes e sem pedidos, oito funcionários fictícios, novas tentativas e pagamentos divididos; manter saldos não negativos e os casos controlados das auditorias. Essa instrução descreve o critério aplicado pelo assistente, não uma nova informação sobre a unidade. |
 | Dados utilizados | Apenas estrutura, regras e contagens não pessoais já documentadas: oito funcionários da cafeteria, três canais e tipos de processo. Nenhum cadastro, nome de pessoa real, documento pessoal, venda real ou preço real foi usado como dado da carga. |
-| Resultado gerado | Carga estática em docs/script.sql: 20 clientes, oito funcionários, 13 produtos, 60 pedidos, 120 itens, 60 cupons, 72 pagamentos, 13 estoques e 103 movimentos finais. |
+| Resultado gerado | Carga estática em WECOFFE/docs/script.sql: 20 clientes, oito funcionários, 13 produtos, 60 pedidos, 120 itens, 60 cupons, 72 pagamentos, 13 estoques e 103 movimentos finais. |
 | Ajustes e revisão | Complementados os cenários iniciais, preservados os casos de auditoria 7/9 e a falta de saldo do produto 7; reservados clientes 19/20 sem pedidos; mantido produto 8 para o DELETE. Corrigidos totais esperados nos testes e conferidos meses, quantidades, referências e horários. Cabeçalhos G/A foram completados para manter a rastreabilidade. |
 | Ajustes manuais e origem | Não houve edição manual de dados reais pela unidade nem fornecimento de volumes reais. As escolhas de amostra e correções foram aplicadas pelo assistente com ferramentas, a partir da autorização do grupo. A validação humana posterior do grupo não é apresentada como já realizada. |
 | Verificação independente da geração | Execução real do arquivo SQL e asserções automatizadas de resultado: 61 verificações gerais/de cobertura e quatro de atomicidade/concorrência. A execução, não apenas o texto gerado, foi usada para conferir as contagens e regras. |
@@ -1152,7 +1156,7 @@ O histórico de uso de IA da Entrega 1 permanece na Seção 9 daquela entrega. E
 
 ## 7. Demonstração na Apresentação Final
 
-Utilizar o mesmo [docs/script.sql](./docs/script.sql): mostrar o detalhamento com JOIN, conferir o preço histórico após UPDATE e a exclusão do produto temporário; executar G01–G09 conforme a rastreabilidade da Seção 1.6; executar A01–A16 e explicar as ocorrências esperadas de A05 e A11. A demonstração não utiliza consultas alternativas nem interpreta ausência de venda como ruptura de estoque. Esta seção define o roteiro; a apresentação ainda não foi realizada.
+Utilizar o mesmo [WECOFFE/docs/script.sql](./WECOFFE/docs/script.sql): mostrar o detalhamento com JOIN, conferir o preço histórico após UPDATE e a exclusão do produto temporário; executar G01–G09 conforme a rastreabilidade da Seção 1.6; executar A01–A16 e explicar as ocorrências esperadas de A05 e A11. A demonstração não utiliza consultas alternativas nem interpreta ausência de venda como ruptura de estoque. Esta seção define o roteiro; a apresentação ainda não foi realizada.
 
 # Conclusão
 
@@ -1244,15 +1248,23 @@ Os registros abaixo descrevem versões anteriores; as entidades e regras vigente
 - Preservados integralmente o DER conceitual, o arquivo brModelo e as exportações conceituais: seis entidades, cinco relacionamentos e 26 atributos. Estoque e seus atributos aparecem somente nas camadas lógica e física, conforme orientação expressa do grupo.
 - Acrescentadas ESTOQUE e MOVIMENTACAO_ESTOQUE: nove tabelas e 44 colunas no modelo lógico. Atualizados diagrama SVG/PNG, dicionário lógico no README e complemento lógico no HTML.
 - Incluídos RF26–RF30 e RN25–RN32; documentadas materialização do saldo, idempotência, responsável pelo lançamento e escolhas técnicas de retorno integral por item.
-- Atualizado docs/script.sql com saldo inicial por produto, movimentos imutáveis, rotinas de recebimento/ajuste, baixa atômica e retorno confirmado. Cancelamento e estorno não repõem estoque automaticamente.
+- Atualizado WECOFFE/docs/script.sql com saldo inicial por produto, movimentos imutáveis, rotinas de recebimento/ajuste, baixa atômica e retorno confirmado. Cancelamento e estorno não repõem estoque automaticamente.
 - Acrescentadas G08–G09, KPIs K10–K12 e auditorias A12–A16, fechando a rastreabilidade de P2. Atualizados massa fictícia e roteiro da apresentação.
 - Testado o script do zero no MySQL 8.0.46: 54 verificações gerais e de estoque, mais quatro de atomicidade/concorrência. Duas conexões disputaram o mesmo saldo e apenas uma saída foi confirmada. Arquivos de evidência estão em docs.
 - Não foram inventados registros reais de estoque ou perdas, valores mínimos reais, nova visita ou acesso a sistemas internos. Dados de demonstração permanecem fictícios. SQLite não foi utilizado; o SGBD permanece MySQL.
 
 ### Ampliação e documentação da massa fictícia — 01/11/2026
 
-- Ampliada a carga em docs/script.sql para 60 pedidos selecionados em setembro/outubro, com 469 registros finais nas nove tabelas; preservados os cenários anteriores e os arquivos conceituais/lógicos.
+- Ampliada a carga em WECOFFE/docs/script.sql para 60 pedidos selecionados em setembro/outubro, com 469 registros finais nas nove tabelas; preservados os cenários anteriores e os arquivos conceituais/lógicos.
 - Ajustado FUNCIONARIO para oito pessoas fictícias, em correspondência com o porte confirmado da cafeteria. Criados clientes sem pedidos e produtos complementares; nenhum dado pessoal ou valor real de venda foi utilizado.
 - Registrada na Seção 1.1 a ausência de volumes reais de pedidos/cadastros e a autorização do grupo para usar dados fictícios. A Seção 4 justifica cada tabela como amostra de testes, sem afirmar um volume mensal real.
 - Acrescentada a Seção 6 de uso de IA, com ferramenta, prompts, critérios de geração, ajustes e limites. Mantido o histórico anterior de IA.
 - Atualizados valores de referência, evidências e testes: execução do zero no MySQL 8.0.46, 61 verificações gerais/de cobertura e quatro de atomicidade/concorrência aprovadas.
+
+### Consolidação do dicionário HTML e organização do repositório — 01/11/2026
+
+- Consolidado index.html como único dicionário HTML: nove tabelas, 44 colunas, tipos e restrições alinhados ao SQL vigente, incluindo ITEM_PEDIDO, ESTOQUE e MOVIMENTACAO_ESTOQUE.
+- Explicitados obrigatoriedade, unicidade simples/composta, domínios, CHECKs, valores padrão, AUTO_INCREMENT e regras transacionais, sem acrescentar estoque ao DER conceitual.
+- Atualizada a Seção 5 do relatório e corrigidos os links para WECOFFE/docs após a reorganização dos arquivos. Ajustados os caminhos relativos dos geradores do diagrama.
+- Verificada a cobertura das tabelas/colunas do HTML contra os CREATE TABLE do script. Nenhuma alteração de estrutura SQL ou massa de dados nesta revisão.
+- Registrada a limitação de acesso ao PDF 02-03g_Exemplo_Dicionario_Dados.pdf; a aderência exata ao exemplo depende de sua disponibilização.

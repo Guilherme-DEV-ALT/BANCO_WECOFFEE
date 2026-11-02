@@ -1,4 +1,4 @@
-param([string]$ModelDir=(Join-Path $PSScriptRoot '../WECOFFE/modelagem'))
+param([string]$ModelDir=(Join-Path $PSScriptRoot '../modelagem'))
 # Exporta o subconjunto SVG usado pelo gerador para PNG no Windows (.NET).
 Add-Type -AssemblyName System.Drawing
 [xml]$diagram=Get-Content -Raw -Encoding UTF8 (Join-Path $ModelDir 'Modelo_Logico_WeCoffee.svg')
