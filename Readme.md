@@ -629,8 +629,6 @@ Os atributos das **entidades** podem ser desenhados como círculos ligados ou li
 
 ![DER da We Coffee com pedido, produto, cupom fiscal e pagamento](<./WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png>)
 
-[Arquivo editável no brModelo 3](<./WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3>)
-
 O DER, o arquivo editável brModelo e as exportações PNG, JPG e PDF apresentam **seis entidades, cinco relacionamentos e 26 atributos conceituais**, sem FORNECEDOR. O dicionário conceitual da Seção 5 desta entrega documenta **30 atributos**: 26 conceituais e quatro referências de FK para o modelo lógico. O HTML consolidado documenta separadamente as **nove tabelas e 44 colunas físicas** da Entrega 2, incluindo as extensões exclusivamente lógicas. Ele trata `PEDIDO.id_funcionario` como opcional, inclusive nas vendas de balcão. O registro manual de escala solicitado em RF25, exemplificado na Seção 2.10, ainda não está representado no DER; sua representação permanece pendente de modelagem. Nomes, códigos e dias do exemplo continuam fictícios.
 
 O DER conceitual não representa abastecimento ou estoque por decisão do grupo. O controle quantitativo foi definido em 01/11/2026 e é representado exclusivamente a partir do modelo lógico, conforme a Seção 2.9.2. O registro informativo de campanhas previsto em RF24 ainda não possui representação específica. Concessão e resgate de benefícios não integram RF24 nesta etapa. Os registros de campanha e escala foram incluídos nos requisitos por solicitação do grupo, mas ainda precisam ser representados no dicionário e no DER; as contagens acima descrevem os artefatos atuais.
@@ -656,6 +654,16 @@ Relacionamentos N:M com atributos são válidos no modelo conceitual. No mapeame
 Todo pedido gera uma nota fiscal, representada por CUPOM_FISCAL. A relação PEDIDO — GERA — CUPOM_FISCAL é 1:1. O cupom, por sua vez, gera um ou mais pagamentos, permitindo divisão da conta sem criar outra ligação direta entre PEDIDO e PAGAMENTO.
 
 Cada PAGAMENTO referencia o cupom do pedido. Tentativas recusadas permanecem no histórico, mas somente pagamentos aprovados compõem o valor pago. A quitação e os efeitos do cancelamento estão definidos na Seção 4.1.1.
+
+## 7.3 Modelo Lógico
+
+O modelo lógico detalha a organização dos dados em tabelas, com seus campos, tipos, chaves primárias e chaves estrangeiras. Na conversão do modelo conceitual, o relacionamento N:M **CONTÉM**, entre PEDIDO e PRODUTO, foi transformado na tabela associativa **ITEM_PEDIDO**, que registra a quantidade e o preço unitário praticado na venda.
+
+![Modelo lógico da We Coffee no brModelo](./WECOFFE/modelagem/Modelo_Logico_WeCoffee_brModelo.png)
+
+A modificação também incluiu **ESTOQUE**, para registrar o saldo disponível e o estoque mínimo de cada produto pronto, e **MOVIMENTACAO_ESTOQUE**, para manter o histórico de entradas, vendas, perdas, ajustes e retornos, com identificação do funcionário responsável. Com essa ampliação, o modelo lógico passou a conter **nove tabelas e 44 colunas**.
+
+O estoque apareceu somente nesta etapa porque, no levantamento inicial, suas regras ainda estavam pendentes de definição. Em **01/11/2026**, o grupo confirmou o controle por produto pronto, a baixa na liberação do pedido para preparo e as regras de recebimento, perdas, ajustes e retorno. A partir dessas definições, foi possível estruturar as duas tabelas e implementar o controle no SQL. Por decisão de escopo do grupo, o modelo conceitual da entrega original foi preservado com seis entidades, e essa ampliação foi incorporada ao modelo lógico e à implementação física, conforme a Seção 2.9.2.
 
 ---
 
@@ -929,17 +937,21 @@ Essas aplicações são propostas futuras. Os modelos devem ser comparados com r
 
 ## 2. Modelo Lógico Relacional
 
-**Aplicativo utilizado:** Codex, com geração vetorial em SVG por JavaScript (Node.js) e exportação PNG por PowerShell/.NET System.Drawing. O desenho segue a **notação visual do modelo lógico do brModelo**; não foi criado no aplicativo brModelo e não é um arquivo nativo desse aplicativo.
+**Formato de entrega:** arquivo lógico nativo e editável do **brModelo 3** (`.brM3`), estruturado a partir dos `CREATE TABLE` de `WECOFFE/docs/script.sql`. A imagem abaixo foi renderizada pelo motor do brModelo após salvar e reabrir o arquivo nativo.
 
-![Modelo lógico relacional da We Coffee](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.png)
+![Modelo lógico relacional da We Coffee no brModelo](./WECOFFE/modelagem/Modelo_Logico_WeCoffee_brModelo.png)
 
-[Versão vetorial SVG](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.svg) · [Imagem PNG](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.png)
+[Arquivo editável no brModelo 3](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.brM3) · [Imagem do modelo nativo](./WECOFFE/modelagem/Modelo_Logico_WeCoffee_brModelo.png) · [Como abrir e editar](./WECOFFE/docs/modelo_logico_brmodelo.md)
 
-Cada retângulo mostra o nome da tabela no topo, uma linha por coluna, o tipo à direita e as marcas PK, FK ou PK, FK. O modelo lógico contém nove tabelas e 44 colunas, incluindo ESTOQUE e MOVIMENTACAO_ESTOQUE; o DER conceitual permanece com seis entidades. A chave composta de ITEM_PEDIDO é formada por id_pedido e id_produto. O relacionamento N:N conceitual foi convertido em duas relações 1:N por essa tabela associativa.
+Para editar, abrir o brModelo 3 e selecionar **Arquivo → Abrir**, escolhendo `Modelo_Logico_WeCoffee.brM3`. As versões anteriores [SVG](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.svg) e [PNG](./WECOFFE/modelagem/Modelo_Logico_WeCoffee.png), geradas por JavaScript/PowerShell, continuam disponíveis como representações auxiliares.
+
+Cada retângulo mostra o nome da tabela no topo, uma linha por coluna, o tipo ao lado do nome e os ícones nativos de participação em PK, FK e UNIQUE. O modelo lógico contém nove tabelas e 44 colunas, incluindo ESTOQUE e MOVIMENTACAO_ESTOQUE; o DER conceitual permanece com seis entidades. A chave composta de ITEM_PEDIDO é formada por id_pedido e id_produto. O relacionamento N:N conceitual foi convertido em duas relações 1:N por essa tabela associativa.
+
+O arquivo nativo registra nove chaves primárias, cinco restrições UNIQUE e dez chaves estrangeiras com suas ligações. A FK de MOVIMENTACAO_ESTOQUE para ITEM_PEDIDO utiliza o par `(id_pedido, id_produto)`. A UNIQUE `(id_pedido, id_produto, tipo)` também é composta: seus campos não são únicos individualmente.
 
 A cardinalidade junto a uma tabela indica quantas linhas dela podem estar relacionadas a uma linha da tabela oposta. CLIENTE e FUNCIONARIO são opcionais no pedido, enquanto cada item exige um pedido e um produto. As cardinalidades mínimas obrigatórias de item, cupom e tentativa representam as regras de negócio; sua garantia integral exige as rotinas transacionais descritas na Seção 1.5, além das FKs do DDL.
 
-NOT NULL, UNIQUE, CHECK e DEFAULT ficam fora do desenho e estão documentados na **Seção 5 desta entrega**, com sua implementação declarativa no script da Seção 3.
+NOT NULL, DEFAULT e AUTO_INCREMENT estão no complemento dos campos no arquivo nativo; os CHECKs e o DDL de origem estão nas observações de cada tabela. As restrições também estão documentadas na **Seção 5 desta entrega**, com sua implementação declarativa no script da Seção 3.
 
 ## 3. Script SQL Completo
 
