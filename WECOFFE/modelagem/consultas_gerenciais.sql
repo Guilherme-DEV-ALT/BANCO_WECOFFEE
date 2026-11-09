@@ -1,4 +1,12 @@
+-- Levantamento: entrevista com o auxiliar geral em 08/11/2026, relatada em 09/11/2026.
+-- RN33: fechamento ao final de cada dia, exclusivamente por gerentes (confirmado).
+-- RN23/RN24: cancelamento da nota/pedido e estorno imediato pelo cartão,
+-- com balanceamento automático no sistema existente (confirmados pelo relato).
+-- Este SQL não executa integrações fiscais/de cartão nem registra fechamentos.
 -- Recorte auxiliar de docs/script.sql. Execute primeiro o script completo.
+-- Consulta de um dia civil: @inicio no início do dia e @fim no início do seguinte.
+-- Essa é a convenção analítica do projeto; o corte exato da unidade não foi informado.
+-- Consultar não efetiva fechamento: autenticação e registro gerencial não implementados.
 SET @inicio = '2026-10-01 00:00:00';
 SET @fim = '2026-11-01 00:00:00';
 
@@ -50,6 +58,8 @@ SELECT *, 100.0 * valor_vendido / NULLIF(SUM(valor_vendido) OVER (), 0) AS parti
 FROM vendas ORDER BY valor_vendido DESC;
 
 -- G03 — Qual a taxa de recusa e os valores por forma de pagamento?
+-- Situação atual por data da tentativa; sem evento/data de estorno, não reconstrói
+-- fluxo de devoluções nem fechamento histórico, mesmo com estorno imediato relatado.
 -- Atende: K04; K05
 -- Período definido pela data da tentativa, não pela data do pedido.
 SELECT forma_pagamento, COUNT(*) AS tentativas,

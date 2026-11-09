@@ -64,8 +64,11 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - site oficial;
 - rede social da organização;
 - contato do gerente da unidade: Daniel Porrino (+55 11 95208-6022)
+- contato do auxiliar geral: Leandro Viana (responde por tudo quando o seu superior não está presente) | (+55 11 977707658)
 - entrevista com o gerente;
+- entrevista com o auxiliar geral;
 - registros fotográficos da unidade.
+- vídeos de fechamento de procesos.
 - vídeos de como funciona o atendimento.
 - como os atendimento são processado
 - Link da loja: https://share.google/shs5jxNxnNAmYuQjz
@@ -156,15 +159,15 @@ A liberação para preparo depende da igualdade entre o `valor_total` e a soma d
 
 A identificação para entrega utiliza `nome_comanda` ou, quando ausente, `id_pedido`.
 
-## 2.7 Cancelamento e estorno — proposta a validar
+## 2.7 Cancelamento e estorno — procedimento confirmado na entrevista
 
-O cancelamento é representado pelo estado **CANCELADO** em `PEDIDO.status_preparo`, impedindo a continuidade do preparo ou da entrega.
+Segundo o relato do auxiliar geral **Leandro Viana**, em entrevista realizada em **08/11/2026** e informada pelo grupo em **09/11/2026**, o procedimento envolve o **cancelamento da nota fiscal e do pedido**, com **estorno realizado na hora pelo cartão do cliente**. O sistema existente faz automaticamente o balanceamento dos valores e o estorno. Essa informação confirma o processo operacional antes tratado como proposta a validar.
 
-Quando houver pagamentos aprovados, cada devolução financeira deve corresponder integralmente ao respectivo `valor_pagamento`. O `status_pagamento` passa para **Estornado** somente após a confirmação efetiva da devolução.
+No modelo acadêmico, o cancelamento é representado pelo estado **CANCELADO** em `PEDIDO.status_preparo`, impedindo a continuidade do preparo ou da entrega. O `status_pagamento` passa para **Estornado** após a confirmação efetiva da devolução. Pagamentos recusados não exigem estorno. O pedido, seu cupom e seus pagamentos permanecem no histórico; cancelamento não significa exclusão dos registros.
 
-Até essa confirmação, o pagamento permanece **Aprovado**, indicando valor pendente de devolução. Pagamentos recusados não exigem estorno.
+Como escolha técnica do recorte atual, cada registro de pagamento é estornado integralmente. Se a confirmação da devolução ainda não tiver sido recebida, o pagamento permanece **Aprovado** e a auditoria aponta devolução pendente. Esse é um estado de exceção para conferência, e não o fluxo normal de estorno imediato relatado na entrevista.
 
-O pedido, seu cupom e seus pagamentos permanecem no histórico. Os estágios em que o cancelamento pode ser autorizado ainda precisam ser confirmados com a unidade.
+O SQL representa a situação do pedido e do pagamento, mas ainda não armazena a situação de cancelamento do documento fiscal nem o evento/data do estorno. A integração com os serviços fiscal e de cartão e o balanceamento automático do sistema existente não estão implementados no projeto. Permanecem a detalhar os estágios em que se pode cancelar, quem pode autorizar/operar o estorno, as regras para PIX e Dinheiro, pagamentos divididos ou estornos parciais e eventuais devoluções após um fechamento.
 
 ## 2.8 Consulta e análise de vendas
 
@@ -177,7 +180,21 @@ As consultas relacionam:
 
 Esses dados permitem consultar compras, documentos emitidos, pagamentos divididos, recusas, valores aprovados e situações financeiras.
 
-Na consolidação mensal, um pedido com vários produtos ou pagamentos não deve ter seu total contado repetidamente. A data de referência do fechamento e o tratamento de estornos posteriores devem ser definidos com a unidade.
+Na consolidação mensal, um pedido com vários produtos ou pagamentos não deve ter seu total contado repetidamente. Conforme a entrevista de **08/11/2026** com o auxiliar geral, o **fechamento das vendas ocorre ao final de cada dia e é realizado exclusivamente pelos gerentes**. A consolidação mensal deve apoiar a análise dos resultados diários.
+
+### 2.8.1 Confirmações e consequências para o projeto — 09/11/2026
+
+| Informação confirmada na entrevista | Consequência no projeto |
+|---|---|
+| Fechamento ao final de cada dia. | Periodicidade diária formalizada em RF16, RF31 e RN33; a análise mensal continua sendo necessária. |
+| Apenas gerentes realizam o fechamento. | Operação de fechamento restrita à Gerência na matriz de acesso. Consultar um relatório não equivale a executar um fechamento. |
+| Cancelamento da nota fiscal e do pedido. | RF18 e RN23 passam a se apoiar no relato; o banco preserva o histórico. O registro específico da situação fiscal ainda exige ampliação do modelo. |
+| Estorno na hora pelo cartão do cliente. | RF18 e RN24 deixam de tratar a existência desse procedimento como hipótese. A confirmação da devolução continua necessária para registrar Estornado. |
+| O sistema existente faz o balanceamento e o estorno automaticamente. | Automação documentada como prática relatada da unidade; o SQL acadêmico não executa transações na operadora nem no sistema fiscal. |
+
+**Referência temporal das consultas:** a periodicidade diária foi confirmada, mas a entrevista não definiu qual campo de data o sistema existente utiliza nem um horário exato de corte. As consultas acadêmicas continuam usando `PEDIDO.data_hora` para vendas e `PAGAMENTO.data_hora_pagamento` para tentativas, com início inclusivo e fim exclusivo. Para consultar um dia civil, usar o início desse dia e o início do seguinte. Esse filtro é uma convenção analítica do projeto, não uma confirmação do regime contábil ou de reabertura do fechamento da unidade.
+
+O fechamento gerencial efetivo, com identificação do gerente, instante de execução e valores preservados, ainda não possui registro próprio no banco. Autenticação, bloqueio por perfil e preservação de fechamentos históricos permanecem pendentes de implementação. O vínculo opcional de funcionário no pedido de balcão não identifica nem autoriza o responsável pelo fechamento.
 
 ## 2.9 Conferência dos processos típicos e justificativas do recorte
 
@@ -187,10 +204,10 @@ A pesquisa sobre cafeterias foi utilizada para ampliar as perguntas do levantame
 |---|---|---|
 | Cadastros de clientes, funcionários e produtos | Já descritos: identificadores, nomes, documento opcional do cliente, cargo e preço atual do produto. | Incluídos no modelo e detalhados nas Seções 2.1, 3 e 5. |
 | Atendimento, pedido e venda | Já descritos: origem, equipamento quando aplicável, nome de comanda, produtos, quantidades e preços praticados. | Incluídos, independentemente de sua relação direta com o problema de fechamento mensal. |
-| Documento fiscal e pagamentos | Já descritos: número e data de emissão, forma, valor, situação e data de cada tentativa de pagamento. | Incluídos. Confirmar com a unidade os procedimentos fiscais diante de cancelamento. |
+| Documento fiscal e pagamentos | Número e data de emissão, forma, valor, situação e data de cada tentativa; cancelamento da nota e do pedido relatado na entrevista de 08/11/2026. | Incluídos. A ocorrência do cancelamento fiscal está confirmada; códigos, comprovantes, prazos e integração fiscal ainda precisam ser detalhados. |
 | Preparação, separação e entrega | Já descritos: identificação do pedido e estados de preparo. | Incluídos. Receitas, ingredientes, produção de alimentos e procedimentos de qualidade ainda não foram detalhados. |
-| Cancelamento e devolução financeira | Tratamento proposto com pedido CANCELADO e pagamento Estornado após confirmação. | Incluído como proposta a validar, sem apresentá-lo como procedimento já confirmado na visita. |
-| Fechamento de vendas | Dificuldade de consolidação mensal registrada no levantamento; envolve pedidos, produtos, documentos e pagamentos. | Incluído. Abertura e fechamento de caixa, despesas e conciliação ainda precisam ser detalhados; contas a pagar possui limitação de acesso específica, registrada abaixo. |
+| Cancelamento e devolução financeira | Entrevista de 08/11/2026 confirma cancelamento da nota e do pedido, estorno na hora pelo cartão e balanceamento automático pelo sistema existente. | Processo confirmado; estados CANCELADO e Estornado representam seus efeitos no modelo. Permissões de estorno, outras formas de devolução e detalhes das integrações permanecem pendentes, conforme a Seção 2.7. |
+| Fechamento de vendas | Entrevista de 08/11/2026 confirma fechamento ao final de cada dia, exclusivamente pelos gerentes; permanece a dificuldade de consolidação mensal. | Periodicidade e responsabilidade confirmadas em RF31/RN33. Horário exato de corte, abertura de caixa, despesas, conciliação detalhada e tratamento após o fechamento ainda precisam de levantamento. |
 | Contas a pagar | O grupo não conseguiu acesso às informações desse processo. Valores, vencimentos, credores, responsáveis e situação dos pagamentos não foram disponibilizados. | Processo registrado como informação não acessível ao grupo, sem dados financeiros ou funcionalidade modelados. A falta de acesso não comprova inexistência nem permite afirmar como a atividade é executada. |
 | Compras e cadastro de fornecedor | O grupo informou um único fornecimento totalmente vinculado à empresa e solicitou retirar compras e FORNECEDOR do recorte. | Retirados como funcionalidade e cadastro próprios desta versão. Ainda é necessário confirmar quem solicita, compra e autoriza o fornecimento, inclusive se a gestão é centralizada. O abastecimento diário está confirmado, independentemente da existência de um cadastro local de fornecedor. |
 | Abastecimento e recebimento | O grupo confirmou em 28/10/2026 que o abastecimento ocorre todos os dias. Horários, produtos, quantidades recebidas, responsáveis e forma de conferência não foram detalhados. | Frequência incluída no mapeamento como informação do grupo. Não se presume que todos os produtos sejam repostos todos os dias, que não existam sobras ou que o recebimento já esteja representado no banco. |
@@ -205,7 +222,7 @@ A pesquisa sobre cafeterias foi utilizada para ampliar as perguntas do levantame
 | Programas do aplicativo | Não foram confirmados programa de pontos, cashback, cupons próprios do aplicativo ou regras de fidelidade digital. | Permanecem pendentes de levantamento. A campanha do CITI não foi atribuída ao aplicativo, e a existência do canal DELIVERY não comprova um programa de fidelidade. |
 | Divulgação e eventos | A pesquisa setorial indica relacionamento e comunicação com clientes, mas não foram detalhados os canais de divulgação das campanhas nem a existência de eventos nesta unidade. | Não incluídos como funcionalidades ou entidades enquanto não houver confirmação. Registrar se são executados pela unidade, pela empresa ou por terceiros. |
 
-**Limite de cobertura:** ter um fornecedor único ou terceirizar um serviço não elimina a necessidade de mapear a atividade. As informações iniciais foram fornecidas pelo grupo em 28/10/2026 e o estoque foi atualizado em 01/11/2026, nesta conversa; não representam uma nova visita nem acesso a registros internos. Contas a pagar e perdas permanecem documentados como informações não acessíveis, e não como processos inexistentes. Os processos confirmados ainda sem representação no modelo exigem posterior detalhamento dos requisitos, do dicionário e do DER.
+**Limite de cobertura:** ter um fornecedor único ou terceirizar um serviço não elimina a necessidade de mapear a atividade. As informações iniciais foram fornecidas pelo grupo em 28/10/2026 e o estoque foi atualizado em 01/11/2026, nesta conversa. Em 09/11/2026, o grupo acrescentou o relato da entrevista com o auxiliar geral realizada em 08/11/2026, confirmando fechamento diário e estorno pelo cartão. O assistente não participou da entrevista nem acessou registros internos. Contas a pagar e perdas permanecem documentados como informações não acessíveis, e não como processos inexistentes. Os processos confirmados ainda sem representação no modelo exigem posterior detalhamento dos requisitos, do dicionário e do DER.
 
 ### 2.9.1 Limites do levantamento e validade
 
@@ -239,7 +256,7 @@ O exemplo relatado é o seguinte:
 - **Benefício:** uma bebida na próxima visita à loja.
 - **Comprovante:** apresentação do cupom fiscal da compra que gerou o benefício.
 
-Ainda precisam ser confirmados a vigência da campanha, a forma de comprovar vínculo com o CITI, quais bebidas participam, o prazo de resgate, o critério do valor elegível, os canais de compra aceitos, a possibilidade de acumular benefícios e a forma de impedir reutilização do mesmo cupom. Não se presume um limite de usos ou um mecanismo de validação já existente.
+Ainda precisam ser confirmados a vigência da campanha, a forma de comprovar vínculo com o CITI, quais bebidas participam, o prazo de resgate, o critério do valor elegível, os canais de compra aceitos, a possibilidade de acumular benefícios e a forma de impedir reutilização do mesmo cupom.
 
 Por decisão do grupo, a campanha será tratada apenas como **registro informativo**, conforme RF24: identificação da campanha, empresa parceira, público-alvo, condição de compra, benefício, comprovante exigido e observações sobre condições ainda pendentes. A vigência será indicada como pendente enquanto não for informada. Não serão registrados eventos individuais de concessão ou resgate nem realizada validação automática de elegibilidade nesta etapa. As regras de pedidos, preços e pagamentos permanecem inalteradas.
 
@@ -297,7 +314,7 @@ Horários, intervalos, duração das jornadas, funções por turno, necessidades
 4. A definição de estoque foi concluída na Seção 2.9.2. Obter saldos reais, valores mínimos e identificação dos responsáveis para implantação; confirmar separadamente validade e sobras. Contas a pagar e valores históricos de perdas continuam sem acesso. O banco já permite registrar perdas futuras, sem inventar ocorrências reais.
 5. Detalhar limpeza e segurança: empresa responsável, atividades, postos, frequência, horários e informações acompanhadas pela unidade.
 6. Complementar o registro informativo da campanha CITI e de outras parcerias quando forem fornecidos vigência, bebidas elegíveis e demais condições; manter o desconhecido como pendente, sem ampliar RF24 para concessão ou resgate. Verificar separadamente se existem programas do aplicativo.
-7. Conferir produção, qualidade, despesas, fechamento de caixa, divulgação e eventos; justificar com a resposta real cada exclusão.
+7. Conferir produção, qualidade, despesas, divulgação e eventos; justificar com a resposta real cada exclusão. Sobre fechamento, a frequência diária e a execução exclusiva por gerentes já foram confirmadas na entrevista de 08/11/2026. Detalhar somente abertura de caixa, horário de corte, conciliação e eventuais estornos/reaberturas após o fechamento; para cancelamentos, complementar as pendências específicas da Seção 2.7.
 8. Atualizar requisitos, dicionário e DER após validar os dados e a ampliação do modelo. O registro da pesquisa e da geração da escala está na Seção 9.1; a complementação dos processos e o registro das lacunas estão na Seção 9.2.
 
 ## Fluxograma
@@ -332,14 +349,14 @@ Os requisitos funcionais são identificados pelo prefixo `RF` e os não funciona
 | RF09 | O sistema deve registrar cada tentativa de pagamento com `id_pagamento`, `id_cupom_fiscal`, `forma_pagamento`, `valor_pagamento`, `status_pagamento` e `data_hora_pagamento`, mantendo os registros aprovados e recusados no histórico. |
 | RF10 | O sistema deve permitir dividir a conta em vários pagamentos vinculados ao mesmo `id_cupom_fiscal`, registrando separadamente a `forma_pagamento` e o `valor_pagamento` de cada tentativa. |
 | RF15 | O sistema deve permitir consultar o pedido por `id_pedido`, apresentando seus dados de atendimento, produtos com `quantidade` e `preco_unitario`, documento fiscal com `numero` e `data_hora_emissao` e pagamentos com forma, valor, situação e data de processamento. |
-| RF16 | O sistema deve permitir consolidar vendas por período, relacionando `data_hora`, `origem_pedido`, `valor_total`, produtos vendidos e os valores e situações dos pagamentos, sem duplicar o total de pedidos que possuam vários produtos ou pagamentos. |
+| RF16 | O sistema deve permitir consultar e consolidar vendas por dia e por mês, relacionando `data_hora`, `origem_pedido`, `valor_total`, produtos vendidos e os valores e situações dos pagamentos, sem duplicar o total de pedidos que possuam vários produtos ou pagamentos. As consultas apoiam o fechamento diário confirmado na Seção 2.8; executá-lo é uma operação distinta, conforme RF31. |
 | RF17 | O sistema deve calcular o valor pago pela soma de `valor_pagamento` dos registros Aprovados vinculados ao cupom do pedido e compará-lo com `valor_total`, identificando ausência de pagamento, pagamento parcial, quitação ou divergência. |
-| RF18 | Como proposta a validar, o sistema deve registrar o cancelamento em `PEDIDO.status_preparo` e o estorno confirmado em `PAGAMENTO.status_pagamento`, preservando os identificadores, vínculos e dados históricos do pedido, do cupom e das tentativas. |
+| RF18 | Com base no procedimento confirmado na entrevista de 08/11/2026, o sistema deve representar o cancelamento do pedido por CANCELADO em `PEDIDO.status_preparo` e a devolução confirmada por Estornado em `PAGAMENTO.status_pagamento`, preservando os identificadores, vínculos e dados históricos. O relato também confirma cancelamento da nota, estorno imediato pelo cartão e balanceamento automático no sistema existente; o registro da situação fiscal e as integrações externas ainda dependem de implementação própria. |
 | RF19 | O sistema deve permitir registrar `nome_comanda` independentemente da existência de `id_cliente`. Quando o nome não for informado, a identificação e a chamada devem utilizar `id_pedido`. |
 | RF20 | O sistema deve gerar exatamente um CUPOM_FISCAL para cada pedido, registrando `id_cupom_fiscal`, `id_pedido`, `numero` e `data_hora_emissao`, com identificação e numeração únicas conforme o dicionário. |
-| RF21 | O sistema deve permitir localizar um pedido por `id_pedido` e atualizar `status_preparo` para EM_PREPARO, PRONTO ou ENTREGUE conforme o andamento do atendimento descrito na Seção 2.6 e na RN22. A passagem de RECEBIDO para EM_PREPARO exige a quitação calculada por RF17; pedidos cancelados não podem prosseguir para preparo ou entrega. O cancelamento continua sujeito à proposta de RF18, sem ser tratado como atualização comum do preparo. |
-| RF22 | **Proposta a validar — auditoria:** o sistema deve registrar os eventos previstos na Seção 5 do dicionário HTML, incluindo consultas, exportações, inclusões e alterações de cadastros, pedidos e pagamentos, mudanças de preço, cancelamentos, estornos, autenticação, mudanças de permissões e tentativas sem autorização. Cada evento deve conter `id_log` único, `data_hora_evento`, `operacao`, `entidade_alvo` quando aplicável, `referencia_registro` quando houver registro específico, `resultado` (SUCESSO, NEGADO ou FALHA), `identificacao_ator` e `perfil_utilizado` quando disponíveis e `motivo` quando aplicável. O resultado da operação não substitui `PAGAMENTO.status_pagamento`. |
-| RF23 | **Proposta a validar — controle de acesso:** antes de executar uma operação, o sistema deve verificar o perfil da conta, serviço ou sessão, a operação solicitada e o recurso ou registro envolvido, autorizando ou negando a ação conforme a matriz proposta na Seção 6.2 do dicionário HTML. A verificação deve abranger consultas, cadastros, alterações, cancelamentos, estornos, exportações e acesso aos logs. Operações sem autorização expressa devem ser negadas; tentativas negadas devem ser registradas conforme RF22. Os perfis Atendimento, Gerência e Consulta gerencial, assim como os acessos técnicos de TOTEM e DELIVERY, dependem de confirmação com a unidade. |
+| RF21 | O sistema deve permitir localizar um pedido por `id_pedido` e atualizar `status_preparo` para EM_PREPARO, PRONTO ou ENTREGUE conforme o andamento do atendimento descrito na Seção 2.6 e na RN22. A passagem de RECEBIDO para EM_PREPARO exige a quitação calculada por RF17; pedidos cancelados não podem prosseguir para preparo ou entrega. O cancelamento segue RF18, sem ser tratado como atualização comum do preparo. |
+| RF22 | o sistema deve registrar os eventos previstos na Seção 5 do dicionário HTML, incluindo consultas, exportações, inclusões e alterações de cadastros, pedidos e pagamentos, mudanças de preço, cancelamentos, estornos, autenticação, mudanças de permissões e tentativas sem autorização. Cada evento deve conter `id_log` único, `data_hora_evento`, `operacao`, `entidade_alvo` quando aplicável, `referencia_registro` quando houver registro específico, `resultado` (SUCESSO, NEGADO ou FALHA), `identificacao_ator` e `perfil_utilizado` quando disponíveis e `motivo` quando aplicável. O resultado da operação não substitui `PAGAMENTO.status_pagamento`. |
+| RF23 | **Controle de acesso — proposta com atribuição de fechamento confirmada:** antes de executar uma operação, o sistema deve verificar o perfil da conta, serviço ou sessão, a operação solicitada e o recurso ou registro envolvido, autorizando ou negando a ação conforme a matriz da Seção 6.2 do dicionário HTML. A verificação deve abranger consultas, cadastros, alterações, cancelamentos, estornos, fechamento diário, exportações e acesso aos logs. Operações sem autorização expressa devem ser negadas; tentativas negadas devem ser registradas conforme RF22. A execução do fechamento é exclusiva da Gerência, conforme RF31/RN33; as demais atribuições dos perfis e os acessos técnicos de TOTEM e DELIVERY dependem de confirmação com a unidade. |
 | RF24 | O sistema deve permitir registrar e consultar informações de campanhas de parceria com identificação da campanha, empresa parceira, público-alvo, condição de compra, benefício, comprovante exigido, vigência quando conhecida e observações sobre condições pendentes. Para a campanha CITI, o registro deve preservar as informações relatadas na Seção 2.9.3: funcionários do banco, compra acima de R$ 39,00, uma bebida na próxima visita e apresentação do cupom fiscal. O escopo é informativo, sem registrar concessões ou resgates individuais nem validar automaticamente o direito ao benefício. |
 | RF25 | O sistema deve permitir registrar e consultar manualmente uma escala, com identificação do registro, pessoa identificada por código e nome, setor, vínculo, período e indicação dos dias de trabalho e folga. O exemplo da Seção 2.10 utiliza uma semana-modelo sem datas reais, com 15 pessoas e nomes fictícios; para uso operacional, esses dados devem corresponder às informações fornecidas pela unidade ou pelas prestadoras. O requisito abrange registro e consulta, sem geração automática de escala ou controle de presença. |
 | RF26 | O sistema deve manter saldo e estoque mínimo por produto pronto, em unidades inteiras, e registrar recebimentos, perdas e ajustes com quantidade, data/hora, motivo, responsável e referência única. |
@@ -347,6 +364,7 @@ Os requisitos funcionais são identificados pelo prefixo `RF` e os não funciona
 | RF28 | O cancelamento deve preservar as baixas anteriores e não repor saldo automaticamente. O retorno só deve ocorrer após confirmação de aptidão para revenda, vinculado ao item baixado e sem duplicação. |
 | RF29 | O sistema deve consultar saldos, indisponibilidade e produtos no limite mínimo e consolidar movimentações por período, sem confundir consumo físico com faturamento. |
 | RF30 | O sistema deve preservar o histórico de movimentações e permitir conciliar o saldo materializado com entradas, saídas e retornos. Correções devem gerar novos movimentos com motivo. |
+| RF31 | O sistema deve permitir realizar o fechamento das vendas ao final de cada dia exclusivamente por um gerente autorizado, conforme a entrevista de 08/11/2026 e RN33. A operação deve distinguir a consulta de resultados da efetivação do fechamento. Seu registro próprio e a verificação de acesso ainda dependem de modelagem e implementação. |
 
 RF24 e RF25 definem os registros solicitados pelo grupo. Sua inclusão como requisitos não significa que esses registros já estejam implementados ou representados nas seis entidades do modelo atual. A estrutura desses dados ainda deverá ser alinhada ao dicionário e ao DER, preservando o caráter fictício do exemplo e as condições desconhecidas das campanhas como pendências.
 
@@ -356,7 +374,7 @@ RF24 e RF25 definem os registros solicitados pelo grupo. Sua inclusão como requ
 |---|---|
 | RNF01 | **Usabilidade:** os campos de cadastro, pedido e pagamento devem apresentar rótulos correspondentes ao dicionário. Mensagens de validação devem identificar o campo e o problema, como ausência de `nome`, `quantidade` inválida ou falta de `totem` na origem TOTEM. O `valor_total` deve ser apresentado como calculado. |
 | RNF02 | **Integridade:** os vínculos entre `id_cliente`, `id_funcionario`, `id_pedido`, `id_produto`, `id_cupom_fiscal` e `id_pagamento` devem permanecer consistentes. Devem ser verificadas unicidade, obrigatoriedade, domínios e condições definidas nas regras de negócio, incluindo quantidades, preços, pagamentos e quitação. |
-| RNF03 | **Segurança:** a consulta e a alteração de dados pessoais, cadastrais e financeiros — como `nome`, `cpf_cnpj`, preços e dados dos pagamentos — devem respeitar as permissões por operação previstas em RF23. A auditoria dessas operações deve seguir RF22, evitando dados pessoais desnecessários e impedindo que perfis operacionais editem ou apaguem logs. Os perfis e suas atribuições, propostos nas Seções 6.1 e 6.2 do dicionário HTML, ainda precisam ser confirmados com a unidade, incluindo os acessos técnicos de TOTEM e DELIVERY. |
+| RNF03 | **Segurança:** a consulta e a alteração de dados pessoais, cadastrais e financeiros — como `nome`, `cpf_cnpj`, preços e dados dos pagamentos — devem respeitar as permissões por operação previstas em RF23. O fechamento diário deve ser restrito a gerentes autorizados, conforme RF31/RN33. A auditoria dessas operações deve seguir RF22, evitando dados pessoais desnecessários e impedindo que perfis operacionais editem ou apaguem logs. As demais atribuições dos perfis nas Seções 6.1 e 6.2 do dicionário HTML, incluindo os acessos técnicos de TOTEM e DELIVERY, ainda precisam ser confirmadas. |
 | RNF04 | **Desempenho:** consultas de pedidos por identificador e consolidações por período devem ter seus tempos medidos, informando quantidade de pedidos, produtos e pagamentos e número de usuários simultâneos. Os limites aceitáveis de resposta ainda precisam ser definidos com a unidade. |
 | RNF05 | **Disponibilidade:** durante a operação, devem estar acessíveis os dados necessários ao registro e acompanhamento do pedido, incluindo produtos, quantidades, preços, situação do preparo, documento fiscal e pagamentos. A janela de funcionamento e a meta de disponibilidade precisam ser confirmadas. |
 | RNF06 | **Escalabilidade:** o sistema deve suportar o crescimento dos cadastros e dos registros de pedidos, produtos associados, cupons e pagamentos, preservando integridade e desempenho. Os volumes de referência e os critérios de crescimento precisam ser definidos a partir do levantamento real. |
@@ -371,8 +389,9 @@ Não foram atribuídos tempos de resposta, percentuais de disponibilidade ou vol
 | Atualizar a situação de preparo e entrega de um pedido, condicionando a liberação ao pagamento integral. | RF05, RF15, RF17, RF21, RN22 e RNF02. | Entidade [PEDIDO](./index.html) e operação de atualização do preparo na [Seção 6.2](./index.html#permissoes-retencao). |
 | Registrar eventos e consultar logs conforme autorização, distinguindo o resultado da operação da situação do pagamento. | RF22, RF23 e RNF03. | [Seção 5 — Logs de acesso e operações](./index.html#logs-auditoria). |
 | Autorizar ou negar operações conforme o perfil e a matriz de acesso, com registro das tentativas negadas. | RF23, RF22 e RNF03. | [Seção 6.1 — Perfis e Seção 6.2 — Matriz de acesso](./index.html#permissoes-retencao). |
+| Realizar o fechamento diário exclusivamente por gerentes, distinguindo-o da consulta de relatórios. | RF16, RF23, RF31, RN33 e RNF03. | Fluxo da [Seção 2](./index.html) e matriz da [Seção 6.2](./index.html#permissoes-retencao). |
 
-RF22 e RF23 formalizam propostas já documentadas no HTML; sua redação não significa que autenticação, perfis e auditoria estejam implementados ou confirmados pela organização. Os campos de log não integram as nove tabelas e 44 colunas do modelo lógico atual e ainda dependem de modelagem própria.
+RF22 e RF23 formalizam propostas já documentadas no HTML; autenticação, perfis e auditoria ainda não estão implementados. A atribuição do fechamento exclusivamente aos gerentes foi confirmada na entrevista de 08/11/2026 e consta de RF31/RN33; as demais permissões continuam propostas a validar. Os campos de log e o registro de fechamento não integram as nove tabelas e 44 colunas do modelo lógico atual e ainda dependem de modelagem própria.
 
 No balcão, a identificação de uma sessão compartilhada não comprova qual funcionário executou pessoalmente uma ação e não torna `PEDIDO.id_funcionario` obrigatório. O controle de acesso deve preservar RF06 e RN08. Consultas ou exportações que não estejam expressamente autorizadas na matriz devem ser negadas até sua definição.
 
@@ -403,14 +422,14 @@ As regras utilizam o prefixo `RN` e referenciam os requisitos que justificam sua
 | RN14 | Cada pedido gera exatamente um CUPOM_FISCAL, e cada cupom pertence a um único pedido. O `id_pedido` do cupom é obrigatório e único, impedindo que dois cupons sejam associados ao mesmo pedido neste recorte. | RF20 |
 | RN15 | CUPOM_FISCAL deve possuir `numero` e `data_hora_emissao` obrigatórios. O número é único no escopo da unidade analisada. | RF20 |
 | RN16 | Cada cupom possui um ou mais registros de PAGAMENTO. Cada pagamento pertence a um único cupom, identificado obrigatoriamente por `id_cupom_fiscal`. | RF09, RF10, RF20 |
-| RN17 | PAGAMENTO deve registrar obrigatoriamente `forma_pagamento`, `valor_pagamento`, `status_pagamento` e `data_hora_pagamento`. A forma admite PIX, Crédito, Débito ou Dinheiro; o valor deve ser maior que zero. A situação admite Aprovado ou Recusado, além de Estornado no tratamento proposto de devolução confirmada. | RF09, RF10, RF18 |
+| RN17 | PAGAMENTO deve registrar obrigatoriamente `forma_pagamento`, `valor_pagamento`, `status_pagamento` e `data_hora_pagamento`. A forma admite PIX, Crédito, Débito ou Dinheiro; o valor deve ser maior que zero. A situação admite Aprovado, Recusado ou Estornado, este último após devolução confirmada. | RF09, RF10, RF18 |
 | RN18 | A divisão da conta gera registros de pagamento separados, cada um com sua forma e seu valor, mantendo todos vinculados ao mesmo cupom e, por ele, ao mesmo pedido. | RF09, RF10 |
 | RN19 | O valor pago corresponde exclusivamente à soma de `valor_pagamento` dos registros com `status_pagamento = Aprovado`. Na ausência de aprovados, o resultado é zero. Recusados e Estornados não compõem essa soma. | RF09, RF17 |
 | RN20 | Um pedido somente é considerado quitado quando o valor pago corresponde exatamente a `valor_total`. Valor inferior indica pendência; valor superior indica divergência a conciliar. | RF17 |
 | RN21 | Uma tentativa recusada permanece no histórico e permite outra tentativa com novo `id_pagamento`, vinculada ao mesmo cupom. A recusa não cancela automaticamente o pedido nem desfaz pagamentos anteriormente aprovados. | RF09, RF10, RF17 |
 | RN22 | `status_preparo` representa RECEBIDO, EM_PREPARO, PRONTO ou ENTREGUE. A liberação para preparo exige quitação. A entrega é identificada pelo `nome_comanda` ou pelo número `id_pedido`. | RF05, RF17, RF19, RF21 |
-| RN23 | **Proposta a validar:** o cancelamento registra CANCELADO em `status_preparo` e impede a continuidade do atendimento, mesmo quando o valor pago corresponde ao total. Os estágios permitidos para cancelar dependem de confirmação com a unidade. | RF18 |
-| RN24 | **Proposta a validar:** um pagamento aprovado passa para Estornado somente após a confirmação da devolução integral de seu `valor_pagamento`. Até essa confirmação, permanece Aprovado e representa devolução pendente. Pagamentos recusados não exigem estorno. Pedido, cupom e pagamentos são preservados no histórico. | RF09, RF18 |
+| RN23 | O cancelamento da nota e do pedido foi confirmado na entrevista de 08/11/2026. No modelo, CANCELADO em `status_preparo` impede a continuidade do atendimento, mesmo com pagamento integral, e preserva o histórico. O registro específico do cancelamento fiscal, os estágios permitidos e os responsáveis por autorizar/operar o cancelamento ainda precisam de detalhamento. | RF18 |
+| RN24 | O relato confirma estorno imediato pelo cartão e balanceamento automático no sistema existente. No modelo, um pagamento aprovado passa para Estornado após devolução confirmada; o estorno integral por registro é uma escolha técnica desta versão. Sem confirmação, permanece Aprovado e gera uma exceção de devolução pendente. Recusados não exigem estorno. Pedido, cupom e pagamentos são preservados. Outras formas de devolução e eventos após o fechamento permanecem a detalhar. | RF09, RF18 |
 | RN25 | Cada produto pronto possui um registro de ESTOQUE no modelo lógico, com saldo inicial zero, saldo e mínimo inteiros não negativos. | RF26 |
 | RN26 | Cada movimento registra quantidade positiva, produto existente, data/hora, responsável, motivo não vazio e referência única; entradas e ajustes positivos aumentam o saldo, perdas e ajustes negativos o reduzem. | RF26 |
 | RN27 | Baixa por VENDA corresponde integralmente à quantidade do item, ocorre uma única vez e integra a liberação de pedido exatamente quitado para preparo. Pedidos sem saldo suficiente não são liberados. | RF27 |
@@ -419,6 +438,7 @@ As regras utilizam o prefixo `RN` e referenciam os requisitos que justificam sua
 | RN30 | Saldo zero indica indisponibilidade local; saldo menor ou igual ao estoque mínimo indica reposição. Não se presume sincronização automática dos canais externos. | RF29 |
 | RN31 | A liberação e todas as baixas formam uma transação: falhas revertem tudo; operações concorrentes não podem consumir as mesmas unidades além do saldo. | RF27 |
 | RN32 | O saldo materializado deve corresponder ao somatório de entradas e retornos menos saídas; a composição de pedidos com baixa deve ser preservada. | RF27, RF30 |
+| RN33 | O fechamento de vendas ocorre ao final de cada dia e somente pode ser realizado por gerentes, conforme a entrevista de 08/11/2026. Consultar relatórios não concede permissão para efetivar o fechamento. Horário exato de corte e regras de reabertura ou estorno após fechamento ainda não foram informados. | RF16, RF23, RF31 |
 
 ### 4.1.1 Situação financeira e cancelamento
 
@@ -435,7 +455,7 @@ O valor pago é calculado por `soma(valor_pagamento)` dos registros cujo `status
 
 O cancelamento tem precedência sobre a liberação do pedido, mesmo que o valor pago corresponda ao total. Uma tentativa recusada não cancela automaticamente o pedido nem desfaz os pagamentos aprovados anteriores. Uma nova tentativa gera outro PAGAMENTO vinculado ao mesmo `id_cupom_fiscal`, preservando o registro recusado.
 
-**Proposta de tratamento de cancelamento, a validar com a unidade:** registrar **CANCELADO** em `status_preparo` e impedir a continuidade do preparo ou da entrega. Se houver pagamentos aprovados, devolver integralmente cada valor aprovado e alterar seu `status_pagamento` para **Estornado** somente após a confirmação efetiva da devolução. Até essa confirmação, o pagamento permanece **Aprovado** e a devolução fica pendente. Um pagamento recusado não exige estorno, pois não compôs o valor pago. Os dados do pedido, de seu cupom e dos pagamentos permanecem no histórico.
+**Tratamento baseado no procedimento confirmado:** a entrevista de 08/11/2026 confirma cancelamento da nota e do pedido, estorno imediato pelo cartão e balanceamento automático no sistema existente. No modelo acadêmico, registrar **CANCELADO** em `status_preparo` e **Estornado** em cada pagamento cuja devolução foi confirmada, preservando pedido, cupom e pagamentos. Cada registro é estornado integralmente como escolha técnica desta versão. Sem confirmação, o pagamento permanece **Aprovado** e caracteriza uma exceção de devolução pendente, que deve ser conferida. Um pagamento recusado não exige estorno. O registro da situação fiscal e a execução externa da devolução ainda não estão implementados; as pendências específicas estão na Seção 2.7.
 
 ### 4.1.2 Documento fiscal e origem do pedido
 
@@ -484,7 +504,7 @@ A origem é registrada em `PEDIDO.origem_pedido`, com os valores **TOTEM**, **BA
 | data_hora | Data e horário do registro | Obrigatório |
 | origem_pedido | Origem da realização do pedido | Obrigatório: TOTEM, BALCÃO ou DELIVERY |
 | valor_total | Valor total do pedido; **atributo derivado** | Derivado pela soma de `quantidade × preco_unitario` dos produtos associados ao pedido; não é informado livremente |
-| status_preparo | Situação do pedido durante a preparação e entrega | Obrigatório: RECEBIDO, EM_PREPARO, PRONTO ou ENTREGUE; CANCELADO é o estado proposto para cancelamentos (Seção 4.1.1) |
+| status_preparo | Situação do pedido durante a preparação e entrega | Obrigatório: RECEBIDO, EM_PREPARO, PRONTO, ENTREGUE ou CANCELADO; este último representa o cancelamento confirmado no levantamento (Seção 4.1.1) |
 
 ### Identificação na comanda
 
@@ -500,7 +520,7 @@ Se `nome_comanda` estiver vazio, a comanda identifica a compra pelo número `id_
 | EM_PREPARO | Pedido liberado e em preparação ou separação dos produtos. |
 | PRONTO | Preparo ou separação concluídos; pedido disponível para entrega. |
 | ENTREGUE | Pedido entregue ao cliente. |
-| CANCELADO | Estado proposto para registrar o cancelamento e impedir a continuidade do atendimento, conforme a Seção 4.1.1. |
+| CANCELADO | Registra o cancelamento e impede a continuidade do atendimento, conforme a Seção 4.1.1. |
 
 ## 5.4 Entidade: PRODUTO
 
@@ -527,7 +547,7 @@ Se `nome_comanda` estiver vazio, a comanda identifica a compra pelo número `id_
 | id_cupom_fiscal | Documento fiscal que gera o registro de pagamento | Obrigatório (FK); o pedido é obtido pelo cupom |
 | forma_pagamento | Forma utilizada no pagamento | Obrigatório: PIX, Crédito, Débito ou Dinheiro |
 | valor_pagamento | Valor correspondente à tentativa de pagamento | Obrigatório; maior que zero; compõe o valor pago somente quando `status_pagamento` for Aprovado |
-| status_pagamento | Situação do pagamento | Obrigatório: Aprovado ou Recusado; Estornado é o estado proposto após devolução integral confirmada de um pagamento aprovado (Seção 4.1.1) |
+| status_pagamento | Situação do pagamento | Obrigatório: Aprovado, Recusado ou Estornado; este último registra devolução confirmada. O recorte usa estorno integral por registro (Seção 4.1.1). |
 | data_hora_pagamento | Data e horário do pagamento | Obrigatório |
 
 ## 5.7 Atributos do relacionamento CONTÉM
@@ -779,6 +799,16 @@ O esqueleto fornecido pelo professor menciona a seção 6 para o registro de IA.
 | Verificação | Script executado do zero no MySQL 8.0.46; 54 verificações gerais/de estoque e quatro de atomicidade/concorrência, com evidências em docs. Diagrama lógico conferido visualmente. |
 | Limites | Não houve nova visita nem acesso aos registros internos. Pessoas, saldos, mínimos e movimentos da carga são fictícios. Lotes, validade, reservas e publicação nos canais externos não foram implementados. |
 
+## 9.6 Confirmações da entrevista com o auxiliar geral — 09/11/2026
+
+| Item | Registro desta revisão |
+|---|---|
+| Ferramenta e finalidade | Codex, para propagar as confirmações recebidas aos processos, requisitos, regras de negócio, dicionário HTML e comentários SQL. |
+| Fonte humana | Relato do grupo sobre entrevista com o auxiliar geral Leandro Viana em 08/11/2026, informado nesta conversa em 09/11/2026. O assistente não realizou a entrevista nem verificou operações no sistema da unidade. |
+| Informações confirmadas | Fechamento ao final de cada dia, executado apenas pelos gerentes; cancelamento da nota e do pedido; estorno na hora pelo cartão e balanceamento automático pelo sistema existente. |
+| Resultado | Atualizados RF16, RF18, RF21, RF23, RNF03, RN17, RN23 e RN24; acrescentados RF31 e RN33. Alinhadas as descrições dos estados, as permissões de fechamento e os limites analíticos. |
+| Limites | Permanecem a detalhar corte exato, reabertura, estornos após fechamento, permissões de cancelamento/estorno e devoluções por outros meios. Registros fiscais de cancelamento, eventos de estorno, fechamento histórico, autenticação e integrações externas não foram implementados nesta revisão. |
+
 ---
 - **Participação (10%):** envolvimento nas discussões técnicas e nas decisões do grupo.
 - **Comprometimento (8%):** cumprimento de prazos e responsabilidades assumidas.
@@ -880,9 +910,10 @@ ESTOQUE usa o identificador do produto como PK/FK para garantir um único saldo 
 | Itens | FKs obrigatórias; quantidade inteira com `CHECK (quantidade > 0)`; preço histórico obrigatório. RN12 não define explicitamente seu limite numérico, que deve ser validado antes de acrescentar uma restrição adicional. | RN11–RN12 |
 | Total e quitação | Total e valor pago calculados separadamente; igualdade exata em decimal para quitação; ausência de aprovados resulta em zero. | RN13, RN19–RN20 |
 | Cupom fiscal | `id_pedido NOT NULL UNIQUE`; número obrigatório, não vazio e único; emissão obrigatória. A unicidade do número vale para a unidade deste recorte. | RN14–RN15 |
-| Pagamento | FK, forma, valor, situação e data obrigatórios; `CHECK (valor_pagamento > 0)`; domínios PIX/Crédito/Débito/Dinheiro e Aprovado/Recusado/Estornado. Estornado integra a proposta a validar. | RN16–RN18, RN24 |
+| Pagamento | FK, forma, valor, situação e data obrigatórios; `CHECK (valor_pagamento > 0)`; domínios PIX/Crédito/Débito/Dinheiro e Aprovado/Recusado/Estornado. Estornado representa devolução confirmada, apoiada no procedimento relatado na entrevista de 08/11/2026. | RN16–RN18, RN24 |
 | Estoque e movimentos | PK/FKs, saldo/mínimo não negativos, quantidade positiva, tipo e vínculo com pedido condicionais, referência única e UNIQUE por item/tipo. Triggers mantêm o saldo e preservam o livro; rotinas validam quitação, baixa e retorno. | RN25–RN32 |
-| Preparo e histórico | Domínio RECEBIDO/EM_PREPARO/PRONTO/ENTREGUE, acrescido de CANCELADO na proposta. Transições exigem validação da quitação e bloqueio após cancelamento; estorno depende de devolução confirmada. | RN21–RN24 |
+| Preparo e histórico | Domínio RECEBIDO/EM_PREPARO/PRONTO/ENTREGUE/CANCELADO. Transições exigem validação da quitação e bloqueio após cancelamento; estorno depende de devolução confirmada. O cancelamento fiscal relatado ainda não possui situação própria no banco. | RN21–RN24 |
+| Fechamento diário | Frequência diária e execução exclusiva por gerentes confirmadas. As consultas apoiam a conferência; registro de fechamento, identificação do gerente e controle de acesso ainda exigem implementação. | RN33 |
 
 `NOT NULL` não impede texto vazio; as validações textuais precisam ser implementadas explicitamente. No MySQL, o `UNIQUE` de documento deve permitir vários NULLs. A versão do SGBD e a efetiva aplicação de `CHECK` devem ser verificadas ao implementar o DDL.
 
@@ -917,12 +948,14 @@ Os códigos P1 e P2 abaixo identificam os dois problemas já descritos na caract
 | K06 — pendências e divergências financeiras | Relação de pedidos com saldo insuficiente, excesso, devolução pendente ou ausência de registros obrigatórios; a quantidade por situação pode ser calculada no dashboard. | PEDIDO, ITEM_PEDIDO, CUPOM_FISCAL, PAGAMENTO | G04 |
 | K07 — demanda por dia, hora e canal | Contagem de pedidos registrados não cancelados, inclusive ainda não quitados, para orientar análise dos horários de movimento. | PEDIDO | G05 |
 | K08 — frequência e valor por cliente identificado | Compras quitadas, valor acumulado e última compra no período; restrito a pedidos com `id_cliente`. | PEDIDO, ITEM_PEDIDO, CUPOM_FISCAL, PAGAMENTO | G06 |
-| K09 — taxa de cancelamento por canal | Pedidos atualmente cancelados divididos por todos os pedidos registrados no período, multiplicado por 100; depende da validação de RN23. | PEDIDO | G07 |
+| K09 — taxa de cancelamento por canal | Pedidos atualmente cancelados divididos por todos os pedidos registrados no período, multiplicado por 100; procedimento confirmado conforme RN23. | PEDIDO | G07 |
 | K10 — saldo e disponibilidade atual | Unidades disponíveis e indicação de saldo zero. | PRODUTO, ESTOQUE | G08 |
 | K11 — necessidade de reposição | Produtos com saldo menor ou igual ao mínimo cadastrado. | PRODUTO, ESTOQUE | G08 |
 | K12 — fluxo de estoque por produto | Quantidades de entrada, baixa, perda, ajuste e retorno no período. | PRODUTO, MOVIMENTACAO_ESTOQUE | G09 |
 
-O período usa início inclusivo e fim exclusivo. G01, G02 e G04–G07 selecionam pela data do pedido; G03 seleciona pela data da tentativa. As consultas refletem a **situação atual** dos registros. Não é possível reconstruir um fechamento passado imutável nem atribuir um estorno ao mês efetivo da devolução sem data/evento de estorno ou snapshots. A data de corte e o regime do fechamento ainda precisam ser acordados com a unidade.
+O período usa início inclusivo e fim exclusivo. G01, G02 e G04–G07 selecionam pela data do pedido; G03 seleciona pela data da tentativa. Para apoiar a conferência de um dia civil, informar `@inicio` no início do dia e `@fim` no início do seguinte; G01 permanece agrupada por mês/canal e, nesse filtro de um dia, retorna somente seus valores. O **fechamento ao final de cada dia e sua execução exclusiva por gerentes estão confirmados** na entrevista de 08/11/2026, conforme RF31/RN33. O campo de referência usado pelo sistema existente e o horário exato de corte não foram informados.
+
+As consultas refletem a **situação atual** dos registros; executá-las não efetiva nem registra um fechamento. Não é possível reconstruir um fechamento passado imutável nem atribuir um estorno ao dia/mês efetivo da devolução sem data/evento de estorno ou snapshots. O relato de estorno imediato não define o tratamento de eventuais devoluções após o fechamento. Reabertura, preservação dos valores fechados e regime de contabilização dessas exceções continuam pendentes de detalhamento.
 
 Estoque, recebimentos e unidades de perdas/ajustes já têm suporte no modelo lógico. Validade/lotes, contas a pagar, campanhas e escala não têm tabelas. Não se propõem métricas de margem, valor financeiro de desperdício, eficácia promocional ou produtividade individual como se já fossem calculáveis. G08 mostra indisponibilidade atual; duração histórica de ruptura e confirmação da publicação nos canais exigem eventos adicionais. Tempos de preparo também exigem datas de cada transição, ausentes no esquema atual.
 
@@ -977,7 +1010,7 @@ A validação conferiu os totais sem multiplicação por JOIN, preservação do 
 | A02 | Pedido sem exatamente um cupom? | RN14 | Nenhuma linha. |
 | A03 | Cupom sem tentativa de pagamento? | RN16 | Nenhuma linha. |
 | A04 | Pedido em preparo, pronto ou entregue sem quitação? | RN13, RN19, RN20, RN22 | Nenhuma linha. |
-| A05 | Cancelamento com devolução pendente? | RN23, RN24 | Pedido 9: R$ 48,00; pendência operacional proposital. |
+| A05 | Cancelamento com devolução pendente? | RN23, RN24 | Pedido 9: R$ 48,00; exceção fictícia proposital para testar a auditoria, sem representar o fluxo normal imediato relatado. |
 | A06 | Origem/totem incompatíveis? | RN07 | Nenhuma linha. |
 | A07 | Referência órfã? | RN03, RN06, RN11, RN14, RN16 | Nenhuma linha. |
 | A08 | Quantidade ou valor de pagamento inválido? | RN11, RN17 | Nenhuma linha. |
@@ -990,7 +1023,7 @@ A validação conferiu os totais sem multiplicação por JOIN, preservação do 
 | A15 | Produto sem estoque ou configuração válida? | RN25, RN30 | Nenhuma linha. |
 | A16 | Baixa em pedido recebido ou movimento sem rastreabilidade? | RN26, RN27, RN29 | Nenhuma linha. |
 
-A04 examina a situação atual; não comprova em qual instante o pedido foi liberado. A10 compara somente o cenário conhecido da demonstração: não existe trilha que permita provar a imutabilidade de todos os preços históricos em produção. A05 não comprova devolução externa, que depende de confirmação.
+A04 examina a situação atual; não comprova em qual instante o pedido foi liberado. A10 compara somente o cenário conhecido da demonstração: não existe trilha que permita provar a imutabilidade de todos os preços históricos em produção. A05 não comprova devolução externa, que depende de confirmação; seu caso pendente é uma exceção de teste e não comprova atraso no sistema da unidade.
 
 G01–G09 cobrem P1, P2 e todos os KPIs K01–K12 da Seção 1.6. G08 responde sobre saldo atual, indisponibilidade e reposição; G09 consolida movimentações. A cobertura de estoque está concluída neste recorte. Sincronização com canais externos e duração histórica da ruptura não são medidas pelo banco atual.
 
@@ -1036,7 +1069,7 @@ A amostra resulta em **469 registros nas nove tabelas ao final do script**. O ob
 | Recebimento, perda e ajustes | Entradas dos dois períodos, perda do produto 5 e ajustes dos produtos 3 e 4. | G09 e conciliação A12. |
 | Preservação do preço histórico | UPDATE do produto 1 de R$ 10,00 para R$ 11,00 mantém R$ 10,00 nos itens anteriores. | SELECT de preço atual/histórico e A10. |
 
-As datas das chamadas de rotina são fixadas pelo relógio da sessão somente durante a simulação e restauradas com SET TIMESTAMP=0. Os movimentos complementares ocorrem após a data/hora dos respectivos pedidos. Não são gerados pedidos liberados sem quitação ou saldo; os casos de pagamento parcial, recusa e excesso permanecem fora do preparo. A05 e A11 mostram pendências propositais, enquanto as demais auditorias não retornam violações estruturais na carga final.
+As datas das chamadas de rotina são fixadas pelo relógio da sessão somente durante a simulação e restauradas com SET TIMESTAMP=0. Os movimentos complementares ocorrem após a data/hora dos respectivos pedidos. Não são gerados pedidos liberados sem quitação ou saldo; os casos de pagamento parcial, recusa e excesso permanecem fora do preparo. A05 e A11 mostram pendências propositais, enquanto as demais auditorias não retornam violações estruturais na carga final. A devolução pendente de A05 é uma exceção fictícia para testar detecção de falha, não uma descrição do estorno imediato informado na entrevista.
 
 ### 4.3 Valores de referência e validação
 
@@ -1079,7 +1112,7 @@ O arquivo `02-03g_Exemplo_Dicionario_Dados.pdf` não está disponível no reposi
 | `nome_comanda` | `VARCHAR(150)` | NULL permitido; se preenchido, não vazio. Ausência usa id_pedido na chamada (RN10). |
 | `data_hora` | `DATETIME` | NOT NULL; DEFAULT CURRENT_TIMESTAMP (RN06; padrão técnico proposto). |
 | `origem_pedido` | `VARCHAR(10)` | NOT NULL; CHECK: TOTEM, BALCÃO ou DELIVERY (RN07). |
-| `status_preparo` | `VARCHAR(12)` | NOT NULL; DEFAULT RECEBIDO; CHECK: RECEBIDO, EM_PREPARO, PRONTO, ENTREGUE, CANCELADO (RN22–RN23; CANCELADO a validar). |
+| `status_preparo` | `VARCHAR(12)` | NOT NULL; DEFAULT RECEBIDO; CHECK: RECEBIDO, EM_PREPARO, PRONTO, ENTREGUE, CANCELADO (RN22–RN23; cancelamento confirmado no levantamento). |
 
 ### CUPOM_FISCAL
 
@@ -1098,7 +1131,7 @@ O arquivo `02-03g_Exemplo_Dicionario_Dados.pdf` não está disponível no reposi
 | `id_cupom_fiscal` | `INT` | NOT NULL; FK para CUPOM_FISCAL (RN16). |
 | `forma_pagamento` | `VARCHAR(10)` | NOT NULL; CHECK: PIX, Crédito, Débito ou Dinheiro (RN17). |
 | `valor_pagamento` | `DECIMAL(12,2)` | NOT NULL; CHECK > 0 (RN17). |
-| `status_pagamento` | `VARCHAR(10)` | NOT NULL; CHECK: Aprovado, Recusado ou Estornado (RN17, RN24; Estornado a validar). |
+| `status_pagamento` | `VARCHAR(10)` | NOT NULL; CHECK: Aprovado, Recusado ou Estornado (RN17, RN24; Estornado após devolução confirmada). |
 | `data_hora_pagamento` | `DATETIME` | NOT NULL; DEFAULT CURRENT_TIMESTAMP (RN17; padrão técnico proposto). |
 
 ### ITEM_PEDIDO
@@ -1108,7 +1141,7 @@ O arquivo `02-03g_Exemplo_Dicionario_Dados.pdf` não está disponível no reposi
 | `id_pedido` | `INT` | NOT NULL; PK composta e FK para PEDIDO (RN11). |
 | `id_produto` | `INT` | NOT NULL; PK composta e FK para PRODUTO (RN11). |
 | `quantidade` | `INT` | NOT NULL; inteiro; CHECK > 0 (RN11). |
-| `preco_unitario` | `DECIMAL(12,2)` | NOT NULL; preço histórico (RN12). Sem limite numérico adicional, ainda não definido no levantamento. |
+| `preco_unitario` | `DECIMAL(12,2)` | NOT NULL; preço histórico (RN12). Sem limite numérico adicional. |
 
 ### PRODUTO
 
@@ -1280,3 +1313,10 @@ Os registros abaixo descrevem versões anteriores; as entidades e regras vigente
 - Atualizada a Seção 5 do relatório e corrigidos os links para WECOFFE/docs após a reorganização dos arquivos. Ajustados os caminhos relativos dos geradores do diagrama.
 - Verificada a cobertura das tabelas/colunas do HTML contra os CREATE TABLE do script. Nenhuma alteração de estrutura SQL ou massa de dados nesta revisão.
 - Registrada a limitação de acesso ao PDF 02-03g_Exemplo_Dicionario_Dados.pdf; a aderência exata ao exemplo depende de sua disponibilização.
+
+### Confirmações de fechamento e estorno — 09/11/2026
+
+- Registrada a entrevista de 08/11/2026 com o auxiliar geral como fonte do fechamento diário exclusivo dos gerentes e do cancelamento da nota/pedido com estorno imediato pelo cartão e balanceamento automático no sistema existente.
+- Atualizados processos, pendências, RF16/RF18/RF21/RF23, RNF03, RN17/RN23/RN24, dicionários e interpretação dos indicadores; acrescentados RF31 e RN33 para formalizar o fechamento.
+- Alinhados a matriz de acesso do HTML e os comentários SQL, distinguindo procedimentos confirmados, escolhas técnicas e funcionalidades ainda sem implementação.
+- Mantidos o esquema de nove tabelas/44 colunas e a massa fictícia. A05 continua como exceção de teste. Corte exato, reabertura, estornos posteriores e demais permissões não foram confirmados pela entrevista.

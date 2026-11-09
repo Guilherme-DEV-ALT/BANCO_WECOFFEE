@@ -1,6 +1,11 @@
+-- Levantamento: entrevista com o auxiliar geral em 08/11/2026, relatada em 09/11/2026.
+-- RN33: fechamento ao final de cada dia, exclusivamente por gerentes (confirmado).
+-- RN23/RN24: cancelamento da nota/pedido e estorno imediato pelo cartão,
+-- com balanceamento automático no sistema existente (confirmados pelo relato).
+-- Este SQL não executa integrações fiscais/de cartão nem registra fechamentos.
 -- Proposta física correspondente ao diagrama lógico — MySQL 8.0.16+.
 -- Executar em esquema vazio selecionado pelo responsável. Não apaga dados.
--- RN23/RN24: CANCELADO e Estornado permanecem propostas a validar.
+-- RN23/RN24: CANCELADO e Estornado representam o procedimento confirmado; ver README 2.7.
 SET NAMES utf8mb4;
 
 CREATE TABLE CLIENTE (

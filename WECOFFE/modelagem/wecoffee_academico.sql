@@ -1,7 +1,12 @@
+-- Levantamento: entrevista com o auxiliar geral em 08/11/2026, relatada em 09/11/2026.
+-- RN33: fechamento ao final de cada dia, exclusivamente por gerentes (confirmado).
+-- RN23/RN24: cancelamento da nota/pedido e estorno imediato pelo cartão,
+-- com balanceamento automático no sistema existente (confirmados pelo relato).
+-- Este SQL não executa integrações fiscais/de cartão nem registra fechamentos.
 -- WE COFFEE — Script completo, massa fictícia, MySQL 8.0.16+
 -- Executar uma vez em servidor sem o banco wecoffee_academico.
 -- Sem DROP DATABASE: não remove banco existente; interrompa ao primeiro erro.
--- RN23/RN24 continuam propostas acadêmicas a validar.
+-- RN23/RN24: procedimento confirmado; integrações externas ainda não implementadas.
 
 -- 1. BANCO
 CREATE DATABASE wecoffee_academico CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs;
@@ -11,7 +16,7 @@ SET SESSION sql_mode = 'STRICT_TRANS_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISIO
 -- 2/3. TABELAS E CONSTRAINTS
 -- Proposta física correspondente ao diagrama lógico — MySQL 8.0.16+.
 -- Executar em esquema vazio selecionado pelo responsável. Não apaga dados.
--- RN23/RN24: CANCELADO e Estornado permanecem propostas a validar.
+-- RN23/RN24: CANCELADO e Estornado representam o procedimento confirmado; ver README 2.7.
 SET NAMES utf8mb4;
 
 CREATE TABLE CLIENTE (
@@ -511,8 +516,11 @@ SELECT COUNT(*) AS produto_temporario_remanescente FROM PRODUTO WHERE id_produto
 -- Pré-requisito: executar docs/script.sql para criar e carregar as tabelas.
 -- Este arquivo não cria tabelas nem altera dados.
 -- BALCÃO, Crédito e Débito preservam os domínios do levantamento.
--- Cancelamento/estorno seguem a proposta ainda sujeita à validação.
+-- Cancelamento/estorno confirmados na entrevista; outras formas e permissões a detalhar.
 -- A data de corte é exclusiva; ajuste o período para a análise.
+-- Consulta de um dia civil: @inicio no início do dia e @fim no início do seguinte.
+-- Essa é a convenção analítica do projeto; o corte exato da unidade não foi informado.
+-- Consultar não efetiva fechamento: autenticação e registro gerencial não implementados.
 SET @inicio = '2026-10-01 00:00:00';
 SET @fim = '2026-11-01 00:00:00';
 
@@ -564,6 +572,8 @@ SELECT *, 100.0 * valor_vendido / NULLIF(SUM(valor_vendido) OVER (), 0) AS parti
 FROM vendas ORDER BY valor_vendido DESC;
 
 -- G03 — Qual a taxa de recusa e os valores por forma de pagamento?
+-- Situação atual por data da tentativa; sem evento/data de estorno, não reconstrói
+-- fluxo de devoluções nem fechamento histórico, mesmo com estorno imediato relatado.
 -- Atende: K04; K05
 -- Período definido pela data da tentativa, não pela data do pedido.
 SELECT forma_pagamento, COUNT(*) AS tentativas,
@@ -698,7 +708,9 @@ WHERE p.status_preparo IN ('EM_PREPARO','PRONTO','ENTREGUE')
  AND (i.total IS NULL OR COALESCE(pg.pago,0) <> i.total);
 
 -- A05 — Há cancelamento com devolução financeira pendente?
--- Verifica: RN23, RN24 (proposta: aprovados permanecem assim até confirmar devolução).
+-- Exceção fictícia de teste: não representa o fluxo normal imediato da entrevista.
+-- A consulta não comprova devolução na operadora nem autoriza cancelamento fiscal.
+-- Verifica: RN23, RN24 (exceção: aprovado sem confirmação da devolução).
 -- Resultado é pendência operacional, não prova de violação da regra.
 SELECT p.id_pedido, SUM(pg.valor_pagamento) AS devolver
 FROM PEDIDO p
