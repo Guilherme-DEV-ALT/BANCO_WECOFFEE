@@ -64,7 +64,7 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - site oficial;
 - rede social da organização;
 - contato do gerente da unidade: Daniel Porrino (+55 11 95208-6022)
-- contato do auxiliar geral: Leandro Viana (responde por tudo quando o seu superior não está presente) | (+55 11 977707658)
+- contato do auxiliar geral: Leandro Viana (responde por tudo quando o seu superior não está presente) | (+55 11 97770-7658)
 - entrevista com o gerente;
 - entrevista com o auxiliar geral;
 - registros fotográficos da unidade.
