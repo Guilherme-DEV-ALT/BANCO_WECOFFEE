@@ -73,6 +73,10 @@ Foram obtidas evidências da existência e do acesso à organização, incluindo
 - como os atendimento são processado
 - Link da loja: https://share.google/shs5jxNxnNAmYuQjz
 
+![Foto do grupo durante a visita à unidade We Coffee](<./WECOFFE/Comprovante_Presença_WECOFFE.jpeg>)
+
+![Foto do grupo no interior da unidade We Coffee](<./WECOFFE/Registro_Grupo_WeCoffee.jpeg>)
+
 ---
 
 # 2. Processos de Negócio
