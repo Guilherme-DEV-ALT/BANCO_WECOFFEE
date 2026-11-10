@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dicionário de Dados — We Coffee · v1.5</title>
+    <title>Dicionário de Dados — We Coffee · v1.6</title>
     <link rel="icon" href="WECOFFE/dicionario/img/wecoffee_logo_transparente_512.png">
-</head>
 <style>
     :root {
         --bg: #f5f7fb;
@@ -320,16 +319,18 @@
     .policy-panel {scroll-margin-top:18px}
     @media(max-width:600px){.policy-body{padding:16px}.policy-nav{padding:0 2px}.policy-body h3{font-size:16px}.policy-body .expression-code{font-size:12px;padding:14px}}
 </style>
+</head>
 
 <body>
     <h1>DICIONÁRIO DE DADOS - WECOFFEE</h1>
+    <p style="text-align:center"><a href="README.md">Relatório técnico</a> · <a href="WECOFFE/docs/revisao_final_2026-11-10.md">Revisão final e pendências</a></p>
     <hr>
     <header>
         <img src="WECOFFE/dicionario/img/wecoffee.png" alt="WE Coffee" class="logo">
         <p style="text-align: center;">MOONLIGHT COFFEE CAFETERIA LTDA. — WE COFFEE</p>
     </header>
     <hr>
-    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.5, 09/novembro/2026) — pedidos, produtos,
+    <h1 style="color:#475467">Dicionário de dados do modelo de banco (v1.6, 10/novembro/2026) — pedidos, produtos,
         documentos fiscais e pagamentos.</h1>
     <main>
         <section class="grid">
@@ -337,7 +338,7 @@
             <div class="card"><b>9</b><span>tabelas lógicas</span></div>
             <div class="card"><b>44</b><span>colunas físicas documentadas</span></div>
             <div class="card"><b>MySQL 8</b><span>SGBD</span></div>
-            <div class="card"><b>v1.5</b><span>09/nov/2026</span></div>
+            <div class="card"><b>v1.6</b><span>10/nov/2026</span></div>
         </section>
 
         <p class="entity-desc"><b>Fonte física:</b> <a href="WECOFFE/docs/script.sql">script SQL completo</a>. Este único HTML reúne as nove tabelas e todas as 44 colunas. PK implica NOT NULL; UNIQUE composto não torna cada componente individualmente único. NULL implícito não é um valor de negócio presumido. Não há coluna física valor_total: o total é calculado por SUM(quantidade × preco_unitario), conforme RN13. Estoque aparece somente a partir do modelo lógico; os arquivos conceituais permanecem preservados.</p>
@@ -347,8 +348,8 @@
             <div class="panel-head"><h2>1. Modelo conceitual</h2></div>
             <div class="flow-text">
                 <h3>DER — notação brModelo</h3>
-                <p><b>Software utilizado na criação do DER: brModelo 3</b>, com arquivo editável no formato .brM3.</p>
-                <p><a href="WECOFFE/modelagem/Modelo_Conceitual_WeCoffee.brM3">Baixar modelo editável</a> ·
+                <p><b>Software informado no histórico de criação do DER: brModelo 3.</b> O arquivo nativo .brM3 foi removido em revisão anterior; esta entrega disponibiliza as exportações PNG e PDF.</p>
+                <p><a href="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png">Abrir DER em PNG</a> ·
                     <a href="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png" target="_blank" rel="noopener">Abrir diagrama em tamanho original</a></p>
                 <a href="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png" target="_blank" rel="noopener">
                     <img src="WECOFFE/Modelo_Conceitual_WeCoffee_BRModelo.png"
@@ -930,9 +931,9 @@
 <td>DECIMAL(12,2)</td>
 <td>Sim — NOT NULL</td>
 <td>Sem unicidade ou chave própria</td>
-<td>Domínio DECIMAL(12,2); sem CHECK numérico adicional.</td>
+<td>DECIMAL(12,2); CHECK (preco_unitario &gt; 0).</td>
 <td>Sem DEFAULT explícito</td>
-<td>Preço praticado na venda; preservado após baixa (RN12). RN12 não define limite numérico adicional.</td>
+<td>Preço praticado na venda; preservado após baixa (RN12). Decisão técnica desta versão: vendas com preço positivo; cortesias não modeladas.</td>
 </tr>
 </tbody>
 </table>
@@ -1403,10 +1404,10 @@
 
         <section class="panel policy-panel" id="controle-versao" aria-labelledby="controle-versao-title">
             <div class="panel-head"><h2 id="controle-versao-title">9. Controle de versão</h2></div>
-            <div class="policy-body"><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Versão</th><th scope="col">Data</th><th scope="col">Registro</th></tr></thead><tbody><tr><td>v1.5</td><td>09/11/2026</td><td>Entrevista de 08/11/2026: fechamento diário exclusivo dos gerentes, cancelamento da nota/pedido e estorno imediato pelo cartão com balanceamento automático no sistema existente. Requisitos RF31/RN33 e limites de implementação documentados; nove tabelas e 44 colunas preservadas.</td></tr><tr><td>v1.1</td><td>28/10/2026</td><td>Retirada de FORNECEDOR, atualização das contagens e vínculo opcional com funcionário.</td></tr><tr><td>v1.2</td><td>28/10/2026</td><td>Documentação de logs, matriz de acesso, critérios de retenção, leitura das expressões e revisão da referência à LGPD.</td></tr><tr><td>v1.4</td><td>01/11/2026</td><td>Consolidação das nove tabelas, 44 colunas e todas as restrições no mesmo HTML, alinhadas ao script MySQL.</td></tr><tr><td>v1.3</td><td>01/11/2026</td><td>Complemento de estoque exclusivamente lógico/físico; DER conceitual preservado.</td></tr></tbody></table></div><p>A versão v1.5 propaga as confirmações da entrevista sem alterar a estrutura física. A atribuição do fechamento à Gerência está confirmada; as demais permissões, auditoria e retenção conservam as pendências indicadas nas respectivas seções. Autenticação, registro do fechamento e integrações externas ainda não estão implementados.</p></div>
+            <div class="policy-body"><div class="table-wrap policy-wrap"><table class="policy-table "><thead><tr><th scope="col">Versão</th><th scope="col">Data</th><th scope="col">Registro</th></tr></thead><tbody><tr><td>v1.6</td><td>10/11/2026</td><td>Revisão final: links corrigidos, preço histórico positivo e referência às pendências de escopo.</td></tr><tr><td>v1.5</td><td>09/11/2026</td><td>Entrevista de 08/11/2026: fechamento diário exclusivo dos gerentes, cancelamento da nota/pedido e estorno imediato pelo cartão com balanceamento automático no sistema existente. Requisitos RF31/RN33 e limites de implementação documentados; nove tabelas e 44 colunas preservadas.</td></tr><tr><td>v1.1</td><td>28/10/2026</td><td>Retirada de FORNECEDOR, atualização das contagens e vínculo opcional com funcionário.</td></tr><tr><td>v1.2</td><td>28/10/2026</td><td>Documentação de logs, matriz de acesso, critérios de retenção, leitura das expressões e revisão da referência à LGPD.</td></tr><tr><td>v1.4</td><td>01/11/2026</td><td>Consolidação das nove tabelas, 44 colunas e todas as restrições no mesmo HTML, alinhadas ao script MySQL.</td></tr><tr><td>v1.3</td><td>01/11/2026</td><td>Complemento de estoque exclusivamente lógico/físico; DER conceitual preservado.</td></tr></tbody></table></div><p>A versão v1.6 corrige links para arquivos ausentes e documenta CHECK (preco_unitario &gt; 0), sem alterar as nove tabelas ou 44 colunas. As confirmações da entrevista foram registradas na versão v1.5. A atribuição do fechamento à Gerência está confirmada; as demais permissões, auditoria e retenção conservam as pendências indicadas nas respectivas seções. Autenticação, registro do fechamento e integrações externas ainda não estão implementados.</p></div>
         </section>
 
-        <section class="panel policy-panel" id="integridade-transacional"><div class="panel-head"><h2>10. Regras entre tabelas e limites da implementação</h2></div><div class="policy-body"><p>As FKs impedem referências órfãs, mas não garantem que todo pedido tenha item e cupom, ou que todo cupom tenha tentativa. A01–A03 verificam essas cardinalidades mínimas; a conclusão do cadastro exige serviço transacional próprio.</p><p>sp_liberar_preparo exige quitação exata e baixa integral, com reversão de todas as baixas se faltar saldo. Triggers preservam a composição após baixa e rejeitam UPDATE/DELETE de movimentos. sp_retornar_estoque exige cancelamento, baixa anterior e confirmação de aptidão para revenda; nesta versão o retorno é integral por item, no máximo uma vez. Cancelamento e estorno não repõem saldo automaticamente. A12–A16 auditam estoque e conciliação.</p><p>sp_registrar_movimentacao registra entradas, perdas e ajustes com responsável, motivo e referência única. As rotinas gerenciam a própria transação e devem ser chamadas fora de uma transação já aberta. As contas da aplicação devem usar EXECUTE nas rotinas, sem escrita direta nos saldos/movimentos; a criação desses perfis não está implementada no script. Não existe sincronização dos canais externos nem controle de validade/lotes nesta versão.</p><p>O levantamento de 08/11/2026 confirma o fechamento diário exclusivo dos gerentes e o cancelamento da nota/pedido com estorno imediato pelo cartão e balanceamento automático no sistema existente. O esquema continua com nove tabelas e 44 colunas: situação fiscal, evento/data de estorno, registro de fechamento e controle de acesso ainda não estão implementados. As consultas refletem a situação atual, sem reconstruir fechamentos históricos; A05 detecta devoluções pendentes como exceção fictícia de teste. Cancelamento e estorno continuam sem repor estoque automaticamente.</p><p>O PDF 02-03g_Exemplo_Dicionario_Dados.pdf não foi disponibilizado nesta revisão. A estrutura atual de expressões e fichas foi preservada e ampliada; a correspondência exata com o PDF precisa ser conferida quando o arquivo estiver acessível.</p></div></section><footer>Dicionário de Dados — We Coffee · v1.5 · 09/novembro/2026</footer>
+        <section class="panel policy-panel" id="integridade-transacional"><div class="panel-head"><h2>10. Regras entre tabelas e limites da implementação</h2></div><div class="policy-body"><p>As FKs impedem referências órfãs, mas não garantem que todo pedido tenha item e cupom, ou que todo cupom tenha tentativa. A01–A03 verificam essas cardinalidades mínimas; a conclusão do cadastro exige serviço transacional próprio.</p><p>sp_liberar_preparo exige quitação exata e baixa integral, com reversão de todas as baixas se faltar saldo. Triggers preservam a composição após baixa e rejeitam UPDATE/DELETE de movimentos. sp_retornar_estoque exige cancelamento, baixa anterior e confirmação de aptidão para revenda; nesta versão o retorno é integral por item, no máximo uma vez. Cancelamento e estorno não repõem saldo automaticamente. A12–A16 auditam estoque e conciliação.</p><p>sp_registrar_movimentacao registra entradas, perdas e ajustes com responsável, motivo e referência única. As rotinas gerenciam a própria transação e devem ser chamadas fora de uma transação já aberta. As contas da aplicação devem usar EXECUTE nas rotinas, sem escrita direta nos saldos/movimentos; a criação desses perfis não está implementada no script. Não existe sincronização dos canais externos nem controle de validade/lotes nesta versão.</p><p>O levantamento de 08/11/2026 confirma o fechamento diário exclusivo dos gerentes e o cancelamento da nota/pedido com estorno imediato pelo cartão e balanceamento automático no sistema existente. O esquema continua com nove tabelas e 44 colunas: situação fiscal, evento/data de estorno, registro de fechamento e controle de acesso ainda não estão implementados. As consultas refletem a situação atual, sem reconstruir fechamentos históricos; A05 detecta devoluções pendentes como exceção fictícia de teste. Cancelamento e estorno continuam sem repor estoque automaticamente.</p><p>O PDF 02-03g_Exemplo_Dicionario_Dados.pdf não foi disponibilizado nesta revisão. A estrutura atual de expressões e fichas foi preservada e ampliada; a correspondência exata com o PDF precisa ser conferida quando o arquivo estiver acessível.</p></div></section><footer>Dicionário de Dados — We Coffee · v1.6 · 10/novembro/2026</footer>
     </main>
 
     <script>

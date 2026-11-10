@@ -59,7 +59,9 @@ CREATE TABLE ITEM_PEDIDO (
  PRIMARY KEY (id_pedido,id_produto),
  FOREIGN KEY (id_pedido) REFERENCES PEDIDO(id_pedido) ON DELETE RESTRICT ON UPDATE RESTRICT,
  FOREIGN KEY (id_produto) REFERENCES PRODUTO(id_produto) ON DELETE RESTRICT ON UPDATE RESTRICT,
- CHECK (quantidade > 0)
+ CHECK (quantidade > 0),
+ -- Decisao tecnica: esta versao registra vendas com preco positivo; cortesias fora do escopo.
+ CHECK (preco_unitario > 0)
 ) ENGINE=InnoDB;
 
 CREATE TABLE CUPOM_FISCAL (
@@ -955,7 +957,7 @@ WITH itens AS (
     SELECT id_cupom_fiscal, COUNT(*) AS tentativas,
            SUM(CASE WHEN status_pagamento = 'Aprovado' THEN valor_pagamento ELSE 0 END) AS pago
     FROM PAGAMENTO GROUP BY id_cupom_fiscal
-)
+), classificados AS (
 SELECT p.id_pedido, i.total, COALESCE(pg.pago, 0) AS valor_pago,
        CASE
          WHEN i.id_pedido IS NULL THEN 'SEM_ITENS'
@@ -971,7 +973,11 @@ FROM PEDIDO p
 LEFT JOIN itens i ON i.id_pedido = p.id_pedido
 LEFT JOIN CUPOM_FISCAL c ON c.id_pedido = p.id_pedido
 LEFT JOIN pagos pg ON pg.id_cupom_fiscal = c.id_cupom_fiscal
-WHERE p.data_hora >= @inicio AND p.data_hora < @fim;
+WHERE p.data_hora >= @inicio AND p.data_hora < @fim
+)
+SELECT classificados.*, COUNT(*) OVER (PARTITION BY situacao) AS quantidade_na_situacao
+FROM classificados
+ORDER BY situacao, id_pedido;
 
 -- G05 — Quais dias, horários e canais concentram pedidos?
 -- Atende: K07
@@ -1017,7 +1023,9 @@ GROUP BY origem_pedido;
 -- Saldo atual, sem filtro mensal; não afirma atualização dos canais externos.
 SELECT pr.id_produto,pr.nome,e.quantidade_disponivel,e.estoque_minimo,
  CASE WHEN e.quantidade_disponivel=0 THEN 'INDISPONIVEL' ELSE 'DISPONIVEL' END AS disponibilidade,
- CASE WHEN e.quantidade_disponivel<=e.estoque_minimo THEN 'REPOR' ELSE 'REGULAR' END AS reposicao
+ CASE WHEN e.quantidade_disponivel<=e.estoque_minimo THEN 'REPOR' ELSE 'REGULAR' END AS reposicao,
+ SUM(CASE WHEN e.quantidade_disponivel=0 THEN 1 ELSE 0 END) OVER () AS produtos_indisponiveis,
+ SUM(CASE WHEN e.quantidade_disponivel<=e.estoque_minimo THEN 1 ELSE 0 END) OVER () AS produtos_para_repor
 FROM PRODUTO pr JOIN ESTOQUE e ON e.id_produto=pr.id_produto
 ORDER BY e.quantidade_disponivel,pr.id_produto;
 
@@ -1028,6 +1036,29 @@ SELECT pr.id_produto,pr.nome,m.tipo,SUM(m.quantidade) AS unidades
 FROM MOVIMENTACAO_ESTOQUE m JOIN PRODUTO pr ON pr.id_produto=m.id_produto
 WHERE m.data_hora>=@inicio AND m.data_hora<@fim
 GROUP BY pr.id_produto,pr.nome,m.tipo ORDER BY pr.id_produto,m.tipo;
+
+-- G10 — Qual e o valor diario de vendas quitadas e o ticket medio por canal?
+-- Atende: P1; K01; K02; RF16 (consolidacao diaria).
+-- Convencao: dia civil pela data do pedido; nao efetiva fechamento nem preserva snapshot.
+WITH itens AS (
+ SELECT id_pedido, SUM(quantidade * preco_unitario) AS total
+ FROM ITEM_PEDIDO GROUP BY id_pedido
+), pagos AS (
+ SELECT id_cupom_fiscal,
+        SUM(CASE WHEN status_pagamento='Aprovado' THEN valor_pagamento ELSE 0 END) AS pago
+ FROM PAGAMENTO GROUP BY id_cupom_fiscal
+)
+SELECT DATE(p.data_hora) AS dia, p.origem_pedido,
+       COUNT(*) AS pedidos_quitados, SUM(i.total) AS valor_vendas_quitadas,
+       AVG(i.total) AS ticket_medio
+FROM PEDIDO p
+JOIN itens i ON i.id_pedido=p.id_pedido
+JOIN CUPOM_FISCAL c ON c.id_pedido=p.id_pedido
+JOIN pagos pg ON pg.id_cupom_fiscal=c.id_cupom_fiscal
+WHERE p.data_hora>=@inicio AND p.data_hora<@fim
+  AND p.status_preparo<>'CANCELADO' AND pg.pago=i.total
+GROUP BY DATE(p.data_hora), p.origem_pedido
+ORDER BY dia, p.origem_pedido;
 
 -- 9. CONSULTAS DE AUDITORIA — retornam exceções a conferir, não apagam dados.
 

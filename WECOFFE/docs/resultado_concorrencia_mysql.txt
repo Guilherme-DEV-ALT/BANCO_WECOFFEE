@@ -1,4 +1,0 @@
-﻿PASS: pedido com um produto disponível e outro sem saldo foi rejeitado
-PASS: Rollback integral preservou saldo, pedido recebido e ausência de baixas
-PASS: duas conexões concorrentes produziram um sucesso e uma recusa por saldo
-PASS: Concorrência terminou com saldo zero e uma única saída confirmada
