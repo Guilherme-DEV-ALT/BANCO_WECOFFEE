@@ -4,6 +4,12 @@ Relatório técnico final do projeto de banco de dados da unidade We Coffee da A
 
 > **Situação da revisão:** SQL executável e verificações registradas neste relatório. Ainda existem pendências de abrangência do modelo e comprovação da entrevista. Este registro não declara a entrega integralmente pronta.
 
+Vídeo de Apresentação
+> **Defesa do Modelo Lógico:** do papel ao banco de dados, com a demonstra;'ao das consultas no MySQL Workbench
+
+Assistir no:
+https://youtu.be/pX5WloquioI
+
 ## Integrantes
 
 
